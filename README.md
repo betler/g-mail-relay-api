@@ -38,6 +38,7 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
         + Number of retrying messages
 5. Able to send email through a REST API - No auth intented to implement here, just ip filtering
 6. Able to relay email through a standard 25-smtp port
+6. Able to retry email sending for a specified number of times and specified amount of time.
 7. Support for callbacks in message sent or message NOK events
 8. Separate logs for each application
 9. Plugins for beforeSend and afterSend events
