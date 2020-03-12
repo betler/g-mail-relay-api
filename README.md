@@ -16,7 +16,7 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
     2. Attachments (attached or inline)
     3. Specific headers
 2. Defer email sending to a specific time
-2. Store information about the email
+3. Store information about the email
     + Reception time
     + Application sending the email, so it can support different applications
     + Message type (application dependant so the application can search about specific type of mails)
@@ -25,8 +25,8 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
     + Number of retries
     + to/cc/bc
     + ¿Body of the message? Still thinking about it, maybe gzipped in B64 to avoid space wasting
-3. Support for NTLM authentication
-4. Search/statistics methods.
+4. Support for NTLM authentication
+5. Search/statistics methods.
     + Able to search
         + Received in a period of time
         + By message status / type
@@ -36,9 +36,25 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
         + Number of pending messages
         + Number of NOK messages
         + Number of retrying messages
-5. Able to send email through a REST API - No auth intented to implement here, just ip filtering
-6. Able to relay email through a standard 25-smtp port
-6. Able to retry email sending for a specified number of times and specified amount of time.
-7. Support for callbacks in message sent or message NOK events
-8. Separate logs for each application
-9. Plugins for beforeSend and afterSend events
+6. Able to send email through a REST API - No auth intented to implement here, just ip filtering
+7. Able to relay email through a standard 25-smtp port
+8. Able to retry email sending for a specified number of times and specified amount of time.
+9. Support for callbacks in message sent or message NOK events
+10. Separate logs for each application
+11. Plugins for beforeSend and afterSend events
+
+## Current status
+
+| #  | Desc                                        | Status                                                                         |
+|----|---------------------------------------------|--------------------------------------------------------------------------------|
+| 1  | Send emails                                 | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 2  | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 4  | Support for NTLM authentication             | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 5  | Search/statistics methods                   | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 6  | REST API                                    | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 7  | Standard 25-smtp port                       | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| 9  | Support for callbacks                       | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 10 | Separate logs for each application          | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 11 | Plugins for beforeSend and afterSend events | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
