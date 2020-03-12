@@ -1,3 +1,5 @@
+![In development](https://img.shields.io/badge/status-current_development-green)
+
 # g-mail-relayer
 
 This project intends to build a Java mail relayer. The need comes due to some limitations found in my projects. For sure, there are projects there who can perform this kind of actions, but found none exactly matching and I felt like building it myself.
