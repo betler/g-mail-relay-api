@@ -19,7 +19,7 @@
 package cvitae.pro.gmailrelayer.mail;
 
 /**
- * @author mikel
+ * @author betler
  *
  */
 public interface IMailService {

@@ -31,7 +31,7 @@ import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.jboss.netty.util.HashedWheelTimer;
 
 /**
- * @author mikel
+ * @author betler
  *
  */
 public class SmtpServer {

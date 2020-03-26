@@ -19,19 +19,19 @@
 package cvitae.pro.gmailrelayer.server;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.james.mime4j.MimeException;
-import org.apache.james.mime4j.parser.ContentHandler;
-import org.apache.james.mime4j.parser.MimeStreamParser;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.MessageHook;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 /**
- * @author mikel
+ * @author betler
  *
  */
 public class CaptureMessageHook implements MessageHook {
@@ -49,17 +49,35 @@ public class CaptureMessageHook implements MessageHook {
 	@Override
 	public HookResult onMessage(final SMTPSession session, final MailEnvelope mail) {
 
-		final ContentHandler handler = new ParseMessageContentHandler();
-		final MimeStreamParser parser = new MimeStreamParser();
-		parser.setContentHandler(handler);
 		try {
-			parser.parse(mail.getMessageInputStream());
-		} catch (MimeException | IOException e) {
+			final JavaMailSender sender = this.getJavaMailSender();
+			sender.send(sender.createMimeMessage(mail.getMessageInputStream()));
+
+		} catch (final IOException e) {
 			e.printStackTrace();
 			return HookResult.DENY;
 		}
 
 		return HookResult.OK;
+	}
+
+	public JavaMailSender getJavaMailSender() {
+		final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("");
+		mailSender.setPort(1);
+
+		mailSender.setUsername("");
+		mailSender.setPassword("");
+
+		final Properties props = mailSender.getJavaMailProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		// props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.debug", "true");
+		props.put("mail.smtp.auth.mechanisms", "NTLM");
+		props.put("mail.smtp.auth.ntlm.domain", "");
+
+		return mailSender;
 	}
 
 }

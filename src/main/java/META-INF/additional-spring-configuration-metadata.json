@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "relayer.smtp.auth.type",
+  "type": "java.lang.String",
+  "description": "NTML for NTLM authentication; USERPASS for the rest"
+}]}

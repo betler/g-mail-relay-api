@@ -60,3 +60,15 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 | 9  | Support for callbacks                       | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 10 | Separate logs for each application          | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 11 | Plugins for beforeSend and afterSend events | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+
+# Usage
+
+## application.properties
+
+### relayer.smtp properties
+
+| Property               | Value                | Description                                         |
+|------------------------|----------------------|-----------------------------------------------------|
+| relayer.smtp.auth.type | USERPASS &vert; NTLM | NTML for NTLM authentication; USERPASS for the rest |
+
+

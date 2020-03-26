@@ -27,7 +27,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author mikel
+ *
+ * @author betler
  *
  */
 public class EmailClient {
@@ -55,6 +56,8 @@ public class EmailClient {
 		Addressing bcc(List<String> bcc);
 
 		Subject headers(HashMap<String, String> headers);
+
+		Subject noExtraHeaders();
 	}
 
 	public interface Subject {
@@ -67,11 +70,6 @@ public class EmailClient {
 		void htmlBody(String htmlBody);
 	}
 
-	/**
-	 * Crea y devuelve una nueva instancia del cliente de email.
-	 *
-	 * @return un {@link ServidorSmtp}
-	 */
 	public static SmtpServer instance() {
 		return new ClientBuilder();
 	}
@@ -208,6 +206,11 @@ public class EmailClient {
 		@Override
 		public Subject headers(final HashMap<String, String> headers) {
 			this.headers = headers;
+			return this;
+		}
+
+		@Override
+		public Subject noExtraHeaders() {
 			return this;
 		}
 	}

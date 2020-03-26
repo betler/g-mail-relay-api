@@ -16,25 +16,25 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.server;
+package cvitae.pro.gmailrelayer.mail;
 
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.apache.james.protocols.api.handler.ProtocolHandler;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author betler
  *
  */
-@Configuration
-public class SmtpServerConfiguration {
+class MailServiceTest {
 
-	@Bean(initMethod = "start", destroyMethod = "stop")
-	public SmtpServer smtpServer(final Collection<ProtocolHandler> handlers) {
-		handlers.add(new CaptureMessageHook());
-		return new SmtpServer(handlers);
+	/**
+	 * Test method for
+	 * {@link cvitae.pro.gmailrelayer.mail.MailService#sendEmail(cvitae.pro.gmailrelayer.mail.MailWrapper)}.
+	 */
+	@Test
+	void testSendEmail() {
+		fail("Not yet implemented");
 	}
 
 }
