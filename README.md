@@ -47,19 +47,19 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 
 ## Current status
 
-| #  | Desc                                        | Status                                                                         |
-|----|---------------------------------------------|--------------------------------------------------------------------------------|
-| 1  | Send emails                                 | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 2  | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 4  | Support for NTLM authentication             | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 5  | Search/statistics methods                   | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
-| 6  | REST API                                    | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 7  | Standard 25-smtp port                       | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| 9  | Support for callbacks                       | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
-| 10 | Separate logs for each application          | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
-| 11 | Plugins for beforeSend and afterSend events | ![pending](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| #  | Desc                                        | Status                                                                                    |
+|----|---------------------------------------------|-------------------------------------------------------------------------------------------|
+| 1  | Send emails                                 | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 2  | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 4  | Support for NTLM authentication             | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 5  | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 6  | REST API                                    | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 7  | Standard 25-smtp port                       | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
+| 9  | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 
 # Usage
 
@@ -67,8 +67,10 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 
 ### relayer.smtp properties
 
-| Property               | Value                | Description                                         |
-|------------------------|----------------------|-----------------------------------------------------|
-| relayer.smtp.auth.type | USERPASS &vert; NTLM | NTML for NTLM authentication; USERPASS for the rest |
-
+| Property                   | Value                    | Description                                                                                                                                  |
+|----------------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| relayer.smtp.auth.type     | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
+| relayer.smtp.auth.username | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
+| relayer.smtp.auth.password | String                   | Password for the authentication in the relaying server                                                                                       |
+| relayer.smtp.from.override | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
 

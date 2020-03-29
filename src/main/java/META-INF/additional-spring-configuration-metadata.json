@@ -1,5 +1,22 @@
-{"properties": [{
-  "name": "relayer.smtp.auth.type",
-  "type": "java.lang.String",
-  "description": "NTML for NTLM authentication; USERPASS for the rest"
-}]}
+{"properties": [
+  {
+    "name": "relayer.smtp.auth.type",
+    "type": "java.lang.String",
+    "description": "NTML for NTLM authentication; USERPASS for the rest"
+  },
+  {
+    "name": "relayer.smtp.auth.username",
+    "type": "java.lang.String",
+    "description": "Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true"
+  },
+  {
+    "name": "relayer.smtp.auth.password",
+    "type": "java.lang.String",
+    "description": "Password for the authentication in the relaying server."
+  },
+  {
+    "name": "relayer.smtp.from.override",
+    "type": "java.lang.String",
+    "description": "If true, 'from' address will be replaced by the relayer.smtp.auth.username property. This means this property must be a full email address"
+  }
+]}

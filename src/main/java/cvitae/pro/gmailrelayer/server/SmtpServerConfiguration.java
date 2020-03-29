@@ -33,7 +33,7 @@ public class SmtpServerConfiguration {
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public SmtpServer smtpServer(final Collection<ProtocolHandler> handlers) {
-		handlers.add(new CaptureMessageHook());
+		handlers.add(new MessageReceivedHook());
 		return new SmtpServer(handlers);
 	}
 
