@@ -69,8 +69,9 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 
 | Property                   | Value                    | Description                                                                                                                                  |
 |----------------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| relayer.smtp.server.port   | Number                   | Listening port for the smtp server                                                                                                           |
+| relayer.smtp.from.override | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
 | relayer.smtp.auth.type     | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
 | relayer.smtp.auth.username | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
 | relayer.smtp.auth.password | String                   | Password for the authentication in the relaying server                                                                                       |
-| relayer.smtp.from.override | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
 
