@@ -142,7 +142,7 @@ public class EmailClient {
 		@Override
 		public SslConnection smtpServer(final String host, final int port) {
 			Validate.notBlank(host);
-			Validate.exclusiveBetween(25, 65535, port);
+			Validate.inclusiveBetween(25, 65535, port);
 			this.host = host;
 			this.port = port;
 			return this;

@@ -20,8 +20,8 @@ package cvitae.pro.gmailrelayer.server;
 
 import java.util.Properties;
 
+import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -31,7 +31,6 @@ import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.MessageHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -43,8 +42,14 @@ public class MessageReceivedHook implements MessageHook {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Value("${relayer.smtp.auth.type}")
-	private String jur;
+	private final Properties relayingProperties;
+
+	/**
+	 * @param relayingProperties
+	 */
+	public MessageReceivedHook(final Properties relayingProperties) {
+		this.relayingProperties = relayingProperties;
+	}
 
 	@Override
 	public void init(final Configuration config) throws ConfigurationException {
@@ -63,13 +68,9 @@ public class MessageReceivedHook implements MessageHook {
 	@Override
 	public HookResult onMessage(final SMTPSession session, final MailEnvelope mail) {
 
-		System.out.println(this.jur);
-
 		final MimeMessage msg;
 		final JavaMailSender sender = this.getJavaMailSender();
 		String msgId;
-
-		// System.out.println(this.overrideSender);
 
 		try {
 			msg = sender.createMimeMessage(mail.getMessageInputStream());
@@ -82,9 +83,8 @@ public class MessageReceivedHook implements MessageHook {
 		}
 
 		try {
-			msg.setFrom("gesconte@c-vitae.pro");
 			sender.send(msg);
-			this.logger.debug("Sent message {} to {}", msgId, msg.getRecipients(RecipientType.TO));
+			this.logger.debug("Sent message {} to {}", msgId, msg.getRecipients(Message.RecipientType.TO));
 		} catch (final Exception e) {
 			// TODO Different error codes for different errors?
 			this.logger.error("Error sending message {}", msgId, e);
@@ -108,19 +108,11 @@ public class MessageReceivedHook implements MessageHook {
 
 	public JavaMailSender getJavaMailSender() {
 		final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("");
-		mailSender.setPort(1);
-
-		mailSender.setUsername("");
-		mailSender.setPassword("");
-
 		final Properties props = mailSender.getJavaMailProperties();
-		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.auth", "true");
-		// props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.debug", "true");
-		props.put("mail.smtp.auth.mechanisms", "NTLM");
-		props.put("mail.smtp.auth.ntlm.domain", "");
+		props.putAll(this.relayingProperties);
+
+		// Password is not read from properties
+		mailSender.setPassword(this.relayingProperties.getProperty("mail.smtp.password"));
 
 		return mailSender;
 	}

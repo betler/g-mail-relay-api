@@ -29,6 +29,8 @@ import org.apache.james.protocols.smtp.SMTPConfigurationImpl;
 import org.apache.james.protocols.smtp.SMTPProtocol;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.jboss.netty.util.HashedWheelTimer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author betler
@@ -36,12 +38,20 @@ import org.jboss.netty.util.HashedWheelTimer;
  */
 public class SmtpServer {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	private final Collection<ProtocolHandler> handlers;
 
 	private NettyServer server;
 
-	public SmtpServer(final Collection<ProtocolHandler> handlers) {
+	/**
+	 * Listening port.
+	 */
+	private final Integer port;
+
+	public SmtpServer(final Integer port, final Collection<ProtocolHandler> handlers) {
 		this.handlers = handlers;
+		this.port = port;
 	}
 
 	public void start() throws Exception {
@@ -56,14 +66,14 @@ public class SmtpServer {
 		final Protocol protocol = new SMTPProtocol(chain, smtpConfiguration);
 
 		this.server = new NettyServer.Factory(new HashedWheelTimer()).protocol(protocol).build();
-		this.server.setListenAddresses(new InetSocketAddress(25));
+		this.server.setListenAddresses(new InetSocketAddress(this.port));
 		this.server.setTimeout(120);
 		this.server.bind();
-		System.out.println("started");
+		this.logger.info("SMTP Server started on port {}", this.port);
 	}
 
 	public void stop() {
 		this.server.unbind();
-		System.out.println("stopped");
+		this.logger.info("SMTP Server stopped");
 	}
 }
