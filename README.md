@@ -65,16 +65,25 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 
 ## application.properties
 
-### relayer.smtp properties
+### relayer.smtp.server.xxx properties
 
-| Property                     | Value                    | Description                                                                                                                                  |
-|------------------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| relayer.smtp.listening.port  | Number                   | Listening port for the smtp server                                                                                                           |
-| relayer.smtp.from.override   | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
-| relayer.smtp.auth.type       | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
-| relayer.smtp.auth.username   | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
-| relayer.smtp.auth.password   | String                   | Password for the authentication in the relaying server                                                                                       |
-| relayer.smtp.auth.domain     | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |  
-| relayer.smtp.starttls.enable | Boolean                  | Enable STARTTLS                                                                                                                              |
-| relayer.smtp.server.host     | String                   | Address or hostname of the relaying smtp server                                                                                              |
-| relayer.smtp.server.port     | Number                   | Port of the relaying smtp server                                                                                                             |
+These properties apply to the local smtp server.
+
+| Property       | Value       | Description                            |
+|----------------|-------------|----------------------------------------|
+| .port          | Number      | Listening port for the local smtp server     |
+
+### relayer.smtp.relay.xxx properties
+
+These properties apply to the relaying of the incoming messages.
+
+| Property         | Value                    | Description                                                                                                                                  |
+|------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| .from.override   | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
+| .auth.type       | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
+| .auth.username   | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
+| .auth.password   | String                   | Password for the authentication in the relaying server                                                                                       |
+| .auth.domain     | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |  
+| .starttls.enable | Boolean                  | Enable STARTTLS in communication with relaying stmp server                                                                                   |
+| .server.host     | String                   | Address or hostname of the relaying smtp server                                                                                              |
+| .server.port     | Number                   | Port of the relaying smtp server                                                                                                             |

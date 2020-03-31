@@ -34,25 +34,25 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SmtpServerConfiguration {
 
-	@Value("${relayer.smtp.listening.port}")
+	@Value("${relayer.smtp.server.port}")
 	private Integer port;
 
-	@Value("${relayer.smtp.starttls.enable}")
+	@Value("${relayer.smtp.relay.starttls.enable}")
 	private Boolean starttls;
 
-	@Value("${relayer.smtp.auth.type}")
+	@Value("${relayer.smtp.relay.auth.type}")
 	private String authType;
 
-	@Value("${relayer.smtp.auth.username}")
+	@Value("${relayer.smtp.relay.auth.username}")
 	private String username;
 
-	@Value("${relayer.smtp.auth.password}")
+	@Value("${relayer.smtp.relay.auth.password}")
 	private String password;
 
-	@Value("${relayer.smtp.server.host}")
+	@Value("${relayer.smtp.relay.server.host}")
 	private String smtpHost;
 
-	@Value("${relayer.smtp.server.port}")
+	@Value("${relayer.smtp.relay.server.port}")
 	private Integer smtpPort;
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
