@@ -69,7 +69,10 @@ Not currently supported
 
 ## SMTP Relaying
 
-The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. Message is relayed 'as it is', with the only addition of a _"Received"_ header, something like:
+The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. This means we can send emails from cron 
+or similar small utilities that do not support smtp server sending (just localhost and non-authenticated sending). 
+
+Message is relayed 'as it is', with the only addition of a _"Received"_ header, something like:
 
 ```
 Received: from 0:0:0:0:0:0:0:1 (EHLO [IPv6:::1]) ([0:0:0:0:0:0:0:1])
