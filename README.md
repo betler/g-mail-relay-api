@@ -63,15 +63,34 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 
 # Usage
 
+## REST API Sending
+
+Not currently supported
+
+## SMTP Relaying
+
+The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. Message is relayed 'as it is', with the only addition of a _"Received"_ header, something like:
+
+```
+Received: from 0:0:0:0:0:0:0:1 (EHLO [IPv6:::1]) ([0:0:0:0:0:0:0:1])
+          by LOCALHOSTNAME (Spring Boot g-mail-relayer SMTP Server) with ESMTP ID -88888888
+          for <somebody@example.com>;
+          Tue, 31 Mar 2020 13:09:24 +0200 (CEST)
+```
+
+This means, the original `from` address of the original email must be allowed in the relaying server to be the sender of the message. This is, provided username and password must be authorized to send emails on behalf the original `from` address.
+
+This is true if `relayer.smtp.relay.from.override` is set to `false`. If overriding is activated, the `from` address is replaced by the value of `relayer.smtp.relay.auth.username` property. 
+
 ## application.properties
 
 ### relayer.smtp.server.xxx properties
 
 These properties apply to the local smtp server.
 
-| Property       | Value       | Description                            |
-|----------------|-------------|----------------------------------------|
-| .port          | Number      | Listening port for the local smtp server     |
+| Property       | Value       | Description                              |
+|----------------|-------------|------------------------------------------|
+| .port          | Number      | Listening port for the local smtp server |
 
 ### relayer.smtp.relay.xxx properties
 
