@@ -47,19 +47,19 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 
 ## Current status
 
-| #  | Desc                                        | Status                                                                                    |
-|----|---------------------------------------------|-------------------------------------------------------------------------------------------|
-| 1  | Send emails                                 | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 2  | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 4  | Support for NTLM authentication             | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 5  | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
-| 6  | REST API                                    | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 7  | Standard 25-smtp port                       | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                            |
-| 9  | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
-| 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
-| 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| #  | Desc                                        | Status                                                                                                                 |
+|----|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| 1  | Send emails                                 | ![partially implemented](https://img.shields.io/badge/requisite-partially_implemented-yellow) - Local SMTP Server only |
+| 2  | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
+| 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
+| 4  | Support for NTLM authentication             | ![partially implemented](https://img.shields.io/badge/requisite-partially_implemented-yellow) - Local SMTP Server only |
+| 5  | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
+| 6  | REST API                                    | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
+| 7  | Standard 25-smtp port                       | ![done](https://img.shields.io/badge/requisite-done!-green)                                                            |
+| 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
+| 9  | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
+| 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
+| 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 
 # Usage
 
@@ -99,13 +99,13 @@ These properties apply to the local smtp server.
 
 These properties apply to the relaying of the incoming messages.
 
-| Property         | Value                    | Description                                                                                                                                  |
-|------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| .from.override   | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
-| .auth.type       | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
-| .auth.username   | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
-| .auth.password   | String                   | Password for the authentication in the relaying server                                                                                       |
-| .auth.domain     | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |  
-| .starttls.enable | Boolean                  | Enable STARTTLS in communication with relaying stmp server                                                                                   |
-| .server.host     | String                   | Address or hostname of the relaying smtp server                                                                                              |
-| .server.port     | Number                   | Port of the relaying smtp server                                                                                                             |
+| Property          | Value                    | Description                                                                                                                                  |
+|-------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| .overrideFrom     | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
+| .auth.type        | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
+| .auth.username    | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
+| .auth.password    | String                   | Password for the authentication in the relaying server                                                                                       |
+| .auth.domain      | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |  
+| .server.starttls  | Boolean                  | Enable STARTTLS in communication with relaying stmp server                                                                                   |
+| .server.host      | String                   | Address or hostname of the relaying smtp server                                                                                              |
+| .server.port      | Number                   | Port of the relaying smtp server                                                                                                             |

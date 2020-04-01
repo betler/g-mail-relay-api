@@ -19,13 +19,13 @@
 package cvitae.pro.gmailrelayer.server;
 
 import java.util.Collection;
-import java.util.Properties;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import cvitae.pro.gmailrelayer.server.config.RelayPropertiesConfig;
 
 /**
  * @author betler
@@ -37,51 +37,10 @@ public class SmtpServerConfiguration {
 	@Value("${relayer.smtp.server.port}")
 	private Integer port;
 
-	@Value("${relayer.smtp.relay.starttls.enable}")
-	private Boolean starttls;
-
-	@Value("${relayer.smtp.relay.auth.type}")
-	private String authType;
-
-	@Value("${relayer.smtp.relay.auth.username}")
-	private String username;
-
-	@Value("${relayer.smtp.relay.auth.password}")
-	private String password;
-
-	@Value("${relayer.smtp.relay.server.host}")
-	private String smtpHost;
-
-	@Value("${relayer.smtp.relay.server.port}")
-	private Integer smtpPort;
-
 	@Bean(initMethod = "start", destroyMethod = "stop")
-	public SmtpServer smtpServer(final Collection<ProtocolHandler> handlers) {
-		handlers.add(new MessageReceivedHook(this.getRelayingProperties()));
+	public SmtpServer smtpServer(final RelayPropertiesConfig config, final Collection<ProtocolHandler> handlers) {
+		handlers.add(new MessageReceivedHook(config));
 		return new SmtpServer(this.port, handlers);
-	}
-
-	private Properties getRelayingProperties() {
-		Validate.matchesPattern(this.authType, "^(USERPASS|NTLM)$");
-		Validate.inclusiveBetween(1l, 65535l, this.smtpPort);
-
-		final Properties props = new Properties();
-
-		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.user", this.username);
-		props.put("mail.smtp.password", this.password);
-		props.put("mail.smtp.starttls.enable", this.starttls);
-		props.put("mail.smtp.host", this.smtpHost);
-		props.put("mail.smtp.port", this.smtpPort);
-		props.put("mail.debug", "true");
-
-		if ("NTLM".equals(this.authType)) {
-			props.put("mail.smtp.auth.mechanisms", "NTLM");
-			props.put("mail.smtp.auth.ntlm.domain", "");
-		}
-
-		return props;
 	}
 
 }

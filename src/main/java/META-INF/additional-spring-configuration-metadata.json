@@ -20,14 +20,9 @@
     "description": "Password for the authentication in the relaying server."
   },
   {
-    "name": "relayer.smtp.relay.from.override",
+    "name": "relayer.smtp.relay.overrideFrom",
     "type": "java.lang.String",
     "description": "If true, 'from' address will be replaced by the relayer.smtp.auth.username property. This means this property must be a full email address"
-  },
-  {
-    "name": "relayer.smtp.relay.starttls.enable",
-    "type": "java.lang.Boolean",
-    "description": "Enable STARTTLS in communication with relaying stmp server"
   },
   {
     "name": "relayer.smtp.relay.auth.domain",
@@ -38,6 +33,11 @@
     "name": "relayer.smtp.relay.server.host",
     "type": "java.lang.String",
     "description": "Address or hostname of the relaying smtp server"
+  },
+  {
+    "name": "relayer.smtp.relay.server.starttls",
+    "type": "java.lang.Boolean",
+    "description": "Enable STARTTLS in communication with relaying stmp server"
   },
   {
     "name": "relayer.smtp.relay.server.port",

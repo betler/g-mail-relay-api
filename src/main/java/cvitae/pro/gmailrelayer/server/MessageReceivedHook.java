@@ -25,14 +25,18 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang3.Validate;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookResult;
+import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.MessageHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import cvitae.pro.gmailrelayer.server.config.RelayPropertiesConfig;
 
 /**
  * @author betler
@@ -42,13 +46,10 @@ public class MessageReceivedHook implements MessageHook {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final Properties relayingProperties;
+	final RelayPropertiesConfig config;
 
-	/**
-	 * @param relayingProperties
-	 */
-	public MessageReceivedHook(final Properties relayingProperties) {
-		this.relayingProperties = relayingProperties;
+	public MessageReceivedHook(final RelayPropertiesConfig config) {
+		this.config = config;
 	}
 
 	@Override
@@ -83,8 +84,15 @@ public class MessageReceivedHook implements MessageHook {
 		}
 
 		try {
+			// If from address overriding is set, from is changed
+			if (this.config.isOverrideFrom()) {
+				msg.setFrom(this.config.getAuth().getUsername());
+			}
+
+			// Send message
 			sender.send(msg);
 			this.logger.debug("Sent message {} to {}", msgId, msg.getRecipients(Message.RecipientType.TO));
+
 		} catch (final Exception e) {
 			// TODO Different error codes for different errors?
 			this.logger.error("Error sending message {}", msgId, e);
@@ -103,18 +111,42 @@ public class MessageReceivedHook implements MessageHook {
 	 * @return
 	 */
 	private HookResult buildHookResult(final int code, final String description) {
-		return HookResult.builder().smtpReturnCode(String.valueOf(code)).smtpDescription(description).build();
+		return HookResult.builder().smtpReturnCode(String.valueOf(code)).smtpDescription(description)
+				.hookReturnCode(HookReturnCode.deny()).build();
 	}
 
-	public JavaMailSender getJavaMailSender() {
+	private JavaMailSender getJavaMailSender() {
 		final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		final Properties props = mailSender.getJavaMailProperties();
-		props.putAll(this.relayingProperties);
+		props.putAll(this.getRelayingProperties(this.config));
 
 		// Password is not read from properties
-		mailSender.setPassword(this.relayingProperties.getProperty("mail.smtp.password"));
+		mailSender.setPassword(this.config.getAuth().getPassword());
 
 		return mailSender;
+	}
+
+	private Properties getRelayingProperties(final RelayPropertiesConfig config) {
+		Validate.matchesPattern(config.getAuth().getType(), "^(USERPASS|NTLM)$");
+		Validate.inclusiveBetween(1l, 65535l, config.getServer().getPort());
+
+		final Properties props = new Properties();
+
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.user", config.getAuth().getUsername());
+		props.put("mail.smtp.password", config.getAuth().getPassword());
+		props.put("mail.smtp.starttls.enable", config.getServer().getStarttls());
+		props.put("mail.smtp.host", config.getServer().getHost());
+		props.put("mail.smtp.port", config.getServer().getPort());
+		props.put("mail.debug", "true");
+
+		if ("NTLM".equals(config.getAuth().getType())) {
+			props.put("mail.smtp.auth.mechanisms", "NTLM");
+			props.put("mail.smtp.auth.ntlm.domain", config.getAuth().getDomain());
+		}
+
+		return props;
 	}
 
 }
