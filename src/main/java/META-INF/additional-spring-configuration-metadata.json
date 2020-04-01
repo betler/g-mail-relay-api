@@ -2,7 +2,7 @@
   {
     "name": "relayer.smtp.server.port",
     "type": "java.lang.Integer",
-    "description": "Listening port for the smtp server                                                                                                           |"
+    "description": "Listening port for the smtp server"
   },
   {
     "name": "relayer.smtp.relay.auth.type",
