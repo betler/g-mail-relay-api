@@ -1,0 +1,188 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "g-mail-relayer API",
+    "description" : "API description for email sending",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "paths" : {
+    "/mail/send" : {
+      "post" : {
+        "summary" : "sends an email",
+        "description" : "Sends an email with the specified data",
+        "operationId" : "sendEmail",
+        "requestBody" : {
+          "description" : "Email to be sent",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EmailMessage"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "email sent",
+            "content" : {
+              "object" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EmailProcessingResult"
+                }
+              }
+            }
+          },
+          "202" : {
+            "description" : "email queued for later delivery"
+          },
+          "400" : {
+            "description" : "invalid input"
+          },
+          "401" : {
+            "description" : "unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "EmailProcessingResult" : {
+        "required" : [ "id", "status" ],
+        "type" : "object",
+        "properties" : {
+          "messageId" : {
+            "type" : "integer",
+            "description" : "Internally assigned ID",
+            "format" : "int64",
+            "example" : 14
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/OperationResult"
+          }
+        }
+      },
+      "Header" : {
+        "required" : [ "name", "value" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "maxLength" : 200,
+            "type" : "string",
+            "description" : "Header name"
+          },
+          "value" : {
+            "maxLength" : 2000,
+            "type" : "string",
+            "description" : "Header value"
+          }
+        }
+      },
+      "OperationResult" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "The result of the operation",
+            "enum" : [ "QUEUED", "SENT", "NOK" ]
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "Detailed message in english explainin the result of the operation",
+            "example" : "The message {0} was correctly delivered with message-id: {}"
+          },
+          "messageCode" : {
+            "type" : "string",
+            "description" : "Machine readable result code",
+            "example" : "mail.send.result.ok"
+          },
+          "statusParams" : {
+            "type" : "array",
+            "description" : "Values that help understand the result of the operation. They must be in the same order as they are used in the message field (if they are) and always come in the same order for proper machine processing.",
+            "example" : [ "34", "<234234232@example.com>" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "UTC time of operation as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14)",
+            "format" : "date-time",
+            "example" : "2015-03-17T10:30:45Z"
+          }
+        }
+      },
+      "EmailMessage" : {
+        "required" : [ "body", "textEncoding", "textFormat", "to" ],
+        "type" : "object",
+        "properties" : {
+          "to" : {
+            "type" : "array",
+            "description" : "Recipients of the message",
+            "items" : {
+              "type" : "string",
+              "format" : "email",
+              "example" : "[\"john.doe@example.com\",\"John Doe <john.doe@example.com>\"]"
+            }
+          },
+          "cc" : {
+            "type" : "array",
+            "description" : "Carbon copy recipients",
+            "items" : {
+              "type" : "string",
+              "format" : "email",
+              "example" : "[\"john.doe@example.com\",\"John Doe <john.doe@example.com>\"]"
+            }
+          },
+          "bcc" : {
+            "type" : "array",
+            "description" : "Blind copy recipients",
+            "items" : {
+              "type" : "string",
+              "format" : "email",
+              "example" : "[\"john.doe@example.com\",\"John Doe <john.doe@example.com>\"]"
+            }
+          },
+          "subject" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "description" : "Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me.",
+            "example" : "Hey John!"
+          },
+          "body" : {
+            "maxLength" : 50000,
+            "type" : "string",
+            "description" : "Body of the message. Can be text or html. Format must be specified with the textFormat field, and encoding must be specified with the textEncoding field.",
+            "example" : "<h1>Attention to this</h1><p>John, a nigerian prince wants to do business with you, lucky man!</p>"
+          },
+          "textFormat" : {
+            "type" : "string",
+            "description" : "Format of the body message: plain text or html",
+            "enum" : [ "TEXT", "HTML" ]
+          },
+          "textEncoding" : {
+            "type" : "string",
+            "description" : "Encoding of the message body.",
+            "example" : "UTF-8"
+          },
+          "headers" : {
+            "type" : "array",
+            "description" : "List of the headers that should be added to the email",
+            "items" : {
+              "$ref" : "#/components/schemas/Header"
+            }
+          }
+        },
+        "description" : "The email message to be sent."
+      }
+    }
+  }
+}
