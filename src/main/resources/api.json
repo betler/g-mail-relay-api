@@ -38,13 +38,34 @@
             }
           },
           "202" : {
-            "description" : "email queued for later delivery"
+            "description" : "email queued for later delivery",
+            "content" : {
+              "object" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendEmailResult"
+                }
+              }
+            }
           },
           "400" : {
-            "description" : "invalid input"
+            "description" : "invalid input",
+            "content" : {
+              "object" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDetail"
+                }
+              }
+            }
           },
           "401" : {
-            "description" : "unauthorized"
+            "description" : "unauthorized",
+            "content" : {
+              "object" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDetail"
+                }
+              }
+            }
           }
         }
       }
@@ -53,21 +74,51 @@
   "components" : {
     "schemas" : {
       "SendEmailResult" : {
-        "required" : [ "id", "status" ],
+        "required" : [ "id", "result" ],
         "type" : "object",
         "properties" : {
-          "messageId" : {
-            "format" : "int64",
-            "description" : "Internally assigned ID",
-            "type" : "integer",
-            "example" : 14
-          },
           "result" : {
             "description" : "The result of the operation",
             "enum" : [ "QUEUED", "SENT", "NOK" ]
           },
-          "detail" : {
-            "$ref" : "#/components/schemas/OperationResultDetail"
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Internally assigned ID. Always set",
+            "example" : 14
+          },
+          "messageId" : {
+            "type" : "string",
+            "description" : "Message-ID header of the sent message. Empty if the message was delayed.",
+            "example" : "<032d19d1gd15$b9a14470$2si9dm40$@example.com>"
+          },
+          "date" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Datetime of the message",
+            "example" : "2015-03-17T10:30:45Z"
+          }
+        }
+      },
+      "ErrorDetail" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description" : "Machine-readable error code",
+            "example" : "mail.send.error.general"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Longer human-readable message",
+            "example" : "Could not connect to host"
+          },
+          "params" : {
+            "type" : "array",
+            "description" : "List of values to complete the error code. Fully dependant on the error code",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -115,44 +166,15 @@
           }
         }
       },
-      "OperationResultDetail" : {
-        "type" : "object",
-        "properties" : {
-          "message" : {
-            "description" : "Detailed message in english explainin the result of the operation",
-            "type" : "string",
-            "example" : "The message {0} was correctly delivered with message-id: {}"
-          },
-          "messageCode" : {
-            "description" : "Machine readable result code",
-            "type" : "string",
-            "example" : "mail.send.result.ok"
-          },
-          "statusParams" : {
-            "description" : "Values that help understand the result of the operation. They must be in the same order as they are used in the message field (if they are) and always come in the same order for proper machine processing.",
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : [ "34", "<234234232@example.com>" ]
-            }
-          },
-          "date" : {
-            "type" : "string",
-            "format" : "date-time",
-            "description" : "UTC time of operation as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14)",
-            "example" : "2015-03-17T10:30:45Z"
-          }
-        }
-      },
       "EmailMessage" : {
         "description" : "The email message to be sent.",
         "required" : [ "to", "body", "textFormat", "textEncoding" ],
         "type" : "object",
         "properties" : {
           "from" : {
-            "description" : "Set from adress. This may be ignored by other configurations.",
             "type" : "string",
             "format" : "email",
+            "description" : "Set \"from\" adress. This may be ignored by other configurations which may override the \"from\" address.",
             "example" : "Aunt Doe <aunt.doe@example.com>"
           },
           "replyTo" : {
