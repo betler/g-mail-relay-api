@@ -2,32 +2,29 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "g-mail-relayer API",
+    "version" : "1.0.0",
     "description" : "API description for email sending",
     "license" : {
       "name" : "Apache 2.0",
       "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version" : "1.0.0"
+    }
   },
-  "servers" : [ {
-    "url" : "/"
-  } ],
   "paths" : {
     "/mail/send" : {
       "post" : {
+        "operationId" : "sendEmail",
         "summary" : "sends an email",
         "description" : "Sends an email with the specified data",
-        "operationId" : "sendEmail",
         "requestBody" : {
           "description" : "Email to be sent",
+          "required" : true,
           "content" : {
             "application/json" : {
               "schema" : {
                 "$ref" : "#/components/schemas/EmailMessage"
               }
             }
-          },
-          "required" : true
+          }
         },
         "responses" : {
           "200" : {
@@ -35,7 +32,7 @@
             "content" : {
               "object" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/EmailProcessingResult"
+                  "$ref" : "#/components/schemas/SendEmailResult"
                 }
               }
             }
@@ -55,18 +52,22 @@
   },
   "components" : {
     "schemas" : {
-      "EmailProcessingResult" : {
+      "SendEmailResult" : {
         "required" : [ "id", "status" ],
         "type" : "object",
         "properties" : {
           "messageId" : {
-            "type" : "integer",
-            "description" : "Internally assigned ID",
             "format" : "int64",
+            "description" : "Internally assigned ID",
+            "type" : "integer",
             "example" : 14
           },
-          "status" : {
-            "$ref" : "#/components/schemas/OperationResult"
+          "result" : {
+            "description" : "The result of the operation",
+            "enum" : [ "QUEUED", "SENT", "NOK" ]
+          },
+          "detail" : {
+            "$ref" : "#/components/schemas/OperationResultDetail"
           }
         }
       },
@@ -75,62 +76,98 @@
         "type" : "object",
         "properties" : {
           "name" : {
-            "maxLength" : 200,
             "type" : "string",
+            "maxLength" : 200,
             "description" : "Header name"
           },
           "value" : {
-            "maxLength" : 2000,
             "type" : "string",
+            "maxLength" : 2000,
             "description" : "Header value"
           }
         }
       },
-      "OperationResult" : {
+      "Attachment" : {
+        "required" : [ "content", "filename" ],
         "type" : "object",
         "properties" : {
-          "status" : {
+          "cid" : {
             "type" : "string",
-            "description" : "The result of the operation",
-            "enum" : [ "QUEUED", "SENT", "NOK" ]
+            "maxLength" : 200,
+            "description" : "Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inline, do not set the CID field."
           },
-          "message" : {
+          "filename" : {
             "type" : "string",
+            "maxLength" : 50,
+            "description" : "Filename of the attachment",
+            "example" : "photo-album.png"
+          },
+          "contentType" : {
+            "type" : "string",
+            "description" : "Optional content type",
+            "example" : "image/png"
+          },
+          "content" : {
+            "type" : "string",
+            "format" : "byte",
+            "maxLength" : 6291456,
+            "description" : "Base64 attachment"
+          }
+        }
+      },
+      "OperationResultDetail" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
             "description" : "Detailed message in english explainin the result of the operation",
+            "type" : "string",
             "example" : "The message {0} was correctly delivered with message-id: {}"
           },
           "messageCode" : {
-            "type" : "string",
             "description" : "Machine readable result code",
+            "type" : "string",
             "example" : "mail.send.result.ok"
           },
           "statusParams" : {
-            "type" : "array",
             "description" : "Values that help understand the result of the operation. They must be in the same order as they are used in the message field (if they are) and always come in the same order for proper machine processing.",
-            "example" : [ "34", "<234234232@example.com>" ],
+            "type" : "array",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "example" : [ "34", "<234234232@example.com>" ]
             }
           },
           "date" : {
             "type" : "string",
-            "description" : "UTC time of operation as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14)",
             "format" : "date-time",
+            "description" : "UTC time of operation as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14)",
             "example" : "2015-03-17T10:30:45Z"
           }
         }
       },
       "EmailMessage" : {
-        "required" : [ "body", "textEncoding", "textFormat", "to" ],
+        "description" : "The email message to be sent.",
+        "required" : [ "to", "body", "textFormat", "textEncoding" ],
         "type" : "object",
         "properties" : {
+          "from" : {
+            "description" : "Set from adress. This may be ignored by other configurations.",
+            "type" : "string",
+            "format" : "email",
+            "example" : "Aunt Doe <aunt.doe@example.com>"
+          },
+          "replyTo" : {
+            "description" : "Optionally set \"replyTo\" address",
+            "type" : "string",
+            "format" : "email",
+            "example" : "Uncle Doe <uncle.doe@example.com>"
+          },
           "to" : {
-            "type" : "array",
             "description" : "Recipients of the message",
+            "type" : "array",
             "items" : {
               "type" : "string",
               "format" : "email",
-              "example" : "[\"john.doe@example.com\",\"John Doe <john.doe@example.com>\"]"
+              "example" : [ "john.doe@example.com", "John Doe <john.doe@example.com>" ]
             }
           },
           "cc" : {
@@ -139,7 +176,7 @@
             "items" : {
               "type" : "string",
               "format" : "email",
-              "example" : "[\"john.doe@example.com\",\"John Doe <john.doe@example.com>\"]"
+              "example" : [ "john.doe@example.com", "John Doe <john.doe@example.com>" ]
             }
           },
           "bcc" : {
@@ -148,23 +185,22 @@
             "items" : {
               "type" : "string",
               "format" : "email",
-              "example" : "[\"john.doe@example.com\",\"John Doe <john.doe@example.com>\"]"
+              "example" : [ "john.doe@example.com", "John Doe <john.doe@example.com>" ]
             }
           },
           "subject" : {
-            "maxLength" : 255,
             "type" : "string",
+            "maxLength" : 255,
             "description" : "Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me.",
             "example" : "Hey John!"
           },
           "body" : {
-            "maxLength" : 50000,
             "type" : "string",
+            "maxLength" : 50000,
             "description" : "Body of the message. Can be text or html. Format must be specified with the textFormat field, and encoding must be specified with the textEncoding field.",
             "example" : "<h1>Attention to this</h1><p>John, a nigerian prince wants to do business with you, lucky man!</p>"
           },
           "textFormat" : {
-            "type" : "string",
             "description" : "Format of the body message: plain text or html",
             "enum" : [ "TEXT", "HTML" ]
           },
@@ -173,6 +209,26 @@
             "description" : "Encoding of the message body.",
             "example" : "UTF-8"
           },
+          "priority" : {
+            "type" : "number",
+            "minimum" : 1,
+            "maximum" : 5,
+            "description" : "Set priority of the message. X-Priority header is set with the value",
+            "example" : "1"
+          },
+          "notBefore" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time",
+            "example" : "2015-03-17T10:30:45Z"
+          },
+          "attachments" : {
+            "type" : "array",
+            "description" : "List of the message attachments",
+            "items" : {
+              "$ref" : "#/components/schemas/Attachment"
+            }
+          },
           "headers" : {
             "type" : "array",
             "description" : "List of the headers that should be added to the email",
@@ -180,8 +236,7 @@
               "$ref" : "#/components/schemas/Header"
             }
           }
-        },
-        "description" : "The email message to be sent."
+        }
       }
     }
   }
