@@ -45,7 +45,7 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 10. Separate logs for each application
 11. Plugins for beforeSend and afterSend events
 
-## Current status
+## Functionality: Current status
 
 | #  | Desc                                        | Status                                                                                                                 |
 |----|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -60,6 +60,24 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 | 9  | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 | 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 | 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
+
+## Send email through REST API: Current status
+
+| Property         | Status                                                                                                                 |
+|------------------|------------------------------------------------------------------------------------------------------------------------|
+| From             | |
+| ReplyTo          |
+| To               |
+| CC               |
+| BCC              |
+| Subject          |
+| Body             |
+| TextFormat       |
+| TextEncoding     |
+| Priority         |
+| NotBefore        |
+| Attachments      |
+| Headers          |
 
 # Usage
 

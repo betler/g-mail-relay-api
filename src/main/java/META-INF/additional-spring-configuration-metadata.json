@@ -43,5 +43,10 @@
     "name": "relayer.smtp.relay.server.port",
     "type": "java.lang.String",
     "description": "Port number of the relaying smtp server"
+  },
+  {
+    "name": "springfox.documentation.swagger.v2.path",
+    "type": "java.lang.String",
+    "description": "Swagger service descriptions urls. See https://springfox.github.io/springfox/docs/current/#customizing-the-swagger-endpoints"
   }
 ]}
