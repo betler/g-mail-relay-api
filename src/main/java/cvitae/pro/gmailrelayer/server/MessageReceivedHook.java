@@ -44,109 +44,107 @@ import cvitae.pro.gmailrelayer.server.config.RelayPropertiesConfig;
  */
 public class MessageReceivedHook implements MessageHook {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	final RelayPropertiesConfig config;
+    final RelayPropertiesConfig config;
 
-	public MessageReceivedHook(final RelayPropertiesConfig config) {
-		this.config = config;
-	}
+    public MessageReceivedHook(final RelayPropertiesConfig config) {
+        this.config = config;
+    }
 
-	@Override
-	public void init(final Configuration config) throws ConfigurationException {
-		// Do nothing. It is not invoked, anyway
-	}
+    @Override
+    public void init(final Configuration config) throws ConfigurationException {
+        // Do nothing. It is not invoked, anyway
+    }
 
-	@Override
-	public void destroy() {
-		// Do nothing
-	}
+    @Override
+    public void destroy() {
+        // Do nothing
+    }
 
-	/**
-	 * Implements the {@link MessageHook#onMessage(SMTPSession, MailEnvelope)}
-	 * method. Parses incoming message and relays to the configured server.
-	 */
-	@Override
-	public HookResult onMessage(final SMTPSession session, final MailEnvelope mail) {
+    /**
+     * Implements the {@link MessageHook#onMessage(SMTPSession, MailEnvelope)}
+     * method. Parses incoming message and relays to the configured server.
+     */
+    @Override
+    public HookResult onMessage(final SMTPSession session, final MailEnvelope mail) {
 
-		final MimeMessage msg;
-		final JavaMailSender sender = this.getJavaMailSender();
-		String msgId;
+        final MimeMessage msg;
+        final JavaMailSender sender = this.getJavaMailSender();
 
-		try {
-			msg = sender.createMimeMessage(mail.getMessageInputStream());
-			this.logger.debug("Parsed mime message {}", msg.getMessageID());
-			msgId = msg.getMessageID();
-		} catch (final Exception e) {
-			// TODO Different error codes for different errors?
-			this.logger.error("Error parsing mime message from input", e);
-			return this.buildHookResult(451, "Error while processing received message");
-		}
+        try {
+            msg = sender.createMimeMessage(mail.getMessageInputStream());
+            this.logger.debug("Parsed mime message from {}", msg.getFrom()[0]);
+        } catch (final Exception e) {
+            // TODO Different error codes for different errors?
+            this.logger.error("Error parsing mime message from input", e);
+            return this.buildHookResult(451, "Error while processing received message");
+        }
 
-		try {
-			// If from address overriding is set, from is changed
-			if (this.config.isOverrideFrom()) {
-				msg.setFrom(this.config.getAuth().getUsername());
-			}
+        try {
+            // If from address overriding is set, from is changed
+            if (this.config.isOverrideFrom()) {
+                msg.setFrom(this.config.getAuth().getUsername());
+            }
 
-			// Send message
-			sender.send(msg);
-			this.logger.debug("Sent message {} to {}", msgId, msg.getRecipients(Message.RecipientType.TO));
+            // Send message
+            sender.send(msg);
+            this.logger.debug("Sent message {} to {}", msg.getMessageID(), msg.getRecipients(Message.RecipientType.TO));
 
-		} catch (final Exception e) {
-			// TODO Different error codes for different errors?
-			this.logger.error("Error sending message {}", msgId, e);
-			return this.buildHookResult(451, "Error while relaying message");
-		}
+        } catch (final Exception e) {
+            // TODO Different error codes for different errors?
+            this.logger.error("Error sending message", e);
+            return this.buildHookResult(451, "Error while relaying message");
+        }
 
-		// Everything OK
-		return HookResult.OK;
-	}
+        // Everything OK
+        return HookResult.OK;
+    }
 
-	/**
-	 * Builds a custom {@link HookResult}
-	 *
-	 * @param code        SMTP return code
-	 * @param description description for the return code
-	 * @return
-	 */
-	private HookResult buildHookResult(final int code, final String description) {
-		return HookResult.builder().smtpReturnCode(String.valueOf(code)).smtpDescription(description)
-				.hookReturnCode(HookReturnCode.deny()).build();
-	}
+    /**
+     * Builds a custom {@link HookResult}
+     *
+     * @param code        SMTP return code
+     * @param description description for the return code
+     * @return
+     */
+    private HookResult buildHookResult(final int code, final String description) {
+        return HookResult.builder().smtpReturnCode(String.valueOf(code)).smtpDescription(description)
+                .hookReturnCode(HookReturnCode.deny()).build();
+    }
 
-	private JavaMailSender getJavaMailSender() {
-		final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		final Properties props = mailSender.getJavaMailProperties();
-		props.putAll(this.getRelayingProperties(this.config));
+    private JavaMailSender getJavaMailSender() {
+        final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        final Properties props = mailSender.getJavaMailProperties();
+        props.putAll(this.getRelayingProperties(this.config));
 
-		// Password is not read from properties
-		mailSender.setPassword(this.config.getAuth().getPassword());
+        // Password is not read from properties
+        mailSender.setPassword(this.config.getAuth().getPassword());
 
-		return mailSender;
-	}
+        return mailSender;
+    }
 
-	private Properties getRelayingProperties(final RelayPropertiesConfig config) {
-		Validate.matchesPattern(config.getAuth().getType(), "^(USERPASS|NTLM)$");
-		Validate.inclusiveBetween(1l, 65535l, config.getServer().getPort());
+    private Properties getRelayingProperties(final RelayPropertiesConfig config) {
+        Validate.matchesPattern(config.getAuth().getType(), "^(USERPASS|NTLM)$");
+        Validate.inclusiveBetween(1l, 65535l, config.getServer().getPort());
 
-		final Properties props = new Properties();
+        final Properties props = new Properties();
 
-		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.user", config.getAuth().getUsername());
-		props.put("mail.smtp.password", config.getAuth().getPassword());
-		props.put("mail.smtp.starttls.enable", config.getServer().getStarttls());
-		props.put("mail.smtp.host", config.getServer().getHost());
-		props.put("mail.smtp.port", config.getServer().getPort());
-		props.put("mail.debug", "true");
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.user", config.getAuth().getUsername());
+        props.put("mail.smtp.password", config.getAuth().getPassword());
+        props.put("mail.smtp.starttls.enable", config.getServer().getStarttls());
+        props.put("mail.smtp.host", config.getServer().getHost());
+        props.put("mail.smtp.port", config.getServer().getPort());
+        props.put("mail.debug", "true");
 
-		if ("NTLM".equals(config.getAuth().getType())) {
-			props.put("mail.smtp.auth.mechanisms", "NTLM");
-			props.put("mail.smtp.auth.ntlm.domain", config.getAuth().getDomain());
-		}
+        if ("NTLM".equals(config.getAuth().getType())) {
+            props.put("mail.smtp.auth.mechanisms", "NTLM");
+            props.put("mail.smtp.auth.ntlm.domain", config.getAuth().getDomain());
+        }
 
-		return props;
-	}
+        return props;
+    }
 
 }
