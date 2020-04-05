@@ -61,45 +61,48 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 | 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 | 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 
-## Send email through REST API: Current status
-
-| Property         | Status                                                                                                                 |
-|------------------|------------------------------------------------------------------------------------------------------------------------|
-| From             | |
-| ReplyTo          |
-| To               |
-| CC               |
-| BCC              |
-| Subject          |
-| Body             |
-| TextFormat       |
-| TextEncoding     |
-| Priority         |
-| NotBefore        |
-| Attachments      |
-| Headers          |
-
 # Usage
 
 ## REST API Sending
 
-Not currently supported
+Not currently supported. Development status:
+
+## Send email through REST API: Current status
+
+| Property         | Status                                                                        |
+|------------------|-------------------------------------------------------------------------------|
+| From             | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| ReplyTo          | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| To               | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| CC               | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| BCC              | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| Subject          | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| Body             | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| TextFormat       | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| TextEncoding     | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| Priority         | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| NotBefore        | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| Attachments      | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| Headers          | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
+| DeliverType      | [not in api](https://img.shields.io/badge/requisite-Not%20in%20API-important) |
+
 
 ## SMTP Relaying
 
 The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. This means we can send emails from cron 
 or similar small utilities that do not support smtp server sending (just localhost and non-authenticated sending). 
 
-Message is relayed 'as it is', with the only addition of a _"Received"_ header, something like:
+Message is relayed 'as it is', with the only addition of a _"Received"_ header and a _"Message-ID"_ header:
 
 ```
 Received: from 0:0:0:0:0:0:0:1 (EHLO [IPv6:::1]) ([0:0:0:0:0:0:0:1])
           by LOCALHOSTNAME (Spring Boot g-mail-relayer SMTP Server) with ESMTP ID -88888888
           for <somebody@example.com>;
           Tue, 31 Mar 2020 13:09:24 +0200 (CEST)
+Message-ID: <234234234qsdafs3$asfa3asd@example.com>
 ```
 
-This means, the original `from` address of the original email must be allowed in the relaying server to be the sender of the message. This is, provided username and password must be authorized to send emails on behalf the original `from` address.
+This means that the original `from` address of the original email must be allowed in the relaying server to be the sender of the message. This is, provided username and password must be authorized to send emails on behalf the original `from` address.
 
 This is true if `relayer.smtp.relay.from.override` is set to `false`. If overriding is activated, the `from` address is replaced by the value of `relayer.smtp.relay.auth.username` property. In this case, this property must be a full email address.
 
