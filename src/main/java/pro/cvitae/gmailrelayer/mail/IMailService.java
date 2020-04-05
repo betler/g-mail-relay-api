@@ -24,9 +24,9 @@ package pro.cvitae.gmailrelayer.mail;
  */
 public interface IMailService {
 
-	/**
-	 * @param wrapper
-	 */
-	void sendEmail(MailWrapper wrapper);
+    /**
+     * @param wrapper
+     */
+    void sendEmail(MailWrapper wrapper);
 
 }

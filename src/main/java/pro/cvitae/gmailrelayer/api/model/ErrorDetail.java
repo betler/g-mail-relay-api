@@ -1,140 +1,139 @@
 package pro.cvitae.gmailrelayer.api.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
+
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ErrorDetail
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
-public class ErrorDetail  implements Serializable  {
-  private static final long serialVersionUID = 1L;
+public class ErrorDetail implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-  @JsonProperty("code")
-  private String code = null;
+    @JsonProperty("code")
+    private String code = null;
 
-  @JsonProperty("description")
-  private String description = null;
+    @JsonProperty("description")
+    private String description = null;
 
-  @JsonProperty("params")
-  @Valid
-  private List<String> params = null;
+    @JsonProperty("params")
+    @Valid
+    private List<String> params = null;
 
-  public ErrorDetail code(String code) {
-    this.code = code;
-    return this;
-  }
+    public ErrorDetail code(final String code) {
+        this.code = code;
+        return this;
+    }
 
-  /**
-   * Machine-readable error code
-   * @return code
-  **/
-  @ApiModelProperty(example = "mail.send.error.general", value = "Machine-readable error code")
-  
+    /**
+     * Machine-readable error code
+     *
+     * @return code
+     **/
+    @ApiModelProperty(example = "mail.send.error.general", value = "Machine-readable error code")
     public String getCode() {
-    return code;
-  }
+        return this.code;
+    }
 
-  public void setCode(String code) {
-    this.code = code;
-  }
+    public void setCode(final String code) {
+        this.code = code;
+    }
 
-  public ErrorDetail description(String description) {
-    this.description = description;
-    return this;
-  }
+    public ErrorDetail description(final String description) {
+        this.description = description;
+        return this;
+    }
 
-  /**
-   * Longer human-readable message
-   * @return description
-  **/
-  @ApiModelProperty(example = "Could not connect to host", value = "Longer human-readable message")
-  
+    /**
+     * Longer human-readable message
+     *
+     * @return description
+     **/
+    @ApiModelProperty(example = "Could not connect to host", value = "Longer human-readable message")
     public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public ErrorDetail params(List<String> params) {
-    this.params = params;
-    return this;
-  }
-
-  public ErrorDetail addParamsItem(String paramsItem) {
-    if (this.params == null) {
-      this.params = new ArrayList<>();
+        return this.description;
     }
-    this.params.add(paramsItem);
-    return this;
-  }
 
-  /**
-   * List of values to complete the error code. Fully dependant on the error code
-   * @return params
-  **/
-  @ApiModelProperty(value = "List of values to complete the error code. Fully dependant on the error code")
-  
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public ErrorDetail params(final List<String> params) {
+        this.params = params;
+        return this;
+    }
+
+    public ErrorDetail addParamsItem(final String paramsItem) {
+        if (this.params == null) {
+            this.params = new ArrayList<>();
+        }
+        this.params.add(paramsItem);
+        return this;
+    }
+
+    /**
+     * List of values to complete the error code. Fully dependant on the error code
+     *
+     * @return params
+     **/
+    @ApiModelProperty(value = "List of values to complete the error code. Fully dependant on the error code")
     public List<String> getParams() {
-    return params;
-  }
-
-  public void setParams(List<String> params) {
-    this.params = params;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+        return this.params;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setParams(final List<String> params) {
+        this.params = params;
     }
-    ErrorDetail errorDetail = (ErrorDetail) o;
-    return Objects.equals(this.code, errorDetail.code) &&
-        Objects.equals(this.description, errorDetail.description) &&
-        Objects.equals(this.params, errorDetail.params);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(code, description, params);
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ErrorDetail {\n");
-    
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
-    sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    params: ").append(toIndentedString(params)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    @Override
+    public boolean equals(final java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        final ErrorDetail errorDetail = (ErrorDetail) o;
+        return Objects.equals(this.code, errorDetail.code) && Objects.equals(this.description, errorDetail.description)
+                && Objects.equals(this.params, errorDetail.params);
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.code, this.description, this.params);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("class ErrorDetail {\n");
+
+        sb.append("    code: ").append(this.toIndentedString(this.code)).append("\n");
+        sb.append("    description: ").append(this.toIndentedString(this.description)).append("\n");
+        sb.append("    params: ").append(this.toIndentedString(this.params)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(final java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 }
