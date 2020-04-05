@@ -1,9 +1,13 @@
-package cvitae.pro.gmailrelayer.api;
+package pro.cvitae.gmailrelayer.api;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
 public class NotFoundException extends ApiException {
-    private int code;
-    public NotFoundException (int code, String msg) {
+
+    private static final long serialVersionUID = 3301878585859485484L;
+
+    private final int code;
+
+    public NotFoundException(final int code, final String msg) {
         super(code, msg);
         this.code = code;
     }

@@ -3,7 +3,7 @@
  * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
-package cvitae.pro.gmailrelayer.api;
+package pro.cvitae.gmailrelayer.api;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package cvitae.pro.gmailrelayer.api;
+package pro.cvitae.gmailrelayer.api;
 
 import javax.xml.bind.annotation.XmlTransient;
 

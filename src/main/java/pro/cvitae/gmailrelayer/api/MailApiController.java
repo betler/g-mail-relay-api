@@ -1,4 +1,4 @@
-package cvitae.pro.gmailrelayer.api;
+package pro.cvitae.gmailrelayer.api;
 
 import java.util.Optional;
 
