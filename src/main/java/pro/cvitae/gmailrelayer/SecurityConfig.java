@@ -1,4 +1,4 @@
-package cvitae.pro.gmailrelayer;
+package pro.cvitae.gmailrelayer;
 
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
