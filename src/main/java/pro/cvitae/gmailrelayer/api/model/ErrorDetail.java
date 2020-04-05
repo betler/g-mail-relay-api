@@ -1,4 +1,4 @@
-package io.swagger.model;
+package pro.cvitae.gmailrelayer.api.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;

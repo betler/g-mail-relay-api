@@ -20,9 +20,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.model.EmailMessage;
-import io.swagger.model.ErrorDetail;
-import io.swagger.model.SendEmailResult;
+import pro.cvitae.gmailrelayer.api.model.EmailMessage;
+import pro.cvitae.gmailrelayer.api.model.ErrorDetail;
+import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 
 @Api(value = "mail")
 public interface MailApi {

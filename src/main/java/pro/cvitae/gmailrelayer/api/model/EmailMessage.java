@@ -1,12 +1,13 @@
-package io.swagger.model;
+package pro.cvitae.gmailrelayer.api.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Attachment;
-import io.swagger.model.Header;
+import pro.cvitae.gmailrelayer.api.model.Attachment;
+import pro.cvitae.gmailrelayer.api.model.Header;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

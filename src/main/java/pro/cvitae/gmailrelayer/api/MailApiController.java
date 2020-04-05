@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.model.EmailMessage;
-import io.swagger.model.SendEmailResult;
+import pro.cvitae.gmailrelayer.api.model.EmailMessage;
+import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 
 @RestController
 public class MailApiController implements MailApi {
