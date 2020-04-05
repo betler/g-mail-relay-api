@@ -30,7 +30,7 @@ class MailServiceTest {
 
 	/**
 	 * Test method for
-	 * {@link cvitae.pro.gmailrelayer.mail.MailService#sendEmail(cvitae.pro.gmailrelayer.mail.MailWrapper)}.
+	 * {@link pro.cvitae.gmailrelayer.mail.MailService#sendEmail(cvitae.pro.gmailrelayer.mail.MailWrapper)}.
 	 */
 	@Test
 	void testSendEmail() {

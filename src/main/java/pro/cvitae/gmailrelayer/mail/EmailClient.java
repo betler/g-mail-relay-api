@@ -16,7 +16,7 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.mail;
+package pro.cvitae.gmailrelayer.mail;
 
 import java.util.HashMap;
 import java.util.List;

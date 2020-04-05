@@ -16,7 +16,7 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.server;
+package pro.cvitae.gmailrelayer.server;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;

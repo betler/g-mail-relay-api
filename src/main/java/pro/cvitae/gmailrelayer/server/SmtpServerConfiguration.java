@@ -16,7 +16,7 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.server;
+package pro.cvitae.gmailrelayer.server;
 
 import java.util.Collection;
 
@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import cvitae.pro.gmailrelayer.server.config.RelayPropertiesConfig;
+import pro.cvitae.gmailrelayer.server.config.RelayPropertiesConfig;
 
 /**
  * @author betler

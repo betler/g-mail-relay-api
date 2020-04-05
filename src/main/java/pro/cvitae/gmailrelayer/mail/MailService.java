@@ -16,17 +16,23 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.mail;
+package pro.cvitae.gmailrelayer.mail;
+
+import java.util.Arrays;
+
+import org.springframework.stereotype.Service;
 
 /**
  * @author betler
  *
  */
-public interface IMailService {
+@Service
+public class MailService implements IMailService {
 
-	/**
-	 * @param wrapper
-	 */
-	void sendEmail(MailWrapper wrapper);
+	@Override
+	public void sendEmail(final MailWrapper wrapper) {
+		EmailClient.instance().smtpServer("ssl0.ovh.net", 587).isSsl(true).ntlmAuthentication("u", "p", "d")
+				.to(Arrays.asList("mikel.gutierrez@altia.es")).headers(null).subject("TEST").body("<h1>TITLE</h1>");
+	}
 
 }

@@ -16,7 +16,7 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.server.config;
+package pro.cvitae.gmailrelayer.server.config;
 
 /**
  * @author betler

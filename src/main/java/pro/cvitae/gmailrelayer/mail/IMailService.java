@@ -16,13 +16,17 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.mail;
-
+package pro.cvitae.gmailrelayer.mail;
 
 /**
- * @author mikel
+ * @author betler
  *
  */
-public class MailWrapper {
+public interface IMailService {
+
+	/**
+	 * @param wrapper
+	 */
+	void sendEmail(MailWrapper wrapper);
 
 }

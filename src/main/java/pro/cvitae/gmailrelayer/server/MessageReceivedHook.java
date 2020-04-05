@@ -16,7 +16,7 @@
  * @author betler
  *
  */
-package cvitae.pro.gmailrelayer.server;
+package pro.cvitae.gmailrelayer.server;
 
 import java.util.Properties;
 
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import cvitae.pro.gmailrelayer.server.config.RelayPropertiesConfig;
+import pro.cvitae.gmailrelayer.server.config.RelayPropertiesConfig;
 
 /**
  * @author betler
