@@ -168,7 +168,7 @@
       },
       "EmailMessage" : {
         "description" : "The email message to be sent.",
-        "required" : [ "to", "body", "textFormat", "textEncoding" ],
+        "required" : [ "to", "body", "textFormat", "textEncoding", "deliveryType" ],
         "type" : "object",
         "properties" : {
           "from" : {

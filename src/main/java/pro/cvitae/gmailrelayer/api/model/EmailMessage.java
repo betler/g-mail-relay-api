@@ -35,16 +35,16 @@ public class EmailMessage implements Serializable {
     @JsonProperty("replyTo")
     private String replyTo = null;
 
-    @JsonProperty("to")
     @Valid
+    @JsonProperty("to")
     private List<String> to = new ArrayList<>();
 
-    @JsonProperty("cc")
     @Valid
+    @JsonProperty("cc")
     private List<String> cc = null;
 
-    @JsonProperty("bcc")
     @Valid
+    @JsonProperty("bcc")
     private List<String> bcc = null;
 
     @JsonProperty("subject")
@@ -293,6 +293,11 @@ public class EmailMessage implements Serializable {
      *
      * @return deliveryType
      **/
+    @NotNull
+    @ApiModelProperty(example = "PRIORITY_SYNC", required = true, value = "Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending of the message. "
+            + "The API does not return until the messaged is delivered (or tried to). PRIORITY_ASYNC makes an inmediate background sending. "
+            + "The API returns the ID of the message with QUEUED status but the message is sent inmediately in the background. "
+            + "QUEUE queues the message until the next scheduled batch processing of queued mails")
     public String getDeliveryType() {
         return this.deliveryType;
     }
