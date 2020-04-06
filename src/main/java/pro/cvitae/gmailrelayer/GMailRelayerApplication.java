@@ -10,8 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = { "io.swagger", "cvitae.pro.gmailrelayer.api", "cvitae.pro.gmailrelayer",
-        "pro.cvitae.gmailrelayer" })
+@ComponentScan(basePackages = { "io.swagger", "pro.cvitae.gmailrelayer.api", "pro.cvitae.gmailrelayer" })
 public class GMailRelayerApplication implements CommandLineRunner {
 
     @Override

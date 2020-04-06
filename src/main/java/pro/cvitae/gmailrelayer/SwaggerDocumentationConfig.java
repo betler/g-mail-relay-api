@@ -23,7 +23,7 @@ public class SwaggerDocumentationConfig {
     @Bean
     public Docket customImplementation() {
         return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("cvitae.pro.gmailrelayer.api")).build()
+                .apis(RequestHandlerSelectors.basePackage("pro.cvitae.gmailrelayer.api")).build()
                 .directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
                 .directModelSubstitute(java.time.OffsetDateTime.class, java.util.Date.class).apiInfo(this.apiInfo());
     }
