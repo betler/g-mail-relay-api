@@ -18,8 +18,6 @@
  */
 package pro.cvitae.gmailrelayer.mail;
 
-import java.util.Arrays;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,11 +26,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MailService implements IMailService {
-
-    @Override
-    public void sendEmail(final MailWrapper wrapper) {
-        EmailClient.instance().smtpServer("ssl0.ovh.net", 587).isSsl(true).ntlmAuthentication("u", "p", "d")
-                .to(Arrays.asList("mikel.gutierrez@altia.es")).headers(null).subject("TEST").body("<h1>TITLE</h1>");
-    }
 
 }

@@ -241,8 +241,12 @@
           "notBefore" : {
             "type" : "string",
             "format" : "date-time",
-            "description" : "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time",
+            "description" : "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time. This option is ignored if deliveryType is set to other than QUEUE.",
             "example" : "2015-03-17T10:30:45Z"
+          },
+          "deliveryType" : {
+            "description" : "Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending of the message. The API does not return until the messaged is delivered (or tried to). PRIORITY_ASYNC makes an inmediate background sending. The API returns the ID of the message with QUEUED status but the message is sent inmediately in the background. QUEUE queues the message until the next scheduled batch processing of queued mails",
+            "enum" : [ "PRIORITY_SYNC", "PRIORITY_ASYNC", "QUEUE" ]
           },
           "attachments" : {
             "type" : "array",

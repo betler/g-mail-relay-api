@@ -59,6 +59,9 @@ public class EmailMessage implements Serializable {
     @JsonProperty("textEncoding")
     private String textEncoding = null;
 
+    @JsonProperty("deliveryType")
+    private String deliveryType = null;
+
     @JsonProperty("priority")
     private BigDecimal priority = null;
 
@@ -85,7 +88,6 @@ public class EmailMessage implements Serializable {
      * @return from
      **/
     @ApiModelProperty(example = "Aunt Doe <aunt.doe@example.com>", value = "Set \"from\" adress. This may be ignored by other configurations which may override the \"from\" address.")
-
     public String getFrom() {
         return this.from;
     }
@@ -105,7 +107,6 @@ public class EmailMessage implements Serializable {
      * @return replyTo
      **/
     @ApiModelProperty(example = "Uncle Doe <uncle.doe@example.com>", value = "Optionally set \"replyTo\" address")
-
     public String getReplyTo() {
         return this.replyTo;
     }
@@ -129,9 +130,8 @@ public class EmailMessage implements Serializable {
      *
      * @return to
      **/
-    @ApiModelProperty(required = true, value = "Recipients of the message")
     @NotNull
-
+    @ApiModelProperty(required = true, value = "Recipients of the message")
     public List<String> getTo() {
         return this.to;
     }
@@ -159,7 +159,6 @@ public class EmailMessage implements Serializable {
      * @return cc
      **/
     @ApiModelProperty(value = "Carbon copy recipients")
-
     public List<String> getCc() {
         return this.cc;
     }
@@ -187,7 +186,6 @@ public class EmailMessage implements Serializable {
      * @return bcc
      **/
     @ApiModelProperty(value = "Blind copy recipients")
-
     public List<String> getBcc() {
         return this.bcc;
     }
@@ -208,9 +206,8 @@ public class EmailMessage implements Serializable {
      *
      * @return subject
      **/
-    @ApiModelProperty(example = "Hey John!", value = "Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me.")
-
     @Size(max = 255)
+    @ApiModelProperty(example = "Hey John!", value = "Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me.")
     public String getSubject() {
         return this.subject;
     }
@@ -230,10 +227,9 @@ public class EmailMessage implements Serializable {
      *
      * @return body
      **/
-    @ApiModelProperty(example = "<h1>Attention to this</h1><p>John, a nigerian prince wants to do business with you, lucky man!</p>", required = true, value = "Body of the message. Can be text or html. Format must be specified with the textFormat field, and encoding must be specified with the textEncoding field.")
     @NotNull
-
     @Size(max = 50000)
+    @ApiModelProperty(example = "<h1>Attention to this</h1><p>John, a nigerian prince wants to do business with you, lucky man!</p>", required = true, value = "Body of the message. Can be text or html. Format must be specified with the textFormat field, and encoding must be specified with the textEncoding field.")
     public String getBody() {
         return this.body;
     }
@@ -288,16 +284,37 @@ public class EmailMessage implements Serializable {
     }
 
     /**
+     * Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending
+     * of the message. The API does not return until the messaged is delivered (or
+     * tried to). PRIORITY_ASYNC makes an inmediate background sending. The API
+     * returns the ID of the message with QUEUED status but the message is sent
+     * inmediately in the background. QUEUE queues the message until the next
+     * scheduled batch processing of queued mails
+     *
+     * @return deliveryType
+     **/
+    public String getDeliveryType() {
+        return this.deliveryType;
+    }
+
+    @ApiModelProperty(example = "QUEUE", value = "Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending of the message. "
+            + "The API does not return until the messaged is delivered (or tried to). PRIORITY_ASYNC makes an inmediate background sending. "
+            + "The API returns the ID of the message with QUEUED status but the message is sent inmediately in the background. "
+            + "QUEUE queues the message until the next scheduled batch processing of queued mails")
+    public void setDeliveryType(final String deliveryType) {
+        this.deliveryType = deliveryType;
+    }
+
+    /**
      * Set priority of the message. X-Priority header is set with the value minimum:
      * 1 maximum: 5
      *
      * @return priority
      **/
-    @ApiModelProperty(example = "1", value = "Set priority of the message. X-Priority header is set with the value")
-
     @Valid
     @DecimalMin("1")
     @DecimalMax("5")
+    @ApiModelProperty(example = "1", value = "Set priority of the message. X-Priority header is set with the value")
     public BigDecimal getPriority() {
         return this.priority;
     }
@@ -316,13 +333,13 @@ public class EmailMessage implements Serializable {
      * date-time - RFC3339
      * (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not
      * guaranteed that the email will be sent exactly at this time, but at the first
-     * scheduled delivery time after this time
+     * scheduled delivery time after this time. This option is ignored if
+     * deliveryType is set to other than QUEUE.
      *
      * @return notBefore
      **/
-    @ApiModelProperty(example = "2015-03-17T10:30:45Z", value = "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time")
-
     @Valid
+    @ApiModelProperty(example = "2015-03-17T10:30:45Z", value = "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time. This option is ignored if deliveryType is set to other than QUEUE.")
     public OffsetDateTime getNotBefore() {
         return this.notBefore;
     }
@@ -349,8 +366,8 @@ public class EmailMessage implements Serializable {
      *
      * @return attachments
      **/
-    @ApiModelProperty(value = "List of the message attachments")
     @Valid
+    @ApiModelProperty(value = "List of the message attachments")
     public List<Attachment> getAttachments() {
         return this.attachments;
     }
@@ -377,8 +394,8 @@ public class EmailMessage implements Serializable {
      *
      * @return headers
      **/
-    @ApiModelProperty(value = "List of the headers that should be added to the email")
     @Valid
+    @ApiModelProperty(value = "List of the headers that should be added to the email")
     public List<Header> getHeaders() {
         return this.headers;
     }
@@ -428,6 +445,7 @@ public class EmailMessage implements Serializable {
         sb.append("    body: ").append(this.toIndentedString(this.body)).append("\n");
         sb.append("    textFormat: ").append(this.toIndentedString(this.textFormat)).append("\n");
         sb.append("    textEncoding: ").append(this.toIndentedString(this.textEncoding)).append("\n");
+        sb.append("    deliveryType: ").append(this.toIndentedString(this.deliveryType)).append("\n");
         sb.append("    priority: ").append(this.toIndentedString(this.priority)).append("\n");
         sb.append("    notBefore: ").append(this.toIndentedString(this.notBefore)).append("\n");
         sb.append("    attachments: ").append(this.toIndentedString(this.attachments)).append("\n");
