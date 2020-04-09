@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,17 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import pro.cvitae.gmailrelayer.api.exception.ErrorDetailException;
+import pro.cvitae.gmailrelayer.api.model.ErrorDetail;
+
 /**
  * @author https://mkyong.com/spring-boot/spring-rest-validation-example/
  *
  */
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * error handle for @Valid
@@ -37,7 +44,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, headers, status);
+    }
 
+    protected ResponseEntity<ErrorDetail> handleErrorDetailException(final ErrorDetailException ex,
+            final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+
+        this.logger.error("ErrorDetailException", ex);
+
+        return new ResponseEntity<>(ex.getDetail(), headers, status);
     }
 
     private Map<String, Object> getDefaultBody(final HttpStatus status) {

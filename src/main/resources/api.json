@@ -160,7 +160,6 @@
           },
           "content" : {
             "type" : "string",
-            "format" : "byte",
             "maxLength" : 6291456,
             "description" : "Base64 attachment"
           }

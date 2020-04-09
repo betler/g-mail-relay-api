@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -477,9 +476,5 @@ public class EmailMessage implements Serializable {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
-    }
-
-    public static void main(final String[] args) {
-        System.out.println(EmailValidator.getInstance(true).isValid("John Doe <null@null>"));
     }
 }

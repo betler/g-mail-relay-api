@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import pro.cvitae.gmailrelayer.api.exception.ErrorDetailException;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.ErrorDetail;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
@@ -45,7 +46,8 @@ public interface MailApi {
             @ApiResponse(code = 400, message = "invalid input", response = ErrorDetail.class),
             @ApiResponse(code = 401, message = "unauthorized", response = ErrorDetail.class) })
     default ResponseEntity<SendEmailResult> sendEmail(
-            @ApiParam(value = "Email to be sent", required = true) @Valid @RequestBody final EmailMessage body) {
+            @ApiParam(value = "Email to be sent", required = true) @Valid @RequestBody final EmailMessage body)
+            throws ErrorDetailException {
         throw new UnsupportedOperationException("Not implemented");
     }
 

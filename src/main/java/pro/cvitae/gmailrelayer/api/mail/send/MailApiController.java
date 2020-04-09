@@ -1,5 +1,7 @@
 package pro.cvitae.gmailrelayer.api.mail.send;
 
+import java.util.Arrays;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.cvitae.gmailrelayer.api.exception.ErrorDetailException;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.service.IMailApiService;
@@ -19,9 +22,14 @@ public class MailApiController implements MailApi {
 
     @Override
     @PostMapping(value = "/mail/send", produces = { "application/json" }, consumes = { "application/json" })
-    public ResponseEntity<SendEmailResult> sendEmail(@Valid final EmailMessage message) {
+    public ResponseEntity<SendEmailResult> sendEmail(@Valid final EmailMessage message) throws ErrorDetailException {
 
-        this.mailApiService.sendEmail(message);
+        try {
+            this.mailApiService.sendEmail(message);
+        } catch (final Exception me) {
+            throw new ErrorDetailException("mail.send.error", "Unexpected error while sending mail",
+                    Arrays.asList(me.getClass().toString(), me.getMessage()));
+        }
 
         return ResponseEntity.ok(new SendEmailResult());
     }
