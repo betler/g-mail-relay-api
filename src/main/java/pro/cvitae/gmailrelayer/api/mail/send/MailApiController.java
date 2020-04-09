@@ -21,8 +21,6 @@ public class MailApiController implements MailApi {
     @PostMapping(value = "/mail/send", produces = { "application/json" }, consumes = { "application/json" })
     public ResponseEntity<SendEmailResult> sendEmail(@Valid final EmailMessage message) {
 
-        // TODO Validate
-
         this.mailApiService.sendEmail(message);
 
         return ResponseEntity.ok(new SendEmailResult());

@@ -11,20 +11,25 @@ import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import pro.cvitae.gmailrelayer.api.validator.Email;
+import pro.cvitae.gmailrelayer.api.validator.EmailList;
+import pro.cvitae.gmailrelayer.api.validator.Encoding;
 
 /**
  * The email message to be sent.
  */
-@ApiModel(description = "The email message to be sent.")
 @Validated
+@ApiModel(description = "The email message to be sent.")
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
 public class EmailMessage implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -68,12 +73,12 @@ public class EmailMessage implements Serializable {
     @JsonProperty("notBefore")
     private OffsetDateTime notBefore = null;
 
-    @JsonProperty("attachments")
     @Valid
+    @JsonProperty("attachments")
     private List<Attachment> attachments = null;
 
-    @JsonProperty("headers")
     @Valid
+    @JsonProperty("headers")
     private List<Header> headers = null;
 
     public EmailMessage from(final String from) {
@@ -87,6 +92,7 @@ public class EmailMessage implements Serializable {
      *
      * @return from
      **/
+    @Email
     @ApiModelProperty(example = "Aunt Doe <aunt.doe@example.com>", value = "Set \"from\" adress. This may be ignored by other configurations which may override the \"from\" address.")
     public String getFrom() {
         return this.from;
@@ -106,6 +112,7 @@ public class EmailMessage implements Serializable {
      *
      * @return replyTo
      **/
+    @Email
     @ApiModelProperty(example = "Uncle Doe <uncle.doe@example.com>", value = "Optionally set \"replyTo\" address")
     public String getReplyTo() {
         return this.replyTo;
@@ -131,6 +138,7 @@ public class EmailMessage implements Serializable {
      * @return to
      **/
     @NotNull
+    @EmailList
     @ApiModelProperty(required = true, value = "Recipients of the message")
     public List<String> getTo() {
         return this.to;
@@ -158,6 +166,7 @@ public class EmailMessage implements Serializable {
      *
      * @return cc
      **/
+    @EmailList
     @ApiModelProperty(value = "Carbon copy recipients")
     public List<String> getCc() {
         return this.cc;
@@ -185,6 +194,7 @@ public class EmailMessage implements Serializable {
      *
      * @return bcc
      **/
+    @EmailList
     @ApiModelProperty(value = "Blind copy recipients")
     public List<String> getBcc() {
         return this.bcc;
@@ -249,6 +259,7 @@ public class EmailMessage implements Serializable {
      * @return textFormat
      **/
     @NotNull
+    @Pattern(regexp = "(HTML|TEXT)")
     @ApiModelProperty(required = true, value = "Format of the body message: plain text (TEXT) or html (HTML)")
     public String getTextFormat() {
         return this.textFormat;
@@ -269,6 +280,7 @@ public class EmailMessage implements Serializable {
      * @return textEncoding
      **/
     @NotNull
+    @Encoding
     @ApiModelProperty(example = "UTF-8", required = true, value = "Encoding of the message body.")
     public String getTextEncoding() {
         return this.textEncoding;
@@ -294,6 +306,7 @@ public class EmailMessage implements Serializable {
      * @return deliveryType
      **/
     @NotNull
+    @Pattern(regexp = "(PRIORITY_SYNC|PRIORITY_ASYNC|QUEUE)")
     @ApiModelProperty(example = "PRIORITY_SYNC", required = true, value = "Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending of the message. "
             + "The API does not return until the messaged is delivered (or tried to). PRIORITY_ASYNC makes an inmediate background sending. "
             + "The API returns the ID of the message with QUEUED status but the message is sent inmediately in the background. "
@@ -302,10 +315,6 @@ public class EmailMessage implements Serializable {
         return this.deliveryType;
     }
 
-    @ApiModelProperty(example = "QUEUE", value = "Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending of the message. "
-            + "The API does not return until the messaged is delivered (or tried to). PRIORITY_ASYNC makes an inmediate background sending. "
-            + "The API returns the ID of the message with QUEUED status but the message is sent inmediately in the background. "
-            + "QUEUE queues the message until the next scheduled batch processing of queued mails")
     public void setDeliveryType(final String deliveryType) {
         this.deliveryType = deliveryType;
     }
@@ -468,5 +477,9 @@ public class EmailMessage implements Serializable {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
+    }
+
+    public static void main(final String[] args) {
+        System.out.println(EmailValidator.getInstance(true).isValid("John Doe <null@null>"));
     }
 }

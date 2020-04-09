@@ -1,14 +1,17 @@
 package pro.cvitae.gmailrelayer.api.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Attachment
@@ -28,9 +31,9 @@ public class Attachment implements Serializable {
     private String contentType = null;
 
     @JsonProperty("content")
-    private byte[] content = null;
+    private String content = null;
 
-    public Attachment cid(String cid) {
+    public Attachment cid(final String cid) {
         this.cid = cid;
         return this;
     }
@@ -39,92 +42,91 @@ public class Attachment implements Serializable {
      * Optional CID identificator for inline attachements. Setting a CID will force
      * the attachment to be inlined. If you do not want the attachment to be inline,
      * do not set the CID field.
-     * 
+     *
      * @return cid
      **/
-    @ApiModelProperty(value = "Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inline, do not set the CID field.")
-
     @Size(max = 200)
+    @Pattern(regexp = "[\\w\\d\\_\\-\\$\\&\\(\\)\\[\\]]{1,200}")
+    @ApiModelProperty(value = "Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. "
+            + "If you do not want the attachment to be inline, do not set the CID field. Alphanumeric characters and _-$&()[] are allowed")
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
-    public void setCid(String cid) {
+    public void setCid(final String cid) {
         this.cid = cid;
     }
 
-    public Attachment filename(String filename) {
+    public Attachment filename(final String filename) {
         this.filename = filename;
         return this;
     }
 
     /**
      * Filename of the attachment
-     * 
+     *
      * @return filename
      **/
-    @ApiModelProperty(example = "photo-album.png", required = true, value = "Filename of the attachment")
     @NotNull
-
     @Size(max = 50)
+    @Pattern(regexp = "[\\w\\d\\_\\-\\$\\&\\(\\)\\[\\]\\ ]{1,50}")
+    @ApiModelProperty(example = "photo-album.png", required = true, value = "Filename of the attachment.  Alphanumeric characters, space and _-$&()[] are allowed")
     public String getFilename() {
-        return filename;
+        return this.filename;
     }
 
-    public void setFilename(String filename) {
+    public void setFilename(final String filename) {
         this.filename = filename;
     }
 
-    public Attachment contentType(String contentType) {
+    public Attachment contentType(final String contentType) {
         this.contentType = contentType;
         return this;
     }
 
     /**
      * Optional content type
-     * 
+     *
      * @return contentType
      **/
     @ApiModelProperty(example = "image/png", value = "Optional content type")
-
     public String getContentType() {
-        return contentType;
+        return this.contentType;
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(final String contentType) {
         this.contentType = contentType;
     }
 
-    public Attachment content(byte[] content) {
+    public Attachment content(final String content) {
         this.content = content;
         return this;
     }
 
     /**
      * Base64 attachment
-     * 
+     *
      * @return content
      **/
-    @ApiModelProperty(required = true, value = "Base64 attachment")
     @NotNull
-
-    public byte[] getContent() {
-        return content;
+    @ApiModelProperty(required = true, value = "Base64 attachment")
+    public String getContent() {
+        return this.content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
     @Override
-    public boolean equals(java.lang.Object o) {
+    public boolean equals(final java.lang.Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
-        Attachment attachment = (Attachment) o;
+        final Attachment attachment = (Attachment) o;
         return Objects.equals(this.cid, attachment.cid) && Objects.equals(this.filename, attachment.filename)
                 && Objects.equals(this.contentType, attachment.contentType)
                 && Objects.equals(this.content, attachment.content);
@@ -132,18 +134,18 @@ public class Attachment implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(cid, filename, contentType, content);
+        return Objects.hash(this.cid, this.filename, this.contentType, this.content);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("class Attachment {\n");
 
-        sb.append("    cid: ").append(toIndentedString(cid)).append("\n");
-        sb.append("    filename: ").append(toIndentedString(filename)).append("\n");
-        sb.append("    contentType: ").append(toIndentedString(contentType)).append("\n");
-        sb.append("    content: ").append(toIndentedString(content)).append("\n");
+        sb.append("    cid: ").append(this.toIndentedString(this.cid)).append("\n");
+        sb.append("    filename: ").append(this.toIndentedString(this.filename)).append("\n");
+        sb.append("    contentType: ").append(this.toIndentedString(this.contentType)).append("\n");
+        sb.append("    content: ").append(this.toIndentedString(this.content)).append("\n");
         sb.append("}");
         return sb.toString();
     }
@@ -152,7 +154,7 @@ public class Attachment implements Serializable {
      * Convert the given object to string with each line indented by 4 spaces
      * (except the first line).
      */
-    private String toIndentedString(java.lang.Object o) {
+    private String toIndentedString(final java.lang.Object o) {
         if (o == null) {
             return "null";
         }
