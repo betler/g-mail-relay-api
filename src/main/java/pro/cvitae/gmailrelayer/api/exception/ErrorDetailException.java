@@ -14,7 +14,9 @@ public class ErrorDetailException extends Exception {
 
     private final List<String> params;
 
-    public ErrorDetailException(final String code, final String description, final List<String> params) {
+    public ErrorDetailException(final Throwable cause, final String code, final String description,
+            final List<String> params) {
+        super(cause);
         this.code = code;
         this.description = description;
         this.params = params;
@@ -28,4 +30,5 @@ public class ErrorDetailException extends Exception {
 
         return detail;
     }
+
 }

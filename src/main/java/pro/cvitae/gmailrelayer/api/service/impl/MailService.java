@@ -1,16 +1,21 @@
 package pro.cvitae.gmailrelayer.api.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import pro.cvitae.gmailrelayer.api.model.Attachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.Header;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
@@ -42,33 +47,58 @@ public class MailService implements IMailService {
 
     private void send(final EmailMessage message) throws MessagingException {
         final MimeMessage mime = this.mailSender.createMimeMessage();
-        final MimeMessageHelper helper = new MimeMessageHelper(mime);
+
+        final MimeMessageHelper helper = new MimeMessageHelper(mime, this.isMultipart(message));
         helper.setValidateAddresses(true);
 
-        // TODO helper. addAttachment(attachmentFilename, dataSource);
+        // Recipients
+        for (final String to : message.getTo()) {
+            helper.addTo(to);
+        }
+
+        // Blind copy
         if (message.getBcc() != null) {
             for (final String bcc : message.getBcc()) {
                 helper.addBcc(bcc);
             }
         }
+
+        // CC recipients
         if (message.getCc() != null) {
             for (final String cc : message.getCc()) {
                 helper.addCc(cc);
             }
         }
-        for (final String to : message.getTo()) {
-            helper.addTo(to);
-        }
+
         helper.setFrom(message.getFrom());
         helper.setPriority(message.getPriority().intValue());
         helper.setReplyTo(message.getReplyTo());
         helper.setSubject(message.getSubject());
         helper.setText(message.getBody(), message.getTextFormat().equals("HTML"));
 
+        // Headers
         for (final Header h : message.getHeaders()) {
             mime.setHeader(h.getName(), h.getValue());
         }
 
+        // Attachments
+        for (final Attachment a : message.getAttachments()) {
+
+            final InputStreamSource iss = () -> new ByteArrayInputStream(Base64.getDecoder().decode(a.getContent()));
+            if (a.getCid() == null || a.getCid().isEmpty()) {
+                // Attachment
+                helper.addAttachment(a.getFilename(), iss, a.getContentType());
+            } else {
+                // Inlined attachment
+                helper.addInline(a.getCid(), iss, a.getContentType());
+            }
+
+        }
+
         this.mailSender.send(mime);
+    }
+
+    private boolean isMultipart(final EmailMessage message) {
+        return message.getAttachments() != null && !message.getAttachments().isEmpty();
     }
 }

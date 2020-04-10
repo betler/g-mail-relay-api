@@ -1,5 +1,7 @@
 package pro.cvitae.gmailrelayer.api.service;
 
+import java.io.IOException;
+
 import javax.mail.MessagingException;
 
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
@@ -11,6 +13,7 @@ public interface IMailApiService {
      *
      * @param message
      * @throws MessagingException
+     * @throws IOException
      */
     void sendEmail(final EmailMessage message) throws MessagingException;
 }

@@ -41,14 +41,14 @@ public class Attachment implements Serializable {
     /**
      * Optional CID identificator for inline attachements. Setting a CID will force
      * the attachment to be inlined. If you do not want the attachment to be inline,
-     * do not set the CID field.
+     * do not set the CID field. Alphanumeric characters and _@-$&()[] are allowed
      *
      * @return cid
      **/
     @Size(max = 200)
-    @Pattern(regexp = "[\\w\\d\\_\\-\\$\\&\\(\\)\\[\\]]{1,200}")
+    @Pattern(regexp = "[\\w\\d\\_\\-\\$\\&\\(\\)\\[\\]\\@\\.]{1,200}")
     @ApiModelProperty(value = "Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. "
-            + "If you do not want the attachment to be inline, do not set the CID field. Alphanumeric characters and _-$&()[] are allowed")
+            + "If you do not want the attachment to be inline, do not set the CID field. Alphanumeric characters and _@-$&()[] are allowed")
     public String getCid() {
         return this.cid;
     }
@@ -69,7 +69,7 @@ public class Attachment implements Serializable {
      **/
     @NotNull
     @Size(max = 50)
-    @Pattern(regexp = "[\\w\\d\\_\\-\\$\\&\\(\\)\\[\\]\\ ]{1,50}")
+    @Pattern(regexp = "[\\w\\d\\_\\-\\$\\&\\(\\)\\[\\]\\ \\.]{1,50}")
     @ApiModelProperty(example = "photo-album.png", required = true, value = "Filename of the attachment.  Alphanumeric characters, space and _-$&()[] are allowed")
     public String getFilename() {
         return this.filename;

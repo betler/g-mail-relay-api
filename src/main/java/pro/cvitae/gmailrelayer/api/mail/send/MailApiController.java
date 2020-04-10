@@ -2,6 +2,7 @@ package pro.cvitae.gmailrelayer.api.mail.send;
 
 import java.util.Arrays;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class MailApiController implements MailApi {
 
         try {
             this.mailApiService.sendEmail(message);
-        } catch (final Exception me) {
-            throw new ErrorDetailException("mail.send.error", "Unexpected error while sending mail",
+        } catch (final MessagingException me) {
+            throw new ErrorDetailException(me, "mail.send.error", "Unexpected error while sending mail",
                     Arrays.asList(me.getClass().toString(), me.getMessage()));
         }
 
