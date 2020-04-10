@@ -1,4 +1,4 @@
-![In development](https://img.shields.io/badge/status-current_development-green)
+![In development](https://img.shields.io/badge/status-current_development-green) [![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
 
 # g-mail-relayer
 
@@ -54,7 +54,7 @@ Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-sm
 | 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
 | 4  | Support for NTLM authentication             | ![partially implemented](https://img.shields.io/badge/requisite-partially_implemented-yellow) - Local SMTP Server only |
 | 5  | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
-| 6  | REST API                                    | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
+| 6  | REST API                                    | ![done](https://img.shields.io/badge/requisite-done!-green)                                                            |
 | 7  | Standard 25-smtp port                       | ![done](https://img.shields.io/badge/requisite-done!-green)                                                            |
 | 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
 | 9  | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
@@ -69,22 +69,22 @@ Not currently supported. Development status:
 
 ## Send email through REST API: Current status
 
-| Property         | Status                                                                        |
-|------------------|-------------------------------------------------------------------------------|
-| From             | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| ReplyTo          | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| To               | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| CC               | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| BCC              | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| Subject          | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| Body             | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| TextFormat       | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| TextEncoding     | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| Priority         | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| NotBefore        | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| Attachments      | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| Headers          | [pending](https://img.shields.io/badge/requisite-pending-red)                 |
-| DeliverType      | [not in api](https://img.shields.io/badge/requisite-Not%20in%20API-important) |
+| Property         | Status                                                                                |
+|------------------|---------------------------------------------------------------------------------------|
+| From             | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| ReplyTo          | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| To               | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| CC               | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| BCC              | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| Subject          | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| Body             | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| TextFormat       | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| TextEncoding     | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| Priority         | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| NotBefore        | ![not implemented](https://img.shields.io/badge/sending--property-not--yet-important) |
+| Attachments      | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| Headers          | ![done](https://img.shields.io/badge/sending--property-done!-green)                   |
+| DeliveryType     | ![not implemented](https://img.shields.io/badge/sending--property-not--yet-important) |
 
 
 ## SMTP Relaying
