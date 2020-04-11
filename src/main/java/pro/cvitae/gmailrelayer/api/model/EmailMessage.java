@@ -6,7 +6,9 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import javax.annotation.Generated;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -31,7 +33,7 @@ import pro.cvitae.gmailrelayer.api.validator.Encoding;
 @Validated
 @EmailMessageType
 @ApiModel(description = "The email message to be sent.")
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
+@Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
 public class EmailMessage implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -451,25 +453,49 @@ public class EmailMessage implements Serializable {
         this.headers = headers;
     }
 
+    /**
+     * Searches and optionally returns the "Message-ID" header.
+     *
+     * @return
+     */
+    public Optional<Header> getMessageIdHeader() {
+        return this.getHeaders().stream().filter(h -> h.getName().equalsIgnoreCase("Message-ID")).findFirst();
+    }
+
+    /**
+     * Two messages could have the same fields and be different emails. Only returns
+     * <code>true</code> if two emails share references or have the same
+     * 'Message-Id' header.
+     */
     @Override
     public boolean equals(final java.lang.Object o) {
+
         if (this == o) {
             return true;
         }
+
         if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
+
         final EmailMessage emailMessage = (EmailMessage) o;
-        return Objects.equals(this.from, emailMessage.from) && Objects.equals(this.replyTo, emailMessage.replyTo)
-                && Objects.equals(this.to, emailMessage.to) && Objects.equals(this.cc, emailMessage.cc)
-                && Objects.equals(this.bcc, emailMessage.bcc) && Objects.equals(this.subject, emailMessage.subject)
-                && Objects.equals(this.body, emailMessage.body)
-                && Objects.equals(this.textFormat, emailMessage.textFormat)
-                && Objects.equals(this.textEncoding, emailMessage.textEncoding)
-                && Objects.equals(this.priority, emailMessage.priority)
-                && Objects.equals(this.notBefore, emailMessage.notBefore)
-                && Objects.equals(this.attachments, emailMessage.attachments)
-                && Objects.equals(this.headers, emailMessage.headers);
+
+        // Check header
+        final Optional<Header> messageIdHeader = this.getMessageIdHeader();
+        if (messageIdHeader.isPresent()) {
+            // Check second header
+            final Optional<Header> messageIdHeader2 = emailMessage.getMessageIdHeader();
+
+            if (messageIdHeader2.isPresent()) {
+                return messageIdHeader.get().getValue().equals(messageIdHeader2.get().getValue());
+            } else {
+                return false;
+            }
+        }
+
+        // Can't compare message id, treat as different
+        return false;
+
     }
 
     @Override
