@@ -1,4 +1,6 @@
 {
+  "applicationId" : "TASKSAPP",
+  "messageType" : "Password Reminder",
   "from" : "Uncle Joe <unclejoe@example.com>",
 	"replyTo" : "Aunt Doe <auntdow@example.com>",
   "to" : [

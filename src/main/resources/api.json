@@ -145,12 +145,12 @@
           "cid" : {
             "type" : "string",
             "maxLength" : 200,
-            "description" : "Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inline, do not set the CID field. Alphanumeric characters and _@. -$&()[] are allowed"
+            "description" : "Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inline, do not set the CID field. Alphanumeric characters and ._@-$&()[] are allowed"
           },
           "filename" : {
             "type" : "string",
             "maxLength" : 50,
-            "description" : "Filename of the attachment. Alphanumeric characters, space and _.-$&()[] are allowed.",
+            "description" : "Filename of the attachment. Alphanumeric characters, space and _-$&()[] are allowed.",
             "example" : "photo-album.png"
           },
           "contentType" : {
@@ -170,6 +170,18 @@
         "required" : [ "to", "body", "textFormat", "textEncoding", "deliveryType" ],
         "type" : "object",
         "properties" : {
+          "applicationId" : {
+            "type" : "string",
+            "description" : "Optional free text to identify the sender of the application. Must be set if a messageType is specified.",
+            "example" : "TASKSAPP",
+            "maxLength" : 30
+          },
+          "messageType" : {
+            "type" : "string",
+            "description" : "Optional free text to identify the specific message type. Cannot be set without an applicationId",
+            "example" : "Password Reminder",
+            "maxLength" : 30
+          },
           "from" : {
             "type" : "string",
             "format" : "email",

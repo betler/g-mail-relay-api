@@ -22,16 +22,24 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import pro.cvitae.gmailrelayer.api.validator.Email;
 import pro.cvitae.gmailrelayer.api.validator.EmailList;
+import pro.cvitae.gmailrelayer.api.validator.EmailMessageType;
 import pro.cvitae.gmailrelayer.api.validator.Encoding;
 
 /**
  * The email message to be sent.
  */
 @Validated
+@EmailMessageType
 @ApiModel(description = "The email message to be sent.")
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
 public class EmailMessage implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @JsonProperty("applicationId")
+    private String applicationId = null;
+
+    @JsonProperty("messageType")
+    private String messageType = null;
 
     @JsonProperty("from")
     private String from = null;
@@ -83,6 +91,32 @@ public class EmailMessage implements Serializable {
     public EmailMessage from(final String from) {
         this.from = from;
         return this;
+    }
+
+    /**
+     * Optional free text to identify the sender of the application. Must be set if
+     * a messageType is specified.
+     *
+     * @return
+     */
+    @Size(max = 30)
+    @ApiModelProperty(example = "TASKSAPP", value = "Optional free text to identify the sender of the application. Must be set if a messageType is specified.")
+    public String getApplicationId() {
+        return this.applicationId;
+    }
+
+    public void setApplicationId(final String applicationId) {
+        this.applicationId = applicationId;
+    }
+
+    @Size(max = 30)
+    @ApiModelProperty(example = "Password Reminder", value = "Optional free text to identify the specific message type. Cannot be set without an applicationId.")
+    public String getMessageType() {
+        return this.messageType;
+    }
+
+    public void setMessageType(final String messageType) {
+        this.messageType = messageType;
     }
 
     /**
