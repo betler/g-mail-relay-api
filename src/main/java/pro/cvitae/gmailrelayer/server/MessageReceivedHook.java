@@ -76,7 +76,6 @@ public class MessageReceivedHook implements MessageHook {
             msg = sender.createMimeMessage(mail.getMessageInputStream());
             this.logger.debug("Parsed mime message from {}", msg.getFrom()[0]);
         } catch (final Exception e) {
-            // TODO Different error codes for different errors?
             this.logger.error("Error parsing mime message from input", e);
             return this.buildHookResult(451, "Error while processing received message");
         }
@@ -92,7 +91,6 @@ public class MessageReceivedHook implements MessageHook {
             this.logger.debug("Sent message {} to {}", msg.getMessageID(), msg.getRecipients(Message.RecipientType.TO));
 
         } catch (final Exception e) {
-            // TODO Different error codes for different errors?
             this.logger.error("Error sending message", e);
             return this.buildHookResult(451, "Error while relaying message");
         }
@@ -126,7 +124,7 @@ public class MessageReceivedHook implements MessageHook {
 
     private Properties getRelayingProperties(final RelayPropertiesConfig config) {
         Validate.matchesPattern(config.getAuth().getType(), "^(USERPASS|NTLM)$");
-        Validate.inclusiveBetween(1l, 65535l, config.getServer().getPort());
+        Validate.inclusiveBetween(1L, 65535L, config.getServer().getPort());
 
         final Properties props = new Properties();
 
