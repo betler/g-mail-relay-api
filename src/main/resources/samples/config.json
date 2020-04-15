@@ -1,0 +1,84 @@
+{
+	"api-default" : {
+		"overrideFrom" : false,
+		"overrideFromAddress" : null,
+		"authType" : "USERPASS",
+		"username" : "",
+		"password" : "",
+		"domain" : null,
+		"host" : "",
+		"port" : 587,
+		"starttls" : "true"
+	},
+	"smtp-default" : {
+		"overrideFrom" : false,
+		"overrideFromAddress" : null,
+		"authType" : "USERPASS",
+		"username" : "",
+		"password" : "",
+		"domain" : null,
+		"host" : "",
+		"port" : 587,
+		"starttls" : "true"
+	},
+	"api" : [
+		{
+			"forFrom" : null,
+			"forApplicationId" : "APP1",
+			"forMessageType" : "New Customer",
+			"overrideFrom" : false,
+			"overrideFromAddress" : null,
+			"authType" : "USERPASS",
+			"username" : "user1",
+			"password" : "password1",
+			"domain" : null,
+			"host" : "server1",
+			"port" : 587,
+			"starttls" : "true"
+		},
+		{
+			"forFrom" : null,
+			"forApplicationId" : "APP1",
+			"forMessageType" : "New Customer",
+			"overrideFrom" : false,
+			"overrideFromAddress" : null,
+			"authType" : "USERPASS",
+			"username" : "user1",
+			"password" : "password1",
+			"domain" : null,
+			"host" : "server1",
+			"port" : 587,
+			"starttls" : "true"
+		}
+	],
+	"smtp" : [
+		{
+			"forFrom" : "application@example.com",
+			"forApplicationId" : null,
+			"forMessageType" : null,
+			"overrideFrom" : false,
+			"overrideFromAddress" : null,
+			"authType" : "USERPASS",
+			"username" : "user1",
+			"password" : "password1",
+			"domain" : null,
+			"host" : "server1",
+			"port" : 587,
+			"starttls" : "true"
+		},
+		{
+			"forFrom" : null,
+			"forApplicationId" : "APP1",
+			"forMessageType" : "New Customer",
+			"overrideFrom" : false,
+			"overrideFromAddress" : null,
+			"authType" : "USERPASS",
+			"username" : "user1",
+			"password" : "password1",
+			"domain" : null,
+			"host" : "server1",
+			"port" : 587,
+			"starttls" : "true"
+		}
+	]
+}
