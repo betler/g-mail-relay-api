@@ -19,7 +19,7 @@ public class ConfigFile {
     @Getter
     @Setter
     @JsonProperty("smtp-default")
-    private DefaultConfigItem smtpDefault;
+    private DefaultSmtpConfigItem smtpDefault;
 
     @Getter
     @Setter

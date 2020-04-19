@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import pro.cvitae.gmailrelayer.server.config.RelayPropertiesConfig;
+import pro.cvitae.gmailrelayer.config.ConfigFile;
+import pro.cvitae.gmailrelayer.config.DefaultSmtpConfigItem;
 
 /**
  * @author betler
@@ -46,10 +47,10 @@ public class MessageReceivedHook implements MessageHook {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    final RelayPropertiesConfig config;
+    final ConfigFile configFile;
 
-    public MessageReceivedHook(final RelayPropertiesConfig config) {
-        this.config = config;
+    public MessageReceivedHook(final ConfigFile configFile) {
+        this.configFile = configFile;
     }
 
     @Override
@@ -82,8 +83,8 @@ public class MessageReceivedHook implements MessageHook {
 
         try {
             // If from address overriding is set, from is changed
-            if (this.config.isOverrideFrom()) {
-                msg.setFrom(this.config.getAuth().getUsername());
+            if (Boolean.TRUE.equals(this.configFile.getSmtpDefault().getOverrideFrom())) {
+                msg.setFrom(this.configFile.getSmtpDefault().getOverrideFromAddress());
             }
 
             // Send message
@@ -114,32 +115,33 @@ public class MessageReceivedHook implements MessageHook {
     private JavaMailSender getJavaMailSender() {
         final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         final Properties props = mailSender.getJavaMailProperties();
-        props.putAll(this.getRelayingProperties(this.config));
+        props.putAll(this.getRelayingProperties());
 
         // Password is not read from properties
-        mailSender.setPassword(this.config.getAuth().getPassword());
+        mailSender.setPassword(this.configFile.getSmtpDefault().getPassword());
 
         return mailSender;
     }
 
-    private Properties getRelayingProperties(final RelayPropertiesConfig config) {
-        Validate.matchesPattern(config.getAuth().getType(), "^(USERPASS|NTLM)$");
-        Validate.inclusiveBetween(1L, 65535L, config.getServer().getPort());
+    private Properties getRelayingProperties() {
+        final DefaultSmtpConfigItem config = this.configFile.getSmtpDefault();
+        Validate.matchesPattern(config.getAuthType(), "^(USERPASS|NTLM)$");
+        Validate.inclusiveBetween(1L, 65535L, config.getListeningPort());
 
         final Properties props = new Properties();
 
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.user", config.getAuth().getUsername());
-        props.put("mail.smtp.password", config.getAuth().getPassword());
-        props.put("mail.smtp.starttls.enable", config.getServer().getStarttls());
-        props.put("mail.smtp.host", config.getServer().getHost());
-        props.put("mail.smtp.port", config.getServer().getPort());
+        props.put("mail.smtp.user", config.getUsername());
+        props.put("mail.smtp.password", config.getPassword());
+        props.put("mail.smtp.starttls.enable", config.getStarttls());
+        props.put("mail.smtp.host", config.getHost());
+        props.put("mail.smtp.port", config.getPort());
         props.put("mail.debug", "true");
 
-        if ("NTLM".equals(config.getAuth().getType())) {
+        if ("NTLM".equals(config.getAuthType())) {
             props.put("mail.smtp.auth.mechanisms", "NTLM");
-            props.put("mail.smtp.auth.ntlm.domain", config.getAuth().getDomain());
+            props.put("mail.smtp.auth.ntlm.domain", config.getDomain());
         }
 
         return props;

@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import pro.cvitae.gmailrelayer.server.config.RelayPropertiesConfig;
+import pro.cvitae.gmailrelayer.config.ConfigFile;
 
 /**
  * @author betler
@@ -34,13 +34,13 @@ import pro.cvitae.gmailrelayer.server.config.RelayPropertiesConfig;
 @Configuration
 public class SmtpServerConfiguration {
 
-	@Value("${relayer.smtp.server.port}")
-	private Integer port;
+    @Value("${relayer.smtp.server.port}")
+    private Integer port;
 
-	@Bean(initMethod = "start", destroyMethod = "stop")
-	public SmtpServer smtpServer(final RelayPropertiesConfig config, final Collection<ProtocolHandler> handlers) {
-		handlers.add(new MessageReceivedHook(config));
-		return new SmtpServer(this.port, handlers);
-	}
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public SmtpServer smtpServer(final ConfigFile configFile, final Collection<ProtocolHandler> handlers) {
+        handlers.add(new MessageReceivedHook(configFile));
+        return new SmtpServer(this.port, handlers);
+    }
 
 }

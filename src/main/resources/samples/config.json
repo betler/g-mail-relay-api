@@ -11,6 +11,7 @@
 		"starttls" : "true"
 	},
 	"smtp-default" : {
+		"listeningPort" : 25,
 		"overrideFrom" : false,
 		"overrideFromAddress" : null,
 		"authType" : "USERPASS",
