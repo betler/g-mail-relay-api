@@ -20,6 +20,8 @@ import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.Header;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
+import pro.cvitae.gmailrelayer.config.DefaultConfigItem;
+import pro.cvitae.gmailrelayer.config.SendingConfiguration;
 
 @Service
 public class MailService implements IMailService {
@@ -30,28 +32,33 @@ public class MailService implements IMailService {
     ConfigFileHelper configHelper;
 
     @Override
-    public void sendEmail(final EmailMessage message, final String applicationId, final String messageType)
-            throws MessagingException {
-        this.send(message, applicationId, messageType);
+    public void sendEmail(final EmailMessage message) throws MessagingException {
+        this.send(message);
         this.logger.debug("Sent email to {}", message.getTo());
     }
 
     @Async
     @Override
-    public void sendAsyncEmail(final EmailMessage message, final String applicationId, final String messageType) {
+    public void sendAsyncEmail(final EmailMessage message) {
         try {
-            this.send(message, applicationId, messageType);
+            this.send(message);
             this.logger.debug("Sent async email to {}", message.getTo());
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
         }
     }
 
-    private void send(final EmailMessage message, final String applicationId, final String messageType)
-            throws MessagingException {
-        final JavaMailSender mailSender = this.configHelper.senderForApi(message.getFrom(), applicationId, messageType);
+    private void send(final EmailMessage message) throws MessagingException {
+        // Get mailer and configuration. Needed for overriding from
+        final SendingConfiguration sendingConfiguration = this.configHelper.senderForApi(message.getFrom(),
+                message.getApplicationId(), message.getMessageType());
+        final JavaMailSender mailSender = sendingConfiguration.getMailSender();
+        final DefaultConfigItem config = sendingConfiguration.getConfigItem();
+
+        // Creates the mime message
         final MimeMessage mime = mailSender.createMimeMessage();
 
+        // Configure helper
         final MimeMessageHelper helper = new MimeMessageHelper(mime, this.isMultipart(message));
         helper.setValidateAddresses(true);
 
@@ -74,7 +81,9 @@ public class MailService implements IMailService {
             }
         }
 
-        helper.setFrom(message.getFrom());
+        // from overrided?
+        helper.setFrom(
+                Boolean.TRUE.equals(config.getOverrideFrom()) ? config.getOverrideFromAddress() : message.getFrom());
         helper.setPriority(message.getPriority().intValue());
         helper.setReplyTo(message.getReplyTo());
         helper.setSubject(message.getSubject());

@@ -3,8 +3,7 @@ package pro.cvitae.gmailrelayer.config;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.cache.annotation.CacheResult;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -18,54 +17,62 @@ public class ConfigFileHelper {
         this.configFile = configFile;
     }
 
-    @CacheResult(cacheName = "mailConfigCache")
-    public JavaMailSender senderForSmtp(final String from, final String applicationId, final String messageType) {
+    @Cacheable(value = "mailConfigCache", key = "'senderForSmtp#' + #from + '#' + #applicationId + '#' + #messageType")
+    public SendingConfiguration senderForSmtp(final String from, final String applicationId, final String messageType) {
 
-        Optional<ConfigItem> itemOpt;
-        if (!Strings.isNullOrEmpty(from)) {
-            // If there is a 'from', use it
-            itemOpt = this.configFile.getSmtpConfig().stream().filter(c -> c.getForFrom().equals("from")).findFirst();
-        } else {
-            // File is validated on startup, so there must be at least an 'applicationId'
+        Optional<ConfigItem> itemOpt = Optional.empty();
+        if (!Strings.isNullOrEmpty(applicationId)) {
+            // ApplicationId takes priority over 'from'
             if (!Strings.isNullOrEmpty(messageType)) {
                 // appID + messageType
-                itemOpt = this.configFile.getSmtpConfig().stream().filter(
-                        c -> c.getForApplicationId().equals(applicationId) && c.getForMessageType().equals(messageType))
+                itemOpt = this.configFile.getSmtpConfig().stream()
+                        .filter(c -> c.getForApplicationId() != null && c.getForApplicationId().equals(applicationId)
+                                && c.getForMessageType() != null && c.getForMessageType().equals(messageType))
                         .findFirst();
             } else {
                 // only appID
                 itemOpt = this.configFile.getSmtpConfig().stream()
                         .filter(c -> c.getForApplicationId().equals(applicationId)).findFirst();
             }
-
         }
 
-        return this.getMailSender(itemOpt.isPresent() ? itemOpt.get() : this.configFile.getSmtpDefault());
+        // if still not configuration is found, try with 'from' address
+        if (!itemOpt.isPresent()) {
+            itemOpt = this.configFile.getSmtpConfig().stream()
+                    .filter(c -> c.getForFrom() != null && c.getForFrom().equals(from)).findFirst();
+        }
+
+        final DefaultConfigItem config = itemOpt.isPresent() ? itemOpt.get() : this.configFile.getSmtpDefault();
+        return new SendingConfiguration(this.getMailSender(config), config);
     }
 
-    @CacheResult(cacheName = "mailConfigCache")
-    public JavaMailSender senderForApi(final String from, final String applicationId, final String messageType) {
+    @Cacheable(value = "mailConfigCache", key = "'senderForApi#' + #from + '#' + #applicationId + '#' + #messageType")
+    public SendingConfiguration senderForApi(final String from, final String applicationId, final String messageType) {
 
-        Optional<ConfigItem> itemOpt;
-        if (!Strings.isNullOrEmpty(from)) {
-            // If there is a 'from', use it
-            itemOpt = this.configFile.getApiConfig().stream().filter(c -> c.getForFrom().equals("from")).findFirst();
-        } else {
-            // File is validated on startup, so there must be at least an 'applicationId'
+        Optional<ConfigItem> itemOpt = Optional.empty();
+        if (!Strings.isNullOrEmpty(applicationId)) {
+            // ApplicationId takes priority over 'from'
             if (!Strings.isNullOrEmpty(messageType)) {
                 // appID + messageType
-                itemOpt = this.configFile.getApiConfig().stream().filter(
-                        c -> c.getForApplicationId().equals(applicationId) && c.getForMessageType().equals(messageType))
+                itemOpt = this.configFile.getApiConfig().stream()
+                        .filter(c -> c.getForApplicationId() != null && c.getForApplicationId().equals(applicationId)
+                                && c.getForMessageType() != null && c.getForMessageType().equals(messageType))
                         .findFirst();
             } else {
                 // only appID
                 itemOpt = this.configFile.getApiConfig().stream()
                         .filter(c -> c.getForApplicationId().equals(applicationId)).findFirst();
             }
-
         }
 
-        return this.getMailSender(itemOpt.isPresent() ? itemOpt.get() : this.configFile.getApiDefault());
+        // if still not configuration is found, try with 'from' address
+        if (!itemOpt.isPresent()) {
+            itemOpt = this.configFile.getApiConfig().stream()
+                    .filter(c -> c.getForFrom() != null && c.getForFrom().equals(from)).findFirst();
+        }
+
+        final DefaultConfigItem config = itemOpt.isPresent() ? itemOpt.get() : this.configFile.getApiDefault();
+        return new SendingConfiguration(this.getMailSender(config), config);
     }
 
     private JavaMailSender getMailSender(final DefaultConfigItem item) {
@@ -80,7 +87,7 @@ public class ConfigFileHelper {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", item.getStarttls());
-        props.put("mail.debug", "false");
+        props.put("mail.debug", "true");
 
         return mailSender;
 

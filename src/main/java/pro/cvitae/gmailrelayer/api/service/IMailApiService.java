@@ -12,6 +12,7 @@ public interface IMailApiService {
      * Processes the email received.
      *
      * @param message
+     * @param applicationId
      * @throws MessagingException
      * @throws IOException
      */
