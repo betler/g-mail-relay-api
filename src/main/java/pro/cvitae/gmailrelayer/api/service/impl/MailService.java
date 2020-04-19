@@ -19,6 +19,7 @@ import pro.cvitae.gmailrelayer.api.model.Attachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.Header;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
+import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 
 @Service
 public class MailService implements IMailService {
@@ -26,27 +27,30 @@ public class MailService implements IMailService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    JavaMailSender mailSender;
+    ConfigFileHelper configHelper;
 
     @Override
-    public void sendEmail(final EmailMessage message) throws MessagingException {
-        this.send(message);
+    public void sendEmail(final EmailMessage message, final String applicationId, final String messageType)
+            throws MessagingException {
+        this.send(message, applicationId, messageType);
         this.logger.debug("Sent email to {}", message.getTo());
     }
 
     @Async
     @Override
-    public void sendAsyncEmail(final EmailMessage message) {
+    public void sendAsyncEmail(final EmailMessage message, final String applicationId, final String messageType) {
         try {
-            this.send(message);
+            this.send(message, applicationId, messageType);
             this.logger.debug("Sent async email to {}", message.getTo());
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
         }
     }
 
-    private void send(final EmailMessage message) throws MessagingException {
-        final MimeMessage mime = this.mailSender.createMimeMessage();
+    private void send(final EmailMessage message, final String applicationId, final String messageType)
+            throws MessagingException {
+        final JavaMailSender mailSender = this.configHelper.senderForApi(message.getFrom(), applicationId, messageType);
+        final MimeMessage mime = mailSender.createMimeMessage();
 
         final MimeMessageHelper helper = new MimeMessageHelper(mime, this.isMultipart(message));
         helper.setValidateAddresses(true);
@@ -95,7 +99,7 @@ public class MailService implements IMailService {
 
         }
 
-        this.mailSender.send(mime);
+        mailSender.send(mime);
     }
 
     private boolean isMultipart(final EmailMessage message) {

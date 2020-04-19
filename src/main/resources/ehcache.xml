@@ -1,0 +1,7 @@
+<ehcache:config xmlns:ehcache="http://www.ehcache.org/v3"
+	xmlns:jcache="http://www.ehcache.org/v3/jsr107">
+
+	<ehcache:cache alias="mailConfigCache">
+		<ehcache:heap unit="entries">100</ehcache:heap>
+	</ehcache:cache>
+</ehcache:config>

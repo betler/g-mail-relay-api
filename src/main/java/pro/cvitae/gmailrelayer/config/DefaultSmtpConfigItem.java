@@ -12,4 +12,5 @@ public class DefaultSmtpConfigItem extends DefaultConfigItem {
     @Getter
     @Setter
     private Integer listeningPort;
+
 }
