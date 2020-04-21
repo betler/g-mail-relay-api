@@ -20,6 +20,7 @@ package pro.cvitae.gmailrelayer.server;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,9 @@ public class SmtpServerConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public SmtpServer smtpServer(final ConfigFile configFile, final Collection<ProtocolHandler> handlers) {
+
+        Validate.inclusiveBetween(1L, 65535L, this.port);
+
         handlers.add(new MessageReceivedHook(configFile));
         return new SmtpServer(this.port, handlers);
     }

@@ -37,7 +37,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import pro.cvitae.gmailrelayer.config.ConfigFile;
-import pro.cvitae.gmailrelayer.config.DefaultSmtpConfigItem;
+import pro.cvitae.gmailrelayer.config.DefaultConfigItem;
 
 /**
  * @author betler
@@ -124,9 +124,8 @@ public class MessageReceivedHook implements MessageHook {
     }
 
     private Properties getRelayingProperties() {
-        final DefaultSmtpConfigItem config = this.configFile.getSmtpDefault();
+        final DefaultConfigItem config = this.configFile.getSmtpDefault();
         Validate.matchesPattern(config.getAuthType(), "^(USERPASS|NTLM)$");
-        Validate.inclusiveBetween(1L, 65535L, config.getListeningPort());
 
         final Properties props = new Properties();
 

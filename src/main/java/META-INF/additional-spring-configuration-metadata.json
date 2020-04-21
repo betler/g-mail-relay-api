@@ -5,46 +5,6 @@
     "description": "Listening port for the smtp server"
   },
   {
-    "name": "relayer.smtp.relay.auth.type",
-    "type": "java.lang.String",
-    "description": "NTML for NTLM authentication; USERPASS for the rest"
-  },
-  {
-    "name": "relayer.smtp.relay.auth.username",
-    "type": "java.lang.String",
-    "description": "Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true"
-  },
-  {
-    "name": "relayer.smtp.relay.auth.password",
-    "type": "java.lang.String",
-    "description": "Password for the authentication in the relaying server."
-  },
-  {
-    "name": "relayer.smtp.relay.overrideFrom",
-    "type": "java.lang.String",
-    "description": "If true, 'from' address will be replaced by the relayer.smtp.auth.username property. This means this property must be a full email address"
-  },
-  {
-    "name": "relayer.smtp.relay.auth.domain",
-    "type": "java.lang.String",
-    "description": "Domain for NTLM authentication"
-  },
-  {
-    "name": "relayer.smtp.relay.server.host",
-    "type": "java.lang.String",
-    "description": "Address or hostname of the relaying smtp server"
-  },
-  {
-    "name": "relayer.smtp.relay.server.starttls",
-    "type": "java.lang.Boolean",
-    "description": "Enable STARTTLS in communication with relaying stmp server"
-  },
-  {
-    "name": "relayer.smtp.relay.server.port",
-    "type": "java.lang.String",
-    "description": "Port number of the relaying smtp server"
-  },
-  {
     "name": "springfox.documentation.swagger.v2.path",
     "type": "java.lang.String",
     "description": "Swagger service descriptions urls. See https://springfox.github.io/springfox/docs/current/#customizing-the-swagger-endpoints"
