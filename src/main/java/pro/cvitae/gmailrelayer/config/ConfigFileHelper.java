@@ -1,6 +1,6 @@
 package pro.cvitae.gmailrelayer.config;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,7 +25,7 @@ public class ConfigFileHelper {
 
     public ConfigFileHelper(final ConfigFile configFile) {
         this.configFile = configFile;
-        this.validateConfig(this.configFile);
+        this.validateConfigFile(this.configFile);
     }
 
     @Cacheable(value = "mailConfigCache", key = "'senderForSmtp#' + #from + '#' + #applicationId + '#' + #messageType")
@@ -102,7 +104,7 @@ public class ConfigFileHelper {
 
     }
 
-    private boolean validateConfig(final ConfigFile configFile) {
+    private boolean validateConfigFile(final ConfigFile configFile) {
 
         // Validate default smtp
         final DefaultConfigItem smtpDefault = configFile.getSmtpDefault();
@@ -115,56 +117,75 @@ public class ConfigFileHelper {
         this.validateDefaultConfigItem(apiDefault);
 
         // Validate api config
-        // TODO Duplicated code
+        this.validateConfigItemList(configFile.getApiConfig());
+
+        // Validate smtp config
+        this.validateConfigItemList(configFile.getSmtpConfig());
+
+        return true;
+
+    }
+
+    /**
+     * Checks if configuration is valid for an api or smtp section. First checks if
+     * configurations (forFrom, forApplicationId, forMessageType) are valid and then
+     * checks each item.
+     *
+     * @param configList
+     * @return
+     */
+    private boolean validateConfigItemList(final List<ConfigItem> configList) {
         // Check if any has forFrom and forApplicationId null
-        if (configFile.getApiConfig().stream()
+        if (configList.stream()
                 .filter(i -> Strings.isNullOrEmpty(i.getForFrom()) && Strings.isNullOrEmpty(i.getForApplicationId()))
                 .count() > 0) {
-            throw new IllegalArgumentException("Either forFrom or forApplicationId must be set in api config");
+            throw new IllegalArgumentException("Either forFrom or forApplicationId must be set in config");
         }
 
         // Check if any has forFrom and forApplicationId not null
-        if (configFile.getApiConfig().stream()
+        if (configList.stream()
                 .filter(i -> !Strings.isNullOrEmpty(i.getForFrom()) && !Strings.isNullOrEmpty(i.getForApplicationId()))
                 .count() > 0) {
             throw new IllegalArgumentException("forFrom and forApplicationId cannot be set together");
         }
 
         // Check if forFrom is duplicated, only for those with applicationId null
-        final List<ConfigItem> filteredConfigItems = configFile.getApiConfig().stream()
-                .filter(i -> i.getForApplicationId() == null).collect(Collectors.toList());
+        final List<ConfigItem> filteredConfigItems = configList.stream().filter(i -> i.getForApplicationId() == null)
+                .collect(Collectors.toList());
         final TreeSet<String> duplicateStringChecker = new TreeSet<>();
         for (final ConfigItem i : filteredConfigItems) {
             if (!duplicateStringChecker.add(i.getForFrom())) {
-                throw new IllegalArgumentException(i.getForFrom() + " is duplicated in api config");
+                throw new IllegalArgumentException(i.getForFrom() + " is duplicated in config");
             }
         }
 
         // Check if there are duplicates of applicationId and messageType
-        final HashMap<String, String> helperMap = new HashMap<>();
-        for (final ConfigItem config : configFile.getApiConfig()) {
+        final MultiValuedMap<String, String> helperMap = new HashSetValuedHashMap<>();
+        for (final ConfigItem config : configList) {
             // I checked before for from + application redundant configurations
             if (!Strings.isNullOrEmpty(config.getForApplicationId())) {
                 // First check if exists. Cannot check null as null is a valid value
                 if (helperMap.containsKey(config.getForApplicationId())) {
                     // Check if duplicated
-                    final String messageType = helperMap.get(config.getForApplicationId());
-                    if (messageType == null && config.getForMessageType() == null
-                            || messageType != null && messageType.equals(config.getForMessageType())) {
+                    final Collection<String> messageTypes = helperMap.get(config.getForApplicationId());
+
+                    if (messageTypes.contains(config.getForMessageType())) {
                         // Nok
                         throw new IllegalArgumentException(
-                                "forApplicationId and forMessageType are duplicated in api config: "
+                                "forApplicationId and forMessageType are duplicated in config: "
                                         + config.getForApplicationId() + ":" + config.getForMessageType());
                     }
                 }
 
-                helperMap.put(config.getForApplicationId(), config.getForMessageType());
                 // Otherwise, add it
+                helperMap.put(config.getForApplicationId(), config.getForMessageType());
             }
         }
 
-        return true;
+        // Everything seems ok, validate each element
+        configList.stream().map(i -> this.validateDefaultConfigItem(i)).count();
 
+        return true;
     }
 
     private boolean validateDefaultConfigItem(final DefaultConfigItem item) {
