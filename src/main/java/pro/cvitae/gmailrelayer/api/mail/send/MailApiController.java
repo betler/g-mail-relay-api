@@ -14,6 +14,7 @@ import pro.cvitae.gmailrelayer.api.exception.ErrorDetailException;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.service.IMailApiService;
+import pro.cvitae.gmailrelayer.config.SendingType;
 
 @RestController
 public class MailApiController implements MailApi {
@@ -26,7 +27,7 @@ public class MailApiController implements MailApi {
     public ResponseEntity<SendEmailResult> sendEmail(@Valid final EmailMessage message) throws ErrorDetailException {
 
         try {
-            this.mailApiService.sendEmail(message);
+            this.mailApiService.sendEmail(message, SendingType.API);
         } catch (final MessagingException me) {
             throw new ErrorDetailException(me, "mail.send.error", "Unexpected error while sending mail",
                     Arrays.asList(me.getClass().toString(), me.getMessage()));

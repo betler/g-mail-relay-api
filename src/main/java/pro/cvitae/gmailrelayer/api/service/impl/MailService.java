@@ -22,6 +22,7 @@ import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 import pro.cvitae.gmailrelayer.config.DefaultConfigItem;
 import pro.cvitae.gmailrelayer.config.SendingConfiguration;
+import pro.cvitae.gmailrelayer.config.SendingType;
 
 @Service
 public class MailService implements IMailService {
@@ -32,25 +33,25 @@ public class MailService implements IMailService {
     ConfigFileHelper configHelper;
 
     @Override
-    public void sendEmail(final EmailMessage message) throws MessagingException {
-        this.send(message);
-        this.logger.debug("Sent email to {}", message.getTo());
+    public void sendEmail(final EmailMessage message, final SendingType sendingType) throws MessagingException {
+        this.send(message, sendingType);
+        this.logger.debug("Sent email to {} via {}", message.getTo(), sendingType);
     }
 
     @Async
     @Override
-    public void sendAsyncEmail(final EmailMessage message) {
+    public void sendAsyncEmail(final EmailMessage message, final SendingType sendingType) {
         try {
-            this.send(message);
-            this.logger.debug("Sent async email to {}", message.getTo());
+            this.send(message, sendingType);
+            this.logger.debug("Sent async email to {} via {}", message.getTo(), sendingType);
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
         }
     }
 
-    private void send(final EmailMessage message) throws MessagingException {
+    private void send(final EmailMessage message, final SendingType sendingType) throws MessagingException {
         // Get mailer and configuration. Needed for overriding from
-        final SendingConfiguration sendingConfiguration = this.configHelper.senderForApi(message.getFrom(),
+        final SendingConfiguration sendingConfiguration = this.configHelper.senderFor(sendingType, message.getFrom(),
                 message.getApplicationId(), message.getMessageType());
         final JavaMailSender mailSender = sendingConfiguration.getMailSender();
         final DefaultConfigItem config = sendingConfiguration.getConfigItem();
