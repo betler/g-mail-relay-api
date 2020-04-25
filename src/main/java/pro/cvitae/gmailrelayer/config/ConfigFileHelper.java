@@ -304,7 +304,6 @@ public class ConfigFileHelper {
         Validate.inclusiveBetween(1, 65535, item.getPort(), "Port %s is not a valid number between 1 and 65535",
                 item.getPort());
 
-        // TODO Validate starttls
         Validate.notNull(item.getStarttls(), "starttls cannot be null");
 
         return true;
