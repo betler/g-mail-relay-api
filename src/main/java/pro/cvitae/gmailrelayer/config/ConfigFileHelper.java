@@ -326,4 +326,8 @@ public class ConfigFileHelper {
         return parsed.length == 1;
 
     }
+
+    public ConfigFile getConfigFile() {
+        return this.configFile;
+    }
 }

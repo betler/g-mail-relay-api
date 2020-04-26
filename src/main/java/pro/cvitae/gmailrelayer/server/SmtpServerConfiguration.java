@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import pro.cvitae.gmailrelayer.config.ConfigFile;
+import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 
 /**
  * @author betler
@@ -39,11 +39,11 @@ public class SmtpServerConfiguration {
     private Integer port;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public SmtpServer smtpServer(final ConfigFile configFile, final Collection<ProtocolHandler> handlers) {
+    public SmtpServer smtpServer(final ConfigFileHelper configFileHelper, final Collection<ProtocolHandler> handlers) {
 
         Validate.inclusiveBetween(1L, 65535L, this.port);
 
-        handlers.add(new MessageReceivedHook(configFile));
+        handlers.add(new MessageReceivedHook(configFileHelper));
         return new SmtpServer(this.port, handlers);
     }
 
