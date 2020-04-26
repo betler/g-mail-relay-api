@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.mail.MessagingException;
 
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
-import pro.cvitae.gmailrelayer.config.SendingType;
+import pro.cvitae.gmailrelayer.api.model.SendingType;
 
 public interface IMailApiService {
 

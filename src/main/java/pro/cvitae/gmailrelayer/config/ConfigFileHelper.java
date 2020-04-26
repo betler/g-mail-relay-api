@@ -20,6 +20,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.google.common.base.Strings;
 
+import pro.cvitae.gmailrelayer.api.model.SendingType;
+
 /**
  * Helper class to manage the application's {@link ConfigFile}. Should be used
  * as singleton, although each call to the constructor will return a new

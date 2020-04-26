@@ -11,6 +11,7 @@ import org.springframework.boot.system.ApplicationHome;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 
@@ -47,6 +48,7 @@ public class GenericBeanConfig {
     }
 
     @Bean
+    @DependsOn("configFile")
     public ConfigFileHelper configFileHelper(final ConfigFile configFile) {
         return new ConfigFileHelper(configFile);
     }
