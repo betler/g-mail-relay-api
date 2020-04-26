@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.cvitae.gmailrelayer.api.exception.ErrorDetailException;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
+import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailApiService;
-import pro.cvitae.gmailrelayer.config.SendingType;
 
 @RestController
 public class MailApiController implements MailApi {

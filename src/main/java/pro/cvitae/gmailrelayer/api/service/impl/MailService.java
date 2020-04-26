@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
 import pro.cvitae.gmailrelayer.api.model.Attachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.Header;
+import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 import pro.cvitae.gmailrelayer.config.DefaultConfigItem;
 import pro.cvitae.gmailrelayer.config.SendingConfiguration;
-import pro.cvitae.gmailrelayer.config.SendingType;
 
 @Service
 public class MailService implements IMailService {
@@ -46,6 +46,28 @@ public class MailService implements IMailService {
             this.logger.debug("Sent async email to {} via {}", message.getTo(), sendingType);
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
+        }
+    }
+
+    @Override
+    public void sendEmail(final MimeMessage message, final SendingType sendingType) throws MessagingException {
+        this.send(message, sendingType);
+        this.logger.debug("Sent email to {} via {}", message.getAllRecipients()[0], sendingType);
+    }
+
+    @Async
+    @Override
+    public void sendAsyncEmail(final MimeMessage message, final SendingType sendingType) {
+        try {
+            this.send(message, sendingType);
+            this.logger.debug("Sent async email to {} via {}", message.getAllRecipients()[0], sendingType);
+        } catch (final MessagingException me) {
+            try {
+                this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getAllRecipients()[0],
+                        me);
+            } catch (final MessagingException e) {
+                this.logger.error("Error sending mail from. Couldn't fetch email data for logging", me);
+            }
         }
     }
 
@@ -112,7 +134,55 @@ public class MailService implements IMailService {
         mailSender.send(mime);
     }
 
+    private void send(final MimeMessage message, final SendingType sendingType) throws MessagingException {
+        // Get mailer and configuration. Needed for overriding from
+        final String forApplicationId = this.getValidatedHeader("X-GMR-APPLICATION-ID", message);
+        final String forMessageType = this.getValidatedHeader("X-GMR-MESSAGE-TYPE", message);
+
+        final SendingConfiguration sendingConfiguration = this.configHelper.senderFor(sendingType,
+                message.getFrom()[0].toString(), forApplicationId, forMessageType);
+        final JavaMailSender mailSender = sendingConfiguration.getMailSender();
+        final DefaultConfigItem config = sendingConfiguration.getConfigItem();
+
+        // If from address overriding is set, from is changed
+        if (Boolean.TRUE.equals(config.getOverrideFrom())) {
+            message.setFrom(config.getOverrideFromAddress());
+        }
+
+        mailSender.send(message);
+    }
+
     private boolean isMultipart(final EmailMessage message) {
         return message.getAttachments() != null && !message.getAttachments().isEmpty();
     }
+
+    /**
+     * Tries to retrieve the given header from the message. If it is set more than
+     * once and {@link IllegalArgumentException} is thrown. If not set or empty it
+     * returns <code>null</code>. Else, it returns the header value.
+     *
+     * @param name of the header
+     * @param msg
+     * @return
+     * @throws MessagingException
+     */
+    public String getValidatedHeader(final String name, final MimeMessage msg) throws MessagingException {
+        final String[] header = msg.getHeader(name);
+
+        if (header == null || header.length == 0) {
+            return null;
+        }
+
+        if (header.length > 1) {
+            throw new IllegalArgumentException("Header " + name + " is set more than once");
+        }
+
+        final String aux = header[0];
+        if ("".equals(aux) || aux == null) {
+            return null;
+        }
+
+        return aux;
+    }
+
 }

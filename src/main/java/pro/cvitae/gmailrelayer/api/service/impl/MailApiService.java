@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import pro.cvitae.gmailrelayer.api.model.DeliveryType;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
+import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailApiService;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
-import pro.cvitae.gmailrelayer.config.SendingType;
 
 @Service
 public class MailApiService implements IMailApiService {

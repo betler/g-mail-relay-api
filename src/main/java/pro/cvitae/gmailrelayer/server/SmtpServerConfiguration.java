@@ -18,6 +18,7 @@
  */
 package pro.cvitae.gmailrelayer.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang3.Validate;
@@ -39,12 +40,18 @@ public class SmtpServerConfiguration {
     private Integer port;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public SmtpServer smtpServer(final ConfigFileHelper configFileHelper, final Collection<ProtocolHandler> handlers) {
+    public SmtpServer smtpServer(final MessageReceivedHook messageReceivedHook) {
 
         Validate.inclusiveBetween(1L, 65535L, this.port);
 
-        handlers.add(new MessageReceivedHook(configFileHelper));
+        final Collection<ProtocolHandler> handlers = new ArrayList<>();
+        handlers.add(messageReceivedHook);
         return new SmtpServer(this.port, handlers);
+    }
+
+    @Bean
+    public MessageReceivedHook messageReceivedHook(final ConfigFileHelper configFileHelper) {
+        return new MessageReceivedHook(configFileHelper);
     }
 
 }
