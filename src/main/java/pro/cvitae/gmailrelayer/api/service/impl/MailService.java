@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import pro.cvitae.gmailrelayer.api.model.Attachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.Header;
+import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
@@ -136,8 +137,8 @@ public class MailService implements IMailService {
 
     private void send(final MimeMessage message, final SendingType sendingType) throws MessagingException {
         // Get mailer and configuration. Needed for overriding from
-        final String forApplicationId = this.getValidatedHeader("X-GMR-APPLICATION-ID", message);
-        final String forMessageType = this.getValidatedHeader("X-GMR-MESSAGE-TYPE", message);
+        final String forApplicationId = this.getValidatedHeader(MessageHeaders.APPLICATION_ID, message);
+        final String forMessageType = this.getValidatedHeader(MessageHeaders.MESSAGE_TYPE, message);
 
         final SendingConfiguration sendingConfiguration = this.configHelper.senderFor(sendingType,
                 message.getFrom()[0].toString(), forApplicationId, forMessageType);
@@ -156,16 +157,7 @@ public class MailService implements IMailService {
         return message.getAttachments() != null && !message.getAttachments().isEmpty();
     }
 
-    /**
-     * Tries to retrieve the given header from the message. If it is set more than
-     * once and {@link IllegalArgumentException} is thrown. If not set or empty it
-     * returns <code>null</code>. Else, it returns the header value.
-     *
-     * @param name of the header
-     * @param msg
-     * @return
-     * @throws MessagingException
-     */
+    @Override
     public String getValidatedHeader(final String name, final MimeMessage msg) throws MessagingException {
         final String[] header = msg.getHeader(name);
 

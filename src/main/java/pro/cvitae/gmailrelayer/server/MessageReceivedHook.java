@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
@@ -89,8 +90,15 @@ public class MessageReceivedHook implements MessageHook {
 
         try {
             // Send message
-            this.mailService.sendEmail(msg, SendingType.SMTP);
-            this.logger.debug("Sent message {} to {}", msg.getMessageID(), msg.getRecipients(Message.RecipientType.TO));
+            if ("true".equalsIgnoreCase(this.mailService.getValidatedHeader(MessageHeaders.ASYNC, msg))) {
+                this.mailService.sendAsyncEmail(msg, SendingType.SMTP);
+                this.logger.debug("Sent async message {} to {}", msg.getMessageID(),
+                        msg.getRecipients(Message.RecipientType.TO));
+            } else {
+                this.mailService.sendEmail(msg, SendingType.SMTP);
+                this.logger.debug("Sent message {} to {}", msg.getMessageID(),
+                        msg.getRecipients(Message.RecipientType.TO));
+            }
 
         } catch (final Exception e) {
             this.logger.error("Error sending message", e);
