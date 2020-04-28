@@ -83,7 +83,8 @@ public class MailService implements IMailService {
         final MimeMessage mime = mailSender.createMimeMessage();
 
         // Configure helper
-        final MimeMessageHelper helper = new MimeMessageHelper(mime, this.isMultipart(message));
+        final MimeMessageHelper helper = new MimeMessageHelper(mime, this.isMultipart(message),
+                message.getTextEncoding());
         helper.setValidateAddresses(true);
 
         // Recipients

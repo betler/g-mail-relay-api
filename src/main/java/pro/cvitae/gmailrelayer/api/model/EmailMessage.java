@@ -122,13 +122,13 @@ public class EmailMessage implements Serializable {
     }
 
     /**
-     * Set \"from\" adress. This may be ignored by other configurations which may
+     * Set \"from\" address. This may be ignored by other configurations which may
      * override the \"from\" address.
      *
      * @return from
      **/
     @Email
-    @ApiModelProperty(example = "Aunt Doe <aunt.doe@example.com>", value = "Set \"from\" adress. This may be ignored by other configurations which may override the \"from\" address.")
+    @ApiModelProperty(example = "Aunt Doe <aunt.doe@example.com>", value = "Set \"from\" address. This may be ignored by other configurations which may override the \"from\" address.")
     public String getFrom() {
         return this.from;
     }
