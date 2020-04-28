@@ -39,6 +39,12 @@ public class MailService implements IMailService {
         this.logger.debug("Sent email to {} via {}", message.getTo(), sendingType);
     }
 
+    @Override
+    public void sendEmail(final MimeMessage message, final SendingType sendingType) throws MessagingException {
+        this.send(message, sendingType);
+        this.logger.debug("Sent email to {} via {}", message.getAllRecipients()[0], sendingType);
+    }
+
     @Async
     @Override
     public void sendAsyncEmail(final EmailMessage message, final SendingType sendingType) {
@@ -48,12 +54,6 @@ public class MailService implements IMailService {
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
         }
-    }
-
-    @Override
-    public void sendEmail(final MimeMessage message, final SendingType sendingType) throws MessagingException {
-        this.send(message, sendingType);
-        this.logger.debug("Sent email to {} via {}", message.getAllRecipients()[0], sendingType);
     }
 
     @Async

@@ -10,9 +10,9 @@ public interface IMailService {
 
     void sendEmail(final EmailMessage message, final SendingType sendingType) throws MessagingException;
 
-    void sendAsyncEmail(final EmailMessage message, final SendingType sendingType);
-
     void sendEmail(final MimeMessage message, final SendingType sendingType) throws MessagingException;
+
+    void sendAsyncEmail(final EmailMessage message, final SendingType sendingType);
 
     void sendAsyncEmail(final MimeMessage message, final SendingType sendingType);
 
