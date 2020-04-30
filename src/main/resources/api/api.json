@@ -52,17 +52,17 @@
             "content" : {
               "object" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ErrorDetail"
+                  "$ref" : "#/components/schemas/ValidationErrorDetail"
                 }
               }
             }
           },
-          "401" : {
-            "description" : "unauthorized",
+          "500" : {
+            "description" : "internal server error",
             "content" : {
               "object" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ErrorDetail"
+                  "$ref" : "#/components/schemas/InternalServerErrorDetail"
                 }
               }
             }
@@ -73,6 +73,58 @@
   },
   "components" : {
     "schemas" : {
+      "ValidationErrorDetail" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "datetime of error occurrence"
+          },
+          "status" : {
+            "type" : "integer",
+            "description" : "http error code"
+          },
+          "errors" : {
+            "description" : "List of validation errors",
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "field must not be null"
+            }
+          }
+        }
+      },
+      "InternalServerErrorDetail" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "datetime of error occurrence"
+          },
+          "status" : {
+            "type" : "integer",
+            "description" : "http error code"
+          },
+          "error" : {
+            "type" : "string",
+            "description" : "Description of the error code"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "More detailed description of the error."
+          },
+          "trace" : {
+            "type" : "string",
+            "description" : "Stacktrace of the exception"
+          },
+          "path" : {
+            "type" : "string",
+            "description" : "Path of the method called"
+          }
+        }
+      },
       "SendEmailResult" : {
         "required" : [ "id", "result" ],
         "type" : "object",
@@ -97,28 +149,6 @@
             "format" : "date-time",
             "description" : "Datetime of the message",
             "example" : "2015-03-17T10:30:45Z"
-          }
-        }
-      },
-      "ErrorDetail" : {
-        "type" : "object",
-        "properties" : {
-          "code" : {
-            "type" : "string",
-            "description" : "Machine-readable error code",
-            "example" : "mail.send.error.general"
-          },
-          "description" : {
-            "type" : "string",
-            "description" : "Longer human-readable message",
-            "example" : "Could not connect to host"
-          },
-          "params" : {
-            "type" : "array",
-            "description" : "List of values to complete the error code. Fully dependant on the error code",
-            "items" : {
-              "type" : "string"
-            }
           }
         }
       },

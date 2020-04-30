@@ -13,12 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import pro.cvitae.gmailrelayer.api.exception.ErrorDetailException;
-import pro.cvitae.gmailrelayer.api.model.ErrorDetail;
 
 /**
  * @author https://mkyong.com/spring-boot/spring-rest-validation-example/
@@ -55,20 +51,23 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, headers, status);
     }
 
-    @ExceptionHandler({ ErrorDetailException.class })
-    protected ResponseEntity<ErrorDetail> handleErrorDetailException(final ErrorDetailException ex,
-            final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-
-        this.logger.error("ErrorDetailException", ex);
-
-        return new ResponseEntity<>(ex.getDetail(), headers, status);
-    }
-
     private Map<String, Object> getDefaultBody(final HttpStatus status) {
         final Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());
         return body;
+    }
+
+    /**
+     * Builds a {@link ResponseEntity} with the given body and a
+     * {@link HttpStatus#INTERNAL_SERVER_ERROR} status code
+     *
+     * @param <T>
+     * @param body
+     * @return
+     */
+    private <T> ResponseEntity<T> error500(final T body) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
 }

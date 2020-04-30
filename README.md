@@ -1,6 +1,4 @@
-![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square)
-![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)
-[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
+![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square)![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
 
 # g-mail-relayer
 
@@ -66,20 +64,23 @@ I'm trying to keep this up to date, but no release is still out, so this refers 
 | 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 | 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
 
-# Usage
+# REST API Usage
 
-## REST API Sending
+## Extended documentation
 
-Expanded documentation with max sizes, required object, etc. can be found in:
+Extended documentation with max sizes, required object, etc. can be found in:
+
 * [Swagger.io](https://app.swaggerhub.com/apis/c-vitae.pro/g-mail-relayer-api/1.0.0#/models)
 * [api.json file](https://github.com/betler/g-mail-relayer/blob/master/src/main/resources/api/api.json)
 * [Locally generated HTML doc](https://github.com/betler/g-mail-relayer/blob/master/src/main/resources/api/api-doc.html)
 
+## Examples
+
 Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/api/samples).
 
-The only existing method is `POST` `/mail/send`.
+## /mail/send method
 
-Here are listed the fields of the json objects the api requires.
+The only existing method is `POST` `/mail/send`. It receives a `EmailMessage`json object.
 
 ### EmailMessage
 This is the json object representing an email message that is going to be sent:
@@ -123,6 +124,40 @@ This is the json object representing a header included in the message.
 
 This one wasn't tough, was it?
 
+## ErrorHandling
+
+All exception are handled by a subclass of [ResponseEntityExceptionHandler](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/servlet/mvc/method/annotation/ResponseEntityExceptionHandler.html). Only validation errors are handled explicitly in the application.
+
+### 400 error code
+
+Validation errors are handled with a 400 response code and the following response body:
+
+```json
+{
+  "timestamp": "2020-04-29T22:24:15.404Z",
+  "status": 400,
+  "errors": [
+    "textFormat must match \"(HTML|TEXT)\"",
+    "deliveryType must match \"(PRIORITY_SYNC|PRIORITY_ASYNC|QUEUE)\""
+  ]
+}
+```
+
+### 500 error code
+
+An example of the output produced by an error 500 return code.
+
+```json
+{
+  "timestamp": "2020-04-30T11:23:03.146Z",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "Mail server connection failed; nested exception is com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\tjava.net.ConnectException: Connection refused: connect. Failed messages: com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\tjava.net.ConnectException: Connection refused: connect",
+  "trace": "org.springframework.mail.MailSendException: Mail server connection failed; nested exception is com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\tjava.net.ConnectException: Connection refused: connect. Failed messages: com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\t... 95 more\r\n",
+  "path": "/mail/send"
+}
+```
+
 ### ErrorDetail
 
 ***<span style='color:red;'>PENDING</span>***
@@ -154,7 +189,7 @@ Message-ID: <234234234qsdafs3$asfa3asd@example.com>
 
 This means that the original `from` address of the original email must be allowed in the relaying server to be the sender of the message. This is, provided username and password must be authorized to send emails on behalf the original `from` address.
 
-This is true if `relayer.smtp.relay.from.override` is set to `false`. If overriding is activated, the `from` address is replaced by the value of `relayer.smtp.relay.auth.username` property. In this case, this property must be a full email address.
+This is true if the configuration selected for that email does not override the `from` address.
 
 ## application.properties
 
@@ -176,7 +211,7 @@ These properties apply to the relaying of the incoming messages.
 | .auth.type        | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
 | .auth.username    | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
 | .auth.password    | String                   | Password for the authentication in the relaying server                                                                                       |
-| .auth.domain      | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |  
+| .auth.domain      | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |
 | .server.starttls  | Boolean                  | Enable STARTTLS in communication with relaying stmp server                                                                                   |
 | .server.host      | String                   | Address or hostname of the relaying smtp server                                                                                              |
 | .server.port      | Number                   | Port of the relaying smtp server                                                                                                             |
