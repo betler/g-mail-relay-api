@@ -129,9 +129,9 @@
         "required" : [ "id", "result" ],
         "type" : "object",
         "properties" : {
-          "result" : {
-            "description" : "The result of the operation",
-            "enum" : [ "QUEUED", "SENT", "NOK" ]
+          "status" : {
+            "description" : "The status of the message",
+            "enum" : [ "QUEUED", "SENDING", "SENT", "ERROR" ]
           },
           "id" : {
             "type" : "integer",

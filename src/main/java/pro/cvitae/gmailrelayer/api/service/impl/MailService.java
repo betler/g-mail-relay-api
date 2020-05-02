@@ -1,7 +1,10 @@
 package pro.cvitae.gmailrelayer.api.service.impl;
 
 import java.io.ByteArrayInputStream;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
+import java.util.concurrent.Future;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -13,12 +16,15 @@ import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import pro.cvitae.gmailrelayer.api.model.Attachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
+import pro.cvitae.gmailrelayer.api.model.EmailStatus;
 import pro.cvitae.gmailrelayer.api.model.Header;
 import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
+import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
@@ -34,34 +40,42 @@ public class MailService implements IMailService {
     ConfigFileHelper configHelper;
 
     @Override
-    public void sendEmail(final EmailMessage message, final SendingType sendingType) throws MessagingException {
-        this.send(message, sendingType);
+    public SendEmailResult sendEmail(final EmailMessage message, final SendingType sendingType)
+            throws MessagingException {
+        final MimeMessage mime = this.send(message, sendingType);
         this.logger.debug("Sent email to {} via {}", message.getTo(), sendingType);
+        return this.getSendEmailResult(mime, EmailStatus.SENT);
     }
 
     @Override
-    public void sendEmail(final MimeMessage message, final SendingType sendingType) throws MessagingException {
+    public SendEmailResult sendEmail(final MimeMessage message, final SendingType sendingType)
+            throws MessagingException {
         this.send(message, sendingType);
         this.logger.debug("Sent email to {} via {}", message.getAllRecipients()[0], sendingType);
+        return this.getSendEmailResult(message, EmailStatus.SENT);
     }
 
     @Async
     @Override
-    public void sendAsyncEmail(final EmailMessage message, final SendingType sendingType) {
+    public Future<SendEmailResult> sendAsyncEmail(final EmailMessage message, final SendingType sendingType) {
+        MimeMessage mime = null;
         try {
-            this.send(message, sendingType);
+            mime = this.send(message, sendingType);
             this.logger.debug("Sent async email to {} via {}", message.getTo(), sendingType);
+            return new AsyncResult<>(this.getSendEmailResult(mime, EmailStatus.SENT));
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
+            return new AsyncResult<>(this.getSafeSendEmailResult(mime, EmailStatus.ERROR));
         }
     }
 
     @Async
     @Override
-    public void sendAsyncEmail(final MimeMessage message, final SendingType sendingType) {
+    public Future<SendEmailResult> sendAsyncEmail(final MimeMessage message, final SendingType sendingType) {
         try {
             this.send(message, sendingType);
             this.logger.debug("Sent async email to {} via {}", message.getAllRecipients()[0], sendingType);
+            return new AsyncResult<>(this.getSendEmailResult(message, EmailStatus.SENT));
         } catch (final MessagingException me) {
             try {
                 this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getAllRecipients()[0],
@@ -69,10 +83,12 @@ public class MailService implements IMailService {
             } catch (final MessagingException e) {
                 this.logger.error("Error sending mail from. Couldn't fetch email data for logging", me);
             }
+
+            return new AsyncResult<>(this.getSafeSendEmailResult(message, EmailStatus.ERROR));
         }
     }
 
-    private void send(final EmailMessage message, final SendingType sendingType) throws MessagingException {
+    private MimeMessage send(final EmailMessage message, final SendingType sendingType) throws MessagingException {
         // Get mailer and configuration. Needed for overriding from
         final SendingConfiguration sendingConfiguration = this.configHelper.senderFor(sendingType, message.getFrom(),
                 message.getApplicationId(), message.getMessageType());
@@ -87,7 +103,7 @@ public class MailService implements IMailService {
                 message.getTextEncoding());
         helper.setValidateAddresses(true);
 
-        // Recipients
+        // Recipients (MessageException avoids stream)
         for (final String to : message.getTo()) {
             helper.addTo(to);
         }
@@ -134,6 +150,8 @@ public class MailService implements IMailService {
         }
 
         mailSender.send(mime);
+        return mime;
+
     }
 
     private void send(final MimeMessage message, final SendingType sendingType) throws MessagingException {
@@ -152,6 +170,45 @@ public class MailService implements IMailService {
         }
 
         mailSender.send(message);
+    }
+
+    /**
+     * Creates a {@link SendEmailResult}
+     *
+     * @throws MessagingException
+     */
+    private SendEmailResult getSendEmailResult(final MimeMessage message, final EmailStatus status)
+            throws MessagingException {
+
+        final SendEmailResult result = SendEmailResult.getInstance();
+        // result.setId(id); this will be set by the service that stores in DB
+        result.setMessageId(message == null ? null : message.getMessageID());
+        result.setStatus(status);
+
+        return result;
+
+    }
+
+    /**
+     * Wraps a call to {@link #getSendEmailResult(MimeMessage, EmailStatus)} without
+     * throwing any exception.
+     *
+     * @param mime
+     * @param error
+     * @return
+     */
+    private SendEmailResult getSafeSendEmailResult(final MimeMessage mime, final EmailStatus status) {
+        try {
+            return this.getSendEmailResult(mime, status);
+        } catch (final MessagingException me) {
+            this.logger.error(
+                    "Error while generating a SendEmailResult. Trying to generate a result without message id", me);
+            final SendEmailResult result = new SendEmailResult();
+            result.setDate(OffsetDateTime.now(ZoneOffset.UTC));
+            result.setStatus(status);
+
+            return result;
+        }
     }
 
     private boolean isMultipart(final EmailMessage message) {

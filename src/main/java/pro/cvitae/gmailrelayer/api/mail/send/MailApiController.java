@@ -25,12 +25,12 @@ public class MailApiController implements MailApi {
     public ResponseEntity<SendEmailResult> sendEmail(@Valid final EmailMessage message) throws MailApiException {
 
         try {
-            this.mailApiService.sendEmail(message, SendingType.API);
+            final SendEmailResult result = this.mailApiService.sendEmail(message, SendingType.API);
+            return ResponseEntity.ok(result);
         } catch (final MessagingException me) {
             throw new MailApiException(me);
         }
 
-        return ResponseEntity.ok(new SendEmailResult());
     }
 
 }

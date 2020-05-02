@@ -1,8 +1,8 @@
-![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square)![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
+![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
 
 # g-mail-relayer
 
-This project develops a Java mail relayer. The need comes due to some limitations found in my projects. For sure, there are projects there who can perform this kind of actions, but found none exactly matching and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable.
+This project develops a Java mail relayer. The need comes due to some limitations found in my projects. For sure, there are projects there who can perform this kind of actions, but found none exactly matching and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable. Multiple relay servers must be supported and selected depending on the incoming message.
 
 The goal is to build:
  + A Spring Boot REST API application able to relay emails coming from another application, asynchronously, so the sender can forget about waiting to say EHLO! to a external server.
@@ -30,39 +30,47 @@ This is the list of intended features. Not all of them are implemented, so check
     + ¿Body of the message? Still thinking about it, maybe gzipped in B64 to avoid space wasting
     + Optional information storing none/statistics/all
 4. Support for NTLM authentication
-5. Search/statistics methods.
-    + Able to search
-        + Received in a period of time
-        + By message status / type
-    + Able to give information about
-        + Number of received emails
-        + Number of OK messages
-        + Number of pending messages
-        + Number of NOK messages
-        + Number of retrying messages
-6. Able to send email through a REST API - No auth intented to implement here, just ip filtering
+5. Support for several relaying servers
+6. Able to send email through a REST API - No auth intented
 7. Able to relay email through a standard 25-smtp port
 8. Able to retry email sending for a specified number of times and specified amount of time.
 9. Support for callbacks in message sent or message NOK events
-10. Separate logs for each application
-11. Plugins for beforeSend and afterSend events
+10. Search/statistics methods.
+    + Able to search
+      + Received in a period of time
+      + By message status / type
+    + Able to give information about
+      + Number of received emails
+      + Number of OK/NOK/pending/retrying messages 
+11. Separate logs for each application
+12. Plugins for beforeSend and afterSend events
+13. Hooks for success / error messages
 
 ## Current status
 I'm trying to keep this up to date, but no release is still out, so this refers to the master branch:
 
-| #  | Desc                                        | Status                                                                                                                 |
-|----|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| 1  | Send emails                                 | ![done](https://img.shields.io/badge/requisite-done!-green) |
-| 2  | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
-| 3  | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
-| 4  | Support for NTLM authentication             | ![done](https://img.shields.io/badge/requisite-done!-green) |
-| 5  | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
-| 6  | REST API                                    | ![done](https://img.shields.io/badge/requisite-done!-green)                                                            |
-| 7  | Standard 25-smtp port                       | ![done](https://img.shields.io/badge/requisite-done!-green)                                                            |
-| 8  | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red)                                                         |
-| 9  | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
-| 10 | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
-| 11 | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive)                              |
+| #    | Description                                 | Status                                                       |
+| ---- | ------------------------------------------- | ------------------------------------------------------------ |
+| 1    | Send emails                                 | ![done](https://img.shields.io/badge/requisite-done!-green)  |
+| 2    | Defer email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red) |
+| 3    | Store information about the email           | ![pending](https://img.shields.io/badge/requisite-pending-red) |
+| 4    | Support for NTLM authentication             | ![done](https://img.shields.io/badge/requisite-done!-green)  |
+| 5    | Support for several relaying servers        | ![done](https://img.shields.io/badge/requisite-done!-green)  |
+| 6    | REST API                                    | ![done](https://img.shields.io/badge/requisite-done!-green)  |
+| 7    | Standard 25-smtp port                       | ![done](https://img.shields.io/badge/requisite-done!-green)  |
+| 8    | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red) |
+| 9    | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 10   | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 11   | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 12   | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 13   | Hooks for success / error messages          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+
+## Not supported features
+
+This list includes the features that have been thought of and have been rejected:
+
++ HTTPS: As this is intented for internal use an not to be exposed, don't think this feature is needed. Anyway, it's very simple to configure an Apache/Nginx/whatever-the-server-you-like in front of the application.
++ API authentication: Same reason. This is intended for internal use. Anyway, a proxy with basic auth could be set in front of the api or more professional applications like WSO2 API Manager.
 
 # REST API Usage
 
@@ -111,7 +119,7 @@ This is the json object representing an attachment included in the message.
 |----------------|------------------------------------------|
 | cid            | Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inlined, do not set the CID field. Alphanumeric characters and `._@-$&()[]` are allowed |
 | filename | Filename of the attachment. Alphanumeric characters, space and `_-$&()[]` are allowed. |
-| contentType | Optional content type. |
+| contentType | Optional content type. It must include the encoding for text files. Valid values:<ul><li>`"contentType" : "text/plain; charset=UTF-8"`</li><li>`"contentType" : "image/png",`</li></ul> |
 | content | The file contents in Base64 representation. Current max size is 6MB. |
 
 ### Header
@@ -124,11 +132,15 @@ This is the json object representing a header included in the message.
 
 This one wasn't tough, was it?
 
+## SendMailResult
+
+
+
 ## ErrorHandling
 
 All exception are handled by a subclass of [ResponseEntityExceptionHandler](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/servlet/mvc/method/annotation/ResponseEntityExceptionHandler.html). Only validation errors are handled explicitly in the application.
 
-### 400 error code
+### 400 error code - validations
 
 Validation errors are handled with a 400 response code and the following response body:
 
@@ -143,7 +155,7 @@ Validation errors are handled with a 400 response code and the following respons
 }
 ```
 
-### 500 error code
+### 500 error code - something went wrong
 
 An example of the output produced by an error 500 return code.
 
@@ -164,18 +176,22 @@ An example of the output produced by an error 500 return code.
 
 ### SendEmailResult
 
+UTC TIME
+
 ***<span style='color:red;'>PENDING</span>***
 
 ***<span style='color:red;'>PENDIENTES DE REVISAR</span>***
+
  - [ ] List item
  - [ ] Buscar todos los adress > address
+ - [ ] ¿De qué tipo es USERPASS?
+ - [ ] Añadir debug del envío al properties
 
 replyTo puede llevar brackets???
 
-## SMTP Relaying
+# SMTP Relaying
 
-The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. This means we can send emails from cron 
-or similar small utilities that do not support smtp server sending (just localhost and non-authenticated sending). 
+The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. This means we can send emails from cron or similar small utilities that do not support smtp server sending. The server asks for no authentication, so it should be placed in a secured environment. 
 
 Message is relayed 'as it is', with the only addition of a _"Received"_ header and a _"Message-ID"_ header:
 
@@ -187,32 +203,121 @@ Received: from 0:0:0:0:0:0:0:1 (EHLO [IPv6:::1]) ([0:0:0:0:0:0:0:1])
 Message-ID: <234234234qsdafs3$asfa3asd@example.com>
 ```
 
-This means that the original `from` address of the original email must be allowed in the relaying server to be the sender of the message. This is, provided username and password must be authorized to send emails on behalf the original `from` address.
+This means that the original `from` address of the email sent must be allowed in the relaying server to be the sender of the message with the authentication provided in the configuration. This is, provided username and password must be authorized to send emails on behalf the original `from` address.
 
-This is true if the configuration selected for that email does not override the `from` address.
+This is true if the configuration selected for that email does not override the `from` address (`overrideFrom` property). In that case, the authorized sender will be the one indicated in the `overrideFromAddress` property.
+
+## Sending method selection headers
+
+BLA BLA BLA
+
+# Configuration
 
 ## application.properties
 
-### relayer.smtp.server.xxx properties
+The following properties are supported in the `application.properties` file.
 
-These properties apply to the local smtp server.
+| Property                    | Value  | Description                                              |
+| --------------------------- | ------ | -------------------------------------------------------- |
+| server.servlet.context-path | String | Context path where the web application will be available |
+| server.port                 | Number | Port for http listening. Secure http not supported.      |
+| relayer.smtp.server.port    | Number | Listening port for the local smtp server                 |
 
-| Property       | Value       | Description                              |
-|----------------|-------------|------------------------------------------|
-| .port          | Number      | Listening port for the local smtp server |
+## json config
 
-### relayer.smtp.relay.xxx properties
+The application needs a json config file (in UTF-8 format) to set the configuration for the relaying servers and to get the information to select which one of the listed servers is selected. The json object has four main properties:
 
-These properties apply to the relaying of the incoming messages.
+| Property     | Description                                                  |
+| ------------ | ------------------------------------------------------------ |
+| api-default  | Sets the configuration for the server that will send all the emails received via API that cannot be matched with any other configuration. |
+| smtp-default | Sets the configuration for the server that will send all the emails received via SMTP that cannot be matched with any other configuration. |
+| api          | Sets all the configurations for all the servers that can be matched to an email received via API. |
+| smtp         | Sets all the configurations for all the servers that can be matched to an email received via SMTP. |
 
-| Property          | Value                    | Description                                                                                                                                  |
-|-------------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| .overrideFrom     | Boolean                  | If true, 'from' address will be replaced by the 'relayer.smtp.auth.username property'. This means this property must be a full email address |
-| .auth.type        | _USERPASS_ &vert; _NTLM_ | NTML for NTLM authentication; USERPASS for the rest                                                                                          |
-| .auth.username    | String                   | Username for the authentication in the relaying server. Must be a full email address if 'relayer.smtp.from.override' is set to true          |
-| .auth.password    | String                   | Password for the authentication in the relaying server                                                                                       |
-| .auth.domain      | String                   | Domain for NTLM authentication. Only needed if 'relayer.smtp.auth.type' is set to 'NTLM'                                                     |
-| .server.starttls  | Boolean                  | Enable STARTTLS in communication with relaying stmp server                                                                                   |
-| .server.host      | String                   | Address or hostname of the relaying smtp server                                                                                              |
-| .server.port      | Number                   | Port of the relaying smtp server                                                                                                             |
+The objects `api-default`and `smtp-default`share the following properties:
 
+| Property            | Value   | Description                                                  |
+| ------------------- | ------- | ------------------------------------------------------------ |
+| overrideFrom        | Boolean | When this is set to `true` the 'from' address of the received email is changed for the one specified in `overrideFromAddress` |
+| overrideFromAddress | String  | If `overrideFrom` is set to `true`, the email will be changed to set this address in the `from`field of the message. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. |
+| authType            | String  | Authentication type of the remote SMTP server the email will be relayed to. Currently only `USERPASS` (LOGIN method) and `NTLM` are supported. |
+| username            | String  | Username to authenticate in the relaying server.             |
+| password            | String  | Password to authenticate in the relaying server.             |
+| domain              | String  | If `authType`is set to `NTLM`, then this field must be set and is the NTLM domain to authenticate the user. |
+| host                | String  | IP or host address of the relaying server.                   |
+| port                | Number  | Port to which connect on the relaying server.                |
+| starttls            | Boolean | Set to `true` if STARTTLS must be used in the relaying server. |
+
+`api`and `smtp`are both an array of objects. This objects have the same properties as `api-default`and `smtp-default` plus these ones, that specify the relaying server selection rule. The selection method and further rules for configuration specification are explained below:
+
+| Property         | Value  | Description                                                  |
+| ---------------- | ------ | ------------------------------------------------------------ |
+| forFrom          | String | When the relaying server has to be chosen by the `from`address of the message, this should be set to the email address that has to be matched in order to pick this configuration. |
+| forApplicationId | String | If you want to pick a sending configuration different for each application that is sending emails, this field sets a custom ID that identifies this configuration. Can't be set at the same time as `forFrom`. |
+| forMessageType   | String | If you want to pick a sending configuration different for each application that is sending emails, but the same application has to use different addresses, this field sets a custom message type that identifies this configuration. Can't be set if `forApplicationId` is not set. |
+
+There is a configuration example in XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+TODAVIA TENGO QUE AHCER QUE EL forFROM ignore los <>
+
+
+
+también tengo que decir lo del async en smtp
+
+## Server matching algorithm
+
+First of all, from address, application id and message type are retrieved:
+
+- For api, from the post body arguments
+- For smtp, the from address and the X-GMR-APPLICATION-ID and X-GMR-MESSAGE-TYPE headers.
+
+With this data the following server matching algorithm is performed:
+
+1. Application ID takes precedence over from so if this id is not null, the message type is retrieved from the message.
+2. If both message application id AND message type match any of the server configuration, this one is selected.
+3. If only application id matches a given configuration, this could happen because:
+   - Email message type is null: then a configuration with an application id but no message type is searched. If found, it is selected
+   - Email message type is not null but there is not a matching configuration. Then, a configuration with the same application ID AND a null message type is searched. This is: it will never be matched if application id is the same AND not the message type AND the configuration message type is not null.
+4. If application id and message type did not give a match, the message from address is searched in the configuration. Keep in mind in this point the brackets XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+5. If none of the steps below did give a match, then the default configuration is used for the applicable sending type (api or smtp).
+
+## I'm confused
+
+Yeah, i know. I prepared this list of examples. I'm not sure if I had understood the previous chapter without having programmed it myself.
+
+Consider the following set of configurations. Not considering if api or smtp because the selection works the same:
+
+| Conf #  | forFrom          | forApplicationId | forMessageType      |
+| ------- | ---------------- | ---------------- | ------------------- |
+| default | N/A              | N/A              | N/A                 |
+| 1       | from@example.com | null             | null                |
+| 2       | null             | 'APP1'           | null                |
+| 3       | null             | 'APP1'           | 'New Customer'      |
+| 4       | null             | 'APP2'           | 'Password Recovery' |
+
+In the next table, it is stated the chosen configuration when different emails are receive:
+
+
+
+| from                | applicationId | messageType         | Chosen config                                                |
+| ------------------- | ------------- | ------------------- | ------------------------------------------------------------ |
+| from@example.com    | null          | null                | #1 - from address is used to select the configuration        |
+| from@example.com    | 'APP1'        | null                | #2 - the from address exists but applicationId takes precedence |
+| from@example.com    | 'APP1'        | 'Newsletter'        | #2 - message type does not exist in configuration so a null message type for the given application id is selected |
+| from@example.com    | 'APP1'        | 'New Customer'      | #3 - application id and message type match                   |
+| another@example.com | 'APP3'        | 'Password Recovery' | default - none match, so default is selected                 |
+| another@example.com | 'APP2'        | 'New Customer'      | default - application id matches but not message type. As there is not 'APP2' application with a null message type, default is selected. |
+
+## Still confused...
+
+Sorry, don't know what else I can do. You can check the algorithm in the [ConfigFileHelper.java file](https://github.com/betler/g-mail-relayer/blob/master/src/main/java/pro/cvitae/gmailrelayer/config/ConfigFileHelper.java).
+
+## Configuration file rules
+
+This matching algorithm means that for each group of configurations (api or smtp) the  following rules must be met:
+
+1. The configuration can be selected by application or from address, not both, so an error will be raised if `forFrom` and `forApplicationId` are both not null.
+2. A message type is a subclass of application so an error will be raised if `forMessageType` is set and `forApplicationId` is null.
+3. Each configuration must be unique so:
+   - Can't set two identical `forFrom`addresses
+   - Can't set two identical `forApplicationId` and `forMessageType` pair values. Keep in mind that `null` is a valid value for the message type. So you can have an application id with no message type and the same application with a specific message type.

@@ -2,6 +2,7 @@ package pro.cvitae.gmailrelayer.api.model;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 import javax.validation.Valid;
@@ -21,8 +22,8 @@ import io.swagger.annotations.ApiModelProperty;
 public class SendEmailResult implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("result")
-    private String result = null;
+    @JsonProperty("status")
+    private EmailStatus status = null;
 
     @JsonProperty("id")
     private Long id = null;
@@ -33,30 +34,30 @@ public class SendEmailResult implements Serializable {
     @JsonProperty("date")
     private OffsetDateTime date = null;
 
-    public SendEmailResult result(final String result) {
-        this.result = result;
-        return this;
+    /**
+     * Creates an instance initialized with the current time
+     * 
+     * @return
+     */
+    public static SendEmailResult getInstance() {
+        final SendEmailResult instance = new SendEmailResult();
+        instance.setDate(OffsetDateTime.now(ZoneOffset.UTC));
+        return instance;
     }
 
     /**
-     * The result of the operation
+     * The status of the message
      *
-     * @return result
+     * @return status
      **/
-    @ApiModelProperty(required = true, value = "The result of the operation")
     @NotNull
-
-    public String getResult() {
-        return this.result;
+    @ApiModelProperty(required = true, value = "The status of the message")
+    public EmailStatus getStatus() {
+        return this.status;
     }
 
-    public void setResult(final String result) {
-        this.result = result;
-    }
-
-    public SendEmailResult id(final Long id) {
-        this.id = id;
-        return this;
+    public void setStatus(final EmailStatus status) {
+        this.status = status;
     }
 
     /**
@@ -64,9 +65,8 @@ public class SendEmailResult implements Serializable {
      *
      * @return id
      **/
-    @ApiModelProperty(example = "14", required = true, value = "Internally assigned ID. Always set")
     @NotNull
-
+    @ApiModelProperty(example = "14", required = true, value = "Internally assigned ID. Always set")
     public Long getId() {
         return this.id;
     }
@@ -75,18 +75,12 @@ public class SendEmailResult implements Serializable {
         this.id = id;
     }
 
-    public SendEmailResult messageId(final String messageId) {
-        this.messageId = messageId;
-        return this;
-    }
-
     /**
      * Message-ID header of the sent message. Empty if the message was delayed.
      *
      * @return messageId
      **/
     @ApiModelProperty(example = "<032d19d1gd15$b9a14470$2si9dm40$@example.com>", value = "Message-ID header of the sent message. Empty if the message was delayed.")
-
     public String getMessageId() {
         return this.messageId;
     }
@@ -95,19 +89,13 @@ public class SendEmailResult implements Serializable {
         this.messageId = messageId;
     }
 
-    public SendEmailResult date(final OffsetDateTime date) {
-        this.date = date;
-        return this;
-    }
-
     /**
      * Datetime of the message
      *
      * @return date
      **/
-    @ApiModelProperty(example = "2015-03-17T10:30:45Z", value = "Datetime of the message")
-
     @Valid
+    @ApiModelProperty(example = "2015-03-17T10:30:45Z", value = "Datetime of the message")
     public OffsetDateTime getDate() {
         return this.date;
     }
@@ -125,14 +113,14 @@ public class SendEmailResult implements Serializable {
             return false;
         }
         final SendEmailResult sendEmailResult = (SendEmailResult) o;
-        return Objects.equals(this.result, sendEmailResult.result) && Objects.equals(this.id, sendEmailResult.id)
+        return Objects.equals(this.status, sendEmailResult.status) && Objects.equals(this.id, sendEmailResult.id)
                 && Objects.equals(this.messageId, sendEmailResult.messageId)
                 && Objects.equals(this.date, sendEmailResult.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.result, this.id, this.messageId, this.date);
+        return Objects.hash(this.status, this.id, this.messageId, this.date);
     }
 
     @Override
@@ -140,7 +128,7 @@ public class SendEmailResult implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("class SendEmailResult {\n");
 
-        sb.append("    result: ").append(this.toIndentedString(this.result)).append("\n");
+        sb.append("    result: ").append(this.toIndentedString(this.status)).append("\n");
         sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
         sb.append("    messageId: ").append(this.toIndentedString(this.messageId)).append("\n");
         sb.append("    date: ").append(this.toIndentedString(this.date)).append("\n");
