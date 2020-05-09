@@ -103,6 +103,7 @@ public class ConfigFileHelper {
         final List<ConfigItem> configItems = sendingType.equals(SendingType.API) ? this.configFile.getApiConfig()
                 : this.configFile.getSmtpConfig();
 
+        /// itemOpt will be the chosen method
         Optional<ConfigItem> itemOpt = Optional.empty();
         if (!Strings.isNullOrEmpty(applicationId)) {
             // ApplicationId takes priority over 'from'
@@ -117,13 +118,16 @@ public class ConfigFileHelper {
             // Fallback if not applicationId + messageType is found
             if (!itemOpt.isPresent()) {
                 // only appID
-                itemOpt = configItems.stream().filter(c -> c.getForApplicationId().equals(applicationId)).findFirst();
+                itemOpt = configItems.stream()
+                        .filter(c -> c.getForApplicationId() != null && c.getForApplicationId().equals(applicationId))
+                        .findFirst();
             }
         }
 
         // if still not configuration is found, try with 'from' address
         if (!itemOpt.isPresent()) {
-            itemOpt = configItems.stream().filter(c -> c.getForFrom() != null && c.getForFrom().equals(from))
+            itemOpt = configItems.stream().filter(
+                    c -> c.getForFrom() != null && this.stripPersonal(c.getForFrom()).equals(this.stripPersonal(from)))
                     .findFirst();
         }
 
@@ -332,4 +336,27 @@ public class ConfigFileHelper {
     public ConfigFile getConfigFile() {
         return this.configFile;
     }
+
+    /**
+     * Removes the personal part from the given address. It captures
+     * {@link AddressException} and replaces it with an
+     * {@link IllegalArgumentException}. All email addresses received should be
+     * validated before calling.
+     *
+     * @param address
+     * @return the address whitout the personal information. For
+     *         <code>John Doe <john.doe@example.com></code> it returns
+     *         <code>john.doe@example.com</code>
+     * @see InternetAddress#getAddress()
+     */
+    public String stripPersonal(final String address) {
+        try {
+            return new InternetAddress(address).getAddress();
+
+        } catch (final AddressException e) {
+            // forFrom should be validated in the controller. This should not happen.
+            throw new IllegalArgumentException(e);
+        }
+    }
+
 }

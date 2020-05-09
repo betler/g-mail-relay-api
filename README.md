@@ -2,11 +2,12 @@
 
 # g-mail-relayer
 
-This project develops a Java mail relayer. The need comes due to some limitations found in my projects. For sure, there are projects there who can perform this kind of actions, but found none exactly matching and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable. Multiple relay servers must be supported and selected depending on the incoming message.
+This project develops a Java SMTP relayer and an API to send emails. The need comes due to some limitations found in my projects and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable. Multiple relay servers are also supported and selected depending on the incoming message.
 
-The goal is to build:
+The basics are:
  + A Spring Boot REST API application able to relay emails coming from another application, asynchronously, so the sender can forget about waiting to say EHLO! to a external server.
- + It should include a vanilla SMTP server to cover legacy code that cannot change to call to an API or third-party applications (as an example of my needs, a replacement for MultiSMTP OTRS plugin).
+ + It includes a vanilla SMTP server to cover legacy code that cannot change to call to an API or third-party applications (as an example of my needs, a replacement for MultiSMTP OTRS plugin).
+ + The relaying server is selected depending on the parameters of the incoming message and the configuration of the relay servers.
 
 Thanks to [@avthart]( https://github.com/avthart ) and his [spring-boot-james-smtp-server]( https://github.com/avthart/spring-boot-james-smtp-server ) project as it enlightened me in the using of Apache James.
 
@@ -27,11 +28,10 @@ This is the list of intended features. Not all of them are implemented, so check
     + Last sending time (last trying to send the message)
     + Number of retries
     + to/cc/bc
-    + ¿Body of the message? Still thinking about it, maybe gzipped in B64 to avoid space wasting
-    + Optional information storing none/statistics/all
+    + ¿Body of the message? Still thinking about it, maybe gzipped to avoid space usage
 4. Support for NTLM authentication
 5. Support for several relaying servers
-6. Able to send email through a REST API - No auth intented
+6. Able to send email through a REST API (no auth)
 7. Able to relay email through a standard 25-smtp port
 8. Able to retry email sending for a specified number of times and specified amount of time.
 9. Support for callbacks in message sent or message NOK events
@@ -45,6 +45,7 @@ This is the list of intended features. Not all of them are implemented, so check
 11. Separate logs for each application
 12. Plugins for beforeSend and afterSend events
 13. Hooks for success / error messages
+14. API method to fetch status of sent mails
 
 ## Current status
 I'm trying to keep this up to date, but no release is still out, so this refers to the master branch:
@@ -58,12 +59,13 @@ I'm trying to keep this up to date, but no release is still out, so this refers 
 | 5    | Support for several relaying servers        | ![done](https://img.shields.io/badge/requisite-done!-green)  |
 | 6    | REST API                                    | ![done](https://img.shields.io/badge/requisite-done!-green)  |
 | 7    | Standard 25-smtp port                       | ![done](https://img.shields.io/badge/requisite-done!-green)  |
-| 8    | Retry email sending                         | ![pending](https://img.shields.io/badge/requisite-pending-red) |
+| 8    | Retry email sending                         | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 9    | Support for callbacks                       | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 10   | Search/statistics methods                   | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 11   | Separate logs for each application          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 12   | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 13   | Hooks for success / error messages          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 14   | API method to fetch status of sent mails    | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 
 ## Not supported features
 
@@ -76,7 +78,7 @@ This list includes the features that have been thought of and have been rejected
 
 ## Extended documentation
 
-Extended documentation with max sizes, required object, etc. can be found in:
+Further documentation can be found in:
 
 * [Swagger.io](https://app.swaggerhub.com/apis/c-vitae.pro/g-mail-relayer-api/1.0.0#/models)
 * [api.json file](https://github.com/betler/g-mail-relayer/blob/master/src/main/resources/api/api.json)
@@ -84,11 +86,13 @@ Extended documentation with max sizes, required object, etc. can be found in:
 
 ## Examples
 
-Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/api/samples).
+[PENDIENTE XXX] Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/api/samples).
 
-## /mail/send method
+[PENDIENTE XXX] Add image of email
 
-The only existing method is `POST` `/mail/send`. It receives a `EmailMessage`json object.
+## /mail/send method (POST)
+
+The only existing method is `POST` `/mail/send`. It receives a `EmailMessage`json object and sends an email with the matching configuration for that email.
 
 ### EmailMessage
 This is the json object representing an email message that is going to be sent:
@@ -97,18 +101,18 @@ This is the json object representing an email message that is going to be sent:
 |----------------|------------------------------------------|
 | applicationId  | Optional ID to identify the calling application with two objectives. Separate sending configuration can be placed in function of this parameter and it is (will be) used in statistics. No specific format required. Example: `APP1`|
 | messageType | Optional message type identification. This property can't be set without `applicationId` and refers to a specific mail type for a specific app. Separate sending configuration can be placed in function of this parameter and it is (will be) used in statistics. No specific format required. Example: `Password recovery`. |
-| from | Email address specifiying the sender of the message. If no `applicationId` is set, this field could be used to select the sending configuration. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. Keep in mind that this address, although mandatory, can be overriden before sending/relaying the email. See sending configuration chapter for more info.|
-| replyTo | Optional field to set the 'reply to' address. This field is not overriden in any case.  |
+| from | Email address specifying the sender of the message. If no `applicationId` is set, this field could be used to select the sending configuration. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. Keep in mind that this address, although mandatory, can be overridden before sending/relaying the email. See sending configuration chapter for more info. |
+| replyTo | Optional field to set the 'reply to' address. This field is not overridden in any case. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. |
 | to | Array of destination addresses. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. |
 | cc | Optional array of cc addresses. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. |
 | bcc | Optional array of bcc addresses. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. |
-| subject | Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me. |
-| body | Body of the message. Can be text or html. Format must be specified with the `textFormat` field, and encoding must be specified with the `textEncoding` field. Max length is 50.000, but still thinking if it should be greater. |
+| subject | Subject of the message. Maximum length is 255, not only because that is the max length of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me. |
+| body | Body of the message. It can be text or html. Format must be specified with the `textFormat` field, and encoding must be specified with the `textEncoding` field. Max length is 50.000, but still thinking if it should be greater or set by configuration. |
 | textFormat | Specifies if the body is text or HTML. Possible values are `TEXT` and `HTML`. |
-| textEncoding | Encoding of the message subject, body and addresses. Almost any field in this object may be affected by this setting. |
+| textEncoding | Encoding of the message subject, body and addresses. Almost any field in this object may be affected by this setting. I know this is not very clear. |
 | priority | Sets the priority of the message. Values 1 to 5, from the highest[1] to lowest[5]. This value is set in an `X-Priority` header. No other headers like `X-MSMail-Priority` or `Importance` are set. Anyway, if you need any of these, they can be set in the `headers` field. |
 | notBefore | Optionally delay message delivery until the time specified, as defined by [date-time - RFC3339](http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14 "date-time - RFC3339"). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time. This option is ignored if `deliveryType` is set to other than `QUEUE`. Example: '2015-03-17T10:30:45Z' |
-| deliveryType | Sets the delivery type: <ul><li>`PRIORITY_SYNC` makes a synchronized inmediate sending of the message. The API does not return until the message is delivered (or tried to).</li><li>`PRIORITY_ASYNC` makes an inmediate background sending. The API returns the ID of the message with `QUEUED` status but the message is sent inmediately in the background.</li><li>`QUEUE` queues the message until the next scheduled batch processing of queued mails'</li></ul> |
+| deliveryType | Sets the delivery type: <ul><li>`PRIORITY_SYNC` makes a synchronized immediate sending of the message. The API does not return until the message is delivered (or tried to).</li><li>`PRIORITY_ASYNC` makes an immediate background sending. The API returns the ID of the message with `QUEUED` status but not the _"Message-ID"_ header. The message is sent immediately in the background.</li><li>`QUEUE` queues the message until the next scheduled batch processing of queued mails'</li></ul> |
 | attachments | Array of attachments. Object is explained below. |
 | headers | Array of headers to added to the message. Object is explained below. |
 
@@ -132,11 +136,18 @@ This is the json object representing a header included in the message.
 
 This one wasn't tough, was it?
 
-## SendMailResult
+### SendMailResult
 
+When a sending operation is successful, the following information is returned. Keep in mind that this doesn't mean that the email is already sent:
 
+| Property  | Description                                                  |
+| --------- | ------------------------------------------------------------ |
+| status    | Status of the message. Possible values: <ul><li>`QUEUED` means the message is stored in DB and queued for sending. This could happen with emails that have been marked with a sending type of `QUEUE`.</li><li>`SENDING` means the message is being sent asynchronously. This happens when the sending type is `PRIORITY_ASYNC`</li><li>`SENT` means the message is already sent. this happens when the sending type is `PRIORITY_SYNC`</li></ul> |
+| id        | Internal ID given by the application to the message. This could be used to further query of the status of the message, if at anytime that is implemented. |
+| messageId | The value of the _"Message-ID"_ header. This value is only filled for `PRIORITY_SYNC` sending. |
+| date      | UTC time when the result was generated in the format: "2020-05-02T15:29:30.67Z" |
 
-## ErrorHandling
+## Error handling
 
 All exception are handled by a subclass of [ResponseEntityExceptionHandler](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/servlet/mvc/method/annotation/ResponseEntityExceptionHandler.html). Only validation errors are handled explicitly in the application.
 
@@ -170,25 +181,6 @@ An example of the output produced by an error 500 return code.
 }
 ```
 
-### ErrorDetail
-
-***<span style='color:red;'>PENDING</span>***
-
-### SendEmailResult
-
-UTC TIME
-
-***<span style='color:red;'>PENDING</span>***
-
-***<span style='color:red;'>PENDIENTES DE REVISAR</span>***
-
- - [ ] List item
- - [ ] Buscar todos los adress > address
- - [ ] ¿De qué tipo es USERPASS?
- - [ ] Añadir debug del envío al properties
-
-replyTo puede llevar brackets???
-
 # SMTP Relaying
 
 The application binds a SMTP server to the specified local port. Reads incoming messages and relays them to the specified remote SMTP Server. This means we can send emails from cron or similar small utilities that do not support smtp server sending. The server asks for no authentication, so it should be placed in a secured environment. 
@@ -209,7 +201,10 @@ This is true if the configuration selected for that email does not override the 
 
 ## Sending method selection headers
 
-BLA BLA BLA
+As with the API, the email can be classified to match one of the defined relaying methods. An explanation of the matching algorithm is ahead, but the data needed for this classification in the SMTP Relaying sending method is:
+
++ Original 'from' address
++ `X-GMR-APPLICATION-ID` and `X-GMR-MESSAGE-TYPE` headers
 
 # Configuration
 
