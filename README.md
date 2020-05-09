@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
+![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square) ](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
 
 # g-mail-relayer
 
@@ -252,10 +252,6 @@ The objects `api-default`and `smtp-default`share the following properties:
 | forMessageType   | String | If you want to pick a sending configuration different for each application that is sending emails, but the same application has to use different addresses, this field sets a custom message type that identifies this configuration. Can't be set if `forApplicationId` is not set. |
 
 There is a configuration example in XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-TODAVIA TENGO QUE AHCER QUE EL forFROM ignore los <>
-
-
 
 también tengo que decir lo del async en smtp
 
