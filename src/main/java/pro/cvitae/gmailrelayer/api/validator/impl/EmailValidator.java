@@ -16,6 +16,9 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
     @Override
     public boolean isValid(final String emailField, final ConstraintValidatorContext cxt) {
+        if (emailField == null) {
+            return true;
+        }
         InternetAddress[] parsed;
         try {
             parsed = InternetAddress.parse(emailField);
