@@ -3,6 +3,8 @@ package pro.cvitae.gmailrelayer.api.validator.impl;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import com.google.common.base.Strings;
+
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.validator.EmailMessageType;
 
@@ -15,6 +17,13 @@ public class EmailMessageTypeValidator implements ConstraintValidator<EmailMessa
 
     @Override
     public boolean isValid(final EmailMessage email, final ConstraintValidatorContext context) {
+
+        if (Strings.isNullOrEmpty(email.getFrom()) && Strings.isNullOrEmpty(email.getApplicationId())) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("must specify a from or applicationId")
+                    .addConstraintViolation();
+            return false;
+        }
 
         if (email.getMessageType() == null || email.getMessageType().isEmpty()) {
             // If messageType is null, everything's OK

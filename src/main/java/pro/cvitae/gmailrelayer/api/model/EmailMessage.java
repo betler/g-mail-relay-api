@@ -12,6 +12,7 @@ import javax.annotation.Generated;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -50,6 +51,8 @@ public class EmailMessage implements Serializable {
     private String replyTo = null;
 
     @Valid
+    @NotEmpty
+    @EmailList
     @JsonProperty("to")
     private List<String> to = new ArrayList<>();
 

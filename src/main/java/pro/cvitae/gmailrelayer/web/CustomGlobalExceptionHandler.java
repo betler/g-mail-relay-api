@@ -1,5 +1,6 @@
 package pro.cvitae.gmailrelayer.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -44,6 +46,17 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
         body.put("errors", errors);
 
+        return new ResponseEntity<>(body, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex,
+            final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+
+        final Map<String, Object> body = this.getDefaultBody(status);
+        final List<String> errors = new ArrayList<>(1);
+        errors.add(ex.getMessage());
+        body.put("errors", errors);
         return new ResponseEntity<>(body, headers, status);
     }
 
