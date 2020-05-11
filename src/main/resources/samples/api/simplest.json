@@ -1,0 +1,7 @@
+{
+  "deliveryType" : "PRIORITY_SYNC",
+	"textFormat" : "HTML",
+	"textEncoding" : "UTF-8",
+	"body" : "This is an email",
+	"to" : ["John Doe <john.doe@example.com>"]
+}

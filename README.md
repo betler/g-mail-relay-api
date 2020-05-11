@@ -46,6 +46,7 @@ This is the list of intended features. Not all of them are implemented, so check
 12. Plugins for beforeSend and afterSend events
 13. Hooks for success / error messages
 14. API method to fetch status of sent mails
+15. Client GUI for the statistics module
 
 ## Current status
 I'm trying to keep this up to date, but no release is still out, so this refers to the master branch:
@@ -66,6 +67,7 @@ I'm trying to keep this up to date, but no release is still out, so this refers 
 | 12   | Plugins for beforeSend and afterSend events | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 13   | Hooks for success / error messages          | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 | 14   | API method to fetch status of sent mails    | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
+| 15   | Client GUI for the statistics module        | ![future_enhancement](https://img.shields.io/badge/requisite-future_enhancement-inactive) |
 
 ## Not supported features
 
@@ -86,9 +88,7 @@ Further documentation can be found in:
 
 ## Examples
 
-[PENDIENTE XXX] Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/api/samples).
-
-[PENDIENTE XXX] Add image of email
+Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/api/samples).
 
 ## /mail/send method (POST)
 
@@ -251,9 +251,7 @@ The objects `api-default`and `smtp-default`share the following properties:
 | forApplicationId | String | If you want to pick a sending configuration different for each application that is sending emails, this field sets a custom ID that identifies this configuration. Can't be set at the same time as `forFrom`. |
 | forMessageType   | String | If you want to pick a sending configuration different for each application that is sending emails, but the same application has to use different addresses, this field sets a custom message type that identifies this configuration. Can't be set if `forApplicationId` is not set. |
 
-There is a configuration example in XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-también tengo que decir lo del async en smtp
+There are configuration examples [here](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/samples/config).
 
 ## Server matching algorithm
 
@@ -269,7 +267,7 @@ With this data the following server matching algorithm is performed:
 3. If only application id matches a given configuration, this could happen because:
    - Email message type is null: then a configuration with an application id but no message type is searched. If found, it is selected
    - Email message type is not null but there is not a matching configuration. Then, a configuration with the same application ID AND a null message type is searched. This is: it will never be matched if application id is the same AND not the message type AND the configuration message type is not null.
-4. If application id and message type did not give a match, the message from address is searched in the configuration. Keep in mind in this point the brackets XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+4. If application id and message type did not give a match, the message from address is searched in the configuration. For this matching, the personal information is removed. This means, `John Doe <john.doe@example.com>`is the same address as `john.doe@example.com`.
 5. If none of the steps below did give a match, then the default configuration is used for the applicable sending type (api or smtp).
 
 ## I'm confused
@@ -286,9 +284,7 @@ Consider the following set of configurations. Not considering if api or smtp bec
 | 3       | null             | 'APP1'           | 'New Customer'      |
 | 4       | null             | 'APP2'           | 'Password Recovery' |
 
-In the next table, it is stated the chosen configuration when different emails are receive:
-
-
+In the next table, it is stated the chosen configuration when different emails are received:
 
 | from                | applicationId | messageType         | Chosen config                                                |
 | ------------------- | ------------- | ------------------- | ------------------------------------------------------------ |
