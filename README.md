@@ -88,7 +88,7 @@ Further documentation can be found in:
 
 ## Examples
 
-Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/api/samples).
+Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/samples/api).
 
 ## /mail/send method (POST)
 
