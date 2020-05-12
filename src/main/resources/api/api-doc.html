@@ -1,6 +1,5 @@
-
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <title>g-mail-relayer API</title>
     <style type="text/css">
@@ -230,15 +229,13 @@
       
     </div>
 
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "result" : "",
   "date" : "2015-03-17T10:30:45Z",
   "messageId" : "<032d19d1gd15$b9a14470$2si9dm40$@example.com>",
-  "id" : 14
+  "id" : 14,
+  "status" : ""
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -297,7 +294,7 @@
           <div class="param-desc"><span class="param-type">example: TASKSAPP</span></div>
 <div class="param">messageType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Optional free text to identify the specific message type. Cannot be set without an applicationId </div>
           <div class="param-desc"><span class="param-type">example: Password Reminder</span></div>
-<div class="param">from (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Set &amp;quot;from&amp;quot; address. This may be ignored by other configurations which may override the &amp;quot;from&amp;quot; address. format: email</div>
+<div class="param">from </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Set &amp;quot;from&amp;quot; address. This may be ignored by other configurations which may override the &amp;quot;from&amp;quot; address. format: email</div>
           <div class="param-desc"><span class="param-type">example: Aunt Doe &lt;aunt.doe@example.com&gt;</span></div>
 <div class="param">replyTo (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Optionally set &amp;quot;replyTo&amp;quot; address format: email</div>
           <div class="param-desc"><span class="param-type">example: Uncle Doe &lt;uncle.doe@example.com&gt;</span></div>
@@ -344,7 +341,7 @@
     <h3><a name="SendEmailResult"><code>SendEmailResult</code></a> <a class="up" href="#__Models">Up</a></h3>
     
     <div class="field-items">
-      <div class="param">result </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The result of the operation </div>
+      <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The status of the message </div>
 <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Internally assigned ID. Always set format: int64</div>
           <div class="param-desc"><span class="param-type">example: 14</span></div>
 <div class="param">messageId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Message-ID header of the sent message. Empty if the message was delayed. </div>

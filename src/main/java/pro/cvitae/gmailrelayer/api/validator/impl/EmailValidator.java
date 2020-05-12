@@ -21,10 +21,17 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
         }
         InternetAddress[] parsed;
         try {
-            parsed = InternetAddress.parse(emailField);
+            parsed = InternetAddress.parse(emailField, true);
+
+            if (parsed.length != 1) {
+                return false;
+            }
+
+            parsed[0].validate();
+            return true;
+
         } catch (final AddressException e) {
             return false;
         }
-        return parsed.length == 1;
     }
 }

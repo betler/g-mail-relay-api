@@ -44,9 +44,12 @@ public class EmailMessage implements Serializable {
     @JsonProperty("messageType")
     private String messageType = null;
 
+    @Valid
+    @Email
     @JsonProperty("from")
     private String from = null;
 
+    @Email
     @JsonProperty("replyTo")
     private String replyTo = null;
 

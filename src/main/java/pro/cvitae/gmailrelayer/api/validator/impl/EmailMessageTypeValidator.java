@@ -18,29 +18,7 @@ public class EmailMessageTypeValidator implements ConstraintValidator<EmailMessa
     @Override
     public boolean isValid(final EmailMessage email, final ConstraintValidatorContext context) {
 
-        // From or applicationID are required
-        if (Strings.isNullOrEmpty(email.getFrom()) && Strings.isNullOrEmpty(email.getApplicationId())) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("must specify a from or applicationId")
-                    .addConstraintViolation();
-            return false;
-        } else {
-            return true;
-        }
-
-        /*
-         * // From is enough if (!Strings.isNullOrEmpty(email.getFrom())) { return true;
-         * }
-         * 
-         * // There's no from, check application ID // If we are here, it means
-         * applicationID is not null return true;
-         */
-
-        /*
-         * if (Strings.isNullOrEmpty(email.getMessageType())) { // If messageType is
-         * null, everything's OK return false; } else { // Only wrong if applicationId
-         * is null or empty return email.getApplicationId() != null &&
-         * !email.getApplicationId().isEmpty(); }
-         */
+        // cannot set message type without application ID
+        return (!Strings.isNullOrEmpty(email.getApplicationId()) || Strings.isNullOrEmpty(email.getMessageType()));
     }
 }
