@@ -26,10 +26,15 @@ public class EmailListValidator implements ConstraintValidator<EmailList, List<S
 
         for (final String email : emailListField) {
             try {
-                final InternetAddress[] parsed = InternetAddress.parse(email);
+                final InternetAddress[] parsed = InternetAddress.parse(email, true);
+
                 if (parsed.length != 1) {
+                    // TODO Change message
                     return false;
                 }
+
+                parsed[0].validate();
+
             } catch (final AddressException e) {
                 return false;
             }
