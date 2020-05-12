@@ -125,28 +125,39 @@ public class MailService implements IMailService {
         // from overrided?
         helper.setFrom(
                 Boolean.TRUE.equals(config.getOverrideFrom()) ? config.getOverrideFromAddress() : message.getFrom());
-        helper.setPriority(message.getPriority().intValue());
-        helper.setReplyTo(message.getReplyTo());
-        helper.setSubject(message.getSubject());
+        if (message.getPriority() != null) {
+            helper.setPriority(message.getPriority().intValue());
+        }
+        if (message.getReplyTo() != null) {
+            helper.setReplyTo(message.getReplyTo());
+        }
+        if (message.getSubject() != null) {
+            helper.setSubject(message.getSubject());
+        }
         helper.setText(message.getBody(), message.getTextFormat().equals("HTML"));
 
         // Headers
-        for (final Header h : message.getHeaders()) {
-            mime.setHeader(h.getName(), h.getValue());
+        if (message.getHeaders() != null) {
+            for (final Header h : message.getHeaders()) {
+                mime.setHeader(h.getName(), h.getValue());
+            }
         }
 
         // Attachments
-        for (final Attachment a : message.getAttachments()) {
+        if (message.getAttachments() != null) {
+            for (final Attachment a : message.getAttachments()) {
 
-            final InputStreamSource iss = () -> new ByteArrayInputStream(Base64.getDecoder().decode(a.getContent()));
-            if (a.getCid() == null || a.getCid().isEmpty()) {
-                // Attachment
-                helper.addAttachment(a.getFilename(), iss, a.getContentType());
-            } else {
-                // Inlined attachment
-                helper.addInline(a.getCid(), iss, a.getContentType());
+                final InputStreamSource iss = () -> new ByteArrayInputStream(
+                        Base64.getDecoder().decode(a.getContent()));
+                if (a.getCid() == null || a.getCid().isEmpty()) {
+                    // Attachment
+                    helper.addAttachment(a.getFilename(), iss, a.getContentType());
+                } else {
+                    // Inlined attachment
+                    helper.addInline(a.getCid(), iss, a.getContentType());
+                }
+
             }
-
         }
 
         mailSender.send(mime);
