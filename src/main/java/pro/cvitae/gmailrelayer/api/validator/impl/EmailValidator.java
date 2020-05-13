@@ -25,15 +25,16 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
             final InternetAddress[] parsed = InternetAddress.parse(emailField, true);
 
             if (parsed.length != 1) {
-                // TODO Change message
                 return false;
             }
 
             parsed[0].validate();
-            return true;
 
         } catch (final AddressException e) {
             return false;
         }
+
+        return true;
     }
+
 }
