@@ -1,20 +1,19 @@
 /**
- * Copyright [2020] [https://github.com/betler]
+ * g-mail-relayer smtp mail relayer and API for sending emails
+ * Copyright (C) 2020  https://github.com/betler
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- *
- * @author betler
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package pro.cvitae.gmailrelayer.server;
 
@@ -38,42 +37,42 @@ import org.slf4j.LoggerFactory;
  */
 public class SmtpServer {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final Collection<ProtocolHandler> handlers;
+    private final Collection<ProtocolHandler> handlers;
 
-	private NettyServer server;
+    private NettyServer server;
 
-	/**
-	 * Listening port.
-	 */
-	private final Integer port;
+    /**
+     * Listening port.
+     */
+    private final Integer port;
 
-	public SmtpServer(final Integer port, final Collection<ProtocolHandler> handlers) {
-		this.handlers = handlers;
-		this.port = port;
-	}
+    public SmtpServer(final Integer port, final Collection<ProtocolHandler> handlers) {
+        this.handlers = handlers;
+        this.port = port;
+    }
 
-	public void start() throws Exception {
-		final SMTPConfigurationImpl smtpConfiguration = new SMTPConfigurationImpl();
-		smtpConfiguration.setSoftwareName("Spring Boot g-mail-relayer SMTP Server");
-		smtpConfiguration.setUseAddressBracketsEnforcement(false);
+    public void start() throws Exception {
+        final SMTPConfigurationImpl smtpConfiguration = new SMTPConfigurationImpl();
+        smtpConfiguration.setSoftwareName("Spring Boot g-mail-relayer SMTP Server");
+        smtpConfiguration.setUseAddressBracketsEnforcement(false);
 
-		final SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain(new NoopMetricFactory());
-		chain.addAll(this.handlers);
-		chain.wireExtensibleHandlers();
+        final SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain(new NoopMetricFactory());
+        chain.addAll(this.handlers);
+        chain.wireExtensibleHandlers();
 
-		final Protocol protocol = new SMTPProtocol(chain, smtpConfiguration);
+        final Protocol protocol = new SMTPProtocol(chain, smtpConfiguration);
 
-		this.server = new NettyServer.Factory(new HashedWheelTimer()).protocol(protocol).build();
-		this.server.setListenAddresses(new InetSocketAddress(this.port));
-		this.server.setTimeout(120);
-		this.server.bind();
-		this.logger.info("SMTP Server started on port {}", this.port);
-	}
+        this.server = new NettyServer.Factory(new HashedWheelTimer()).protocol(protocol).build();
+        this.server.setListenAddresses(new InetSocketAddress(this.port));
+        this.server.setTimeout(120);
+        this.server.bind();
+        this.logger.info("SMTP Server started on port {}", this.port);
+    }
 
-	public void stop() {
-		this.server.unbind();
-		this.logger.info("SMTP Server stopped");
-	}
+    public void stop() {
+        this.server.unbind();
+        this.logger.info("SMTP Server stopped");
+    }
 }

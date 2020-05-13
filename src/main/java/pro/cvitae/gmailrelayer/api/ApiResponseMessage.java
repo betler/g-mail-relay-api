@@ -1,3 +1,20 @@
+/**
+ * g-mail-relayer smtp mail relayer and API for sending emails
+ * Copyright (C) 2020  https://github.com/betler
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package pro.cvitae.gmailrelayer.api;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -18,26 +35,26 @@ public class ApiResponseMessage {
     public ApiResponseMessage() {
     }
 
-    public ApiResponseMessage(int code, String message) {
+    public ApiResponseMessage(final int code, final String message) {
         this.code = code;
         switch (code) {
         case ERROR:
-            setType("error");
+            this.setType("error");
             break;
         case WARNING:
-            setType("warning");
+            this.setType("warning");
             break;
         case INFO:
-            setType("info");
+            this.setType("info");
             break;
         case OK:
-            setType("ok");
+            this.setType("ok");
             break;
         case TOO_BUSY:
-            setType("too busy");
+            this.setType("too busy");
             break;
         default:
-            setType("unknown");
+            this.setType("unknown");
             break;
         }
         this.message = message;
@@ -45,26 +62,26 @@ public class ApiResponseMessage {
 
     @XmlTransient
     public int getCode() {
-        return code;
+        return this.code;
     }
 
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 }
