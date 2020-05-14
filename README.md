@@ -1,8 +1,8 @@
-![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square)[![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
+![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square) [![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
 
 # g-mail-relayer
 
-This project develops a Java SMTP relayer and an API to send emails. The need comes due to some limitations found in my projects and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable. Multiple relay servers are also supported and selected depending on the incoming message.
+This project develops a Java Spring Boot SMTP relayer and an API to send emails. The need comes due to some limitations found in my projects and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable. Multiple relay servers are also supported and selected depending on the incoming message.
 
 The basics are:
  + A Spring Boot REST API application able to relay emails coming from another application, asynchronously, so the sender can forget about waiting to say EHLO! to a external server.

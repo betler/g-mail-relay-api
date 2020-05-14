@@ -38,6 +38,12 @@ public class SmtpServerConfiguration {
     @Value("${relayer.smtp.server.port}")
     private Integer port;
 
+    /**
+     * Starts the relaying SMTP Server
+     *
+     * @param messageReceivedHook
+     * @return
+     */
     @Bean(initMethod = "start", destroyMethod = "stop")
     public SmtpServer smtpServer(final MessageReceivedHook messageReceivedHook) {
 
@@ -48,6 +54,13 @@ public class SmtpServerConfiguration {
         return new SmtpServer(this.port, handlers);
     }
 
+    /**
+     * Creates a {@link MessageReceivedHook} for the SMTP Server
+     * 
+     * @param configFileHelper
+     * @return
+     * @see {@link #smtpServer(MessageReceivedHook)}
+     */
     @Bean
     public MessageReceivedHook messageReceivedHook(final ConfigFileHelper configFileHelper) {
         return new MessageReceivedHook(configFileHelper);
