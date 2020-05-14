@@ -92,7 +92,7 @@ Examples of api calls can be found in [samples directory](https://github.com/bet
 
 ## /mail/send method (POST)
 
-The only existing method is `POST` `/mail/send`. It receives a `EmailMessage`json object and sends an email with the matching configuration for that email.
+The only existing method is `POST` `/mail/send`. It receives a `EmailMessage` json object and sends an email with the matching configuration for that email.
 
 ### EmailMessage
 This is the json object representing an email message that is going to be sent:
