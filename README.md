@@ -1,4 +1,5 @@
 [![License](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.en.html) [![GitHub Release](https://img.shields.io/github/release/betler/g-mail-relayer.svg?style=flat-square)](https://github.com/betler/g-mail-relayer/releases/latest) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square) [![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
+<<<<<<< HEAD
 
 # Table of contents
 
@@ -29,6 +30,8 @@
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
+=======
+>>>>>>> branch 'master' of https://github.com/betler/g-mail-relayer.git
 
 # g-mail-relayer
 
