@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.cvitae.gmailrelayer.api.exception.MailApiException;
@@ -32,13 +33,14 @@ import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailApiService;
 
 @RestController
+@RequestMapping("/api/mail")
 public class MailApiController implements MailApi {
 
     @Autowired
     IMailApiService mailApiService;
 
     @Override
-    @PostMapping(value = "/mail/send", produces = { "application/json" }, consumes = { "application/json" })
+    @PostMapping(value = "/send", produces = { "application/json" }, consumes = { "application/json" })
     public ResponseEntity<SendEmailResult> sendEmail(final @Valid EmailMessage message) throws MailApiException {
 
         try {

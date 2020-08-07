@@ -10,7 +10,7 @@
     }
   },
   "paths" : {
-    "/mail/send" : {
+    "/api/mail/send" : {
       "post" : {
         "operationId" : "sendEmail",
         "summary" : "sends an email",

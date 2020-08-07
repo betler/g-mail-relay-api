@@ -9,7 +9,7 @@
 - [REST API Usage](#rest-api-usage)
   * [Extended documentation](#extended-documentation)
   * [Examples](#examples)
-  * [/mail/send method (POST)](#-mail-send-method--post-)
+  * [/api/mail/send method (POST)](#-mail-send-method--post-)
     + [EmailMessage](#emailmessage)
     + [Attachment](#attachment)
     + [Header](#header)
@@ -119,9 +119,9 @@ Further documentation can be found in:
 
 Examples of api calls can be found in [samples directory](https://github.com/betler/g-mail-relayer/tree/master/src/main/resources/samples/api).
 
-## /mail/send method (POST)
+## /api/mail/send method (POST)
 
-The only existing method is `POST` `/mail/send`. It receives a `EmailMessage` json object and sends an email with the matching configuration for that email.
+The only existing method is `POST` `/api/mail/send`. It receives a `EmailMessage` json object and sends an email with the matching configuration for that email.
 
 ### EmailMessage
 This is the json object representing an email message that is going to be sent:
@@ -206,7 +206,7 @@ An example of the output produced by an error 500 return code.
   "error": "Internal Server Error",
   "message": "Mail server connection failed; nested exception is com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\tjava.net.ConnectException: Connection refused: connect. Failed messages: com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\tjava.net.ConnectException: Connection refused: connect",
   "trace": "org.springframework.mail.MailSendException: Mail server connection failed; nested exception is com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\tjava.net.ConnectException: Connection refused: connect. Failed messages: com.sun.mail.util.MailConnectException: Couldn't connect to host, port: localhost, 26; timeout -1;\n  nested exception is:\n\t... 95 more\r\n",
-  "path": "/mail/send"
+  "path": "/api/mail/send"
 }
 ```
 
