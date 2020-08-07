@@ -8,5 +8,10 @@
     "name": "springfox.documentation.swagger.v2.path",
     "type": "java.lang.String",
     "description": "Swagger service descriptions urls. See https://springfox.github.io/springfox/docs/current/#customizing-the-swagger-endpoints"
+  },
+  {
+    "name": "logging.mail.debug",
+    "type": "java.lang.String",
+    "description": "Sets true or false (default false) to the 'mail.debug' Java Mail property"
   }
 ]}

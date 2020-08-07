@@ -48,4 +48,8 @@ public class ConfigFile {
     @JsonProperty("smtp")
     private List<ConfigItem> smtpConfig;
 
+    @Getter
+    @Setter
+    private boolean mailDebug;
+
 }

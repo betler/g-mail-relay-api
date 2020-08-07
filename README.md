@@ -241,12 +241,13 @@ As with the API, the email can be classified to match one of the defined relayin
 
 The following properties are supported in the `application.properties` file.
 
-| Property                    | Value  | Description                                                  |
-| --------------------------- | ------ | ------------------------------------------------------------ |
-| server.servlet.context-path | String | Context path where the web application will be available     |
-| server.port                 | Number | Port for http listening. Secure http not supported.          |
-| relayer.smtp.server.port    | Number | Listening port for the local smtp server                     |
-| spring.cache.jcache.config  | String | Location of the echcache definition file. Can't guess why you would want to change this. |
+| Property                    | Value   | Description                                                  |
+| --------------------------- | ------- | ------------------------------------------------------------ |
+| server.servlet.context-path | String  | Context path where the web application will be available.    |
+| server.port                 | Number  | Port for http listening. Secure http not supported.          |
+| relayer.smtp.server.port    | Number  | Listening port for the local smtp server.                    |
+| spring.cache.jcache.config  | String  | Location of the echcache definition file. Can't guess why you would want to change this. |
+| loggin.mail.debug           | Boolean | Sets true or false (default false) to the 'mail.debug' Java Mail property. |
 
 ## json config
 
@@ -338,3 +339,7 @@ This matching algorithm means that for each group of configurations (api or smtp
 3. Each configuration must be unique so:
    - Can't set two identical `forFrom`addresses
    - Can't set two identical `forApplicationId` and `forMessageType` pair values. Keep in mind that `null` is a valid value for the message type. So you can have an application id with no message type and the same application with a specific message type.
+
+# Execute the application
+
+... PENDING ...

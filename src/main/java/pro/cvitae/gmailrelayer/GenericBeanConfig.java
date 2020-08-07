@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Validate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,9 @@ import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 @EnableCaching
 @Configuration
 public class GenericBeanConfig {
+
+    @Value("${logging.mail.debug:false}")
+    private boolean mailDebug;
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -61,7 +65,13 @@ public class GenericBeanConfig {
 
         Validate.isTrue(configFile.exists(), configFile.getAbsolutePath() + " does not exist");
         final String json = FileUtils.readFileToString(configFile, StandardCharsets.UTF_8);
-        return mapper.readValue(json, ConfigFile.class);
+
+        final ConfigFile resultFile = mapper.readValue(json, ConfigFile.class);
+
+        // Configurations not read from the file but properties file
+        resultFile.setMailDebug(this.mailDebug);
+
+        return resultFile;
     }
 
     @Bean

@@ -170,7 +170,7 @@ public class ConfigFileHelper {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", item.getStarttls());
-        props.put("mail.debug", "true");
+        props.put("mail.debug", String.valueOf(this.configFile.isMailDebug()));
 
         return mailSender;
 
