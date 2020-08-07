@@ -39,7 +39,7 @@ public class MailApiController implements MailApi {
 
     @Override
     @PostMapping(value = "/mail/send", produces = { "application/json" }, consumes = { "application/json" })
-    public ResponseEntity<SendEmailResult> sendEmail(@Valid final EmailMessage message) throws MailApiException {
+    public ResponseEntity<SendEmailResult> sendEmail(final @Valid EmailMessage message) throws MailApiException {
 
         try {
             final SendEmailResult result = this.mailApiService.sendEmail(message, SendingType.API);

@@ -20,7 +20,6 @@ package pro.cvitae.gmailrelayer.api.mail.send;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,7 +57,7 @@ public interface MailApi {
             @ApiResponse(code = 400, message = "invalid input", response = ErrorDetail.class),
             @ApiResponse(code = 401, message = "unauthorized", response = ErrorDetail.class) })
     default ResponseEntity<SendEmailResult> sendEmail(
-            @ApiParam(value = "Email to be sent", required = true) @Valid @RequestBody final EmailMessage body)
+            @ApiParam(value = "Email to be sent", required = true) @RequestBody final EmailMessage body)
             throws MailApiException {
         throw new UnsupportedOperationException("Not implemented");
     }

@@ -1,5 +1,35 @@
 ![GitHub](https://img.shields.io/github/license/betler/g-mail-relayer?style=flat-square) ![In development](https://img.shields.io/badge/status-current_development-green?style=flat-square) [![CodeFactor](https://www.codefactor.io/repository/github/betler/g-mail-relayer/badge?style=flat-square)](https://www.codefactor.io/repository/github/betler/g-mail-relayer)
 
+# Table of contents
+
+- [g-mail-relayer](#g-mail-relayer)
+- [Features](#features)
+  * [Current status](#current-status)
+  * [Not supported features](#not-supported-features)
+- [REST API Usage](#rest-api-usage)
+  * [Extended documentation](#extended-documentation)
+  * [Examples](#examples)
+  * [/mail/send method (POST)](#-mail-send-method--post-)
+    + [EmailMessage](#emailmessage)
+    + [Attachment](#attachment)
+    + [Header](#header)
+    + [SendMailResult](#sendmailresult)
+  * [Error handling](#error-handling)
+    + [400 error code - validations](#400-error-code---validations)
+    + [500 error code - something went wrong](#500-error-code---something-went-wrong)
+- [SMTP Relaying](#smtp-relaying)
+  * [Sending method selection headers](#sending-method-selection-headers)
+- [Configuration](#configuration)
+  * [application.properties](#applicationproperties)
+  * [json config](#json-config)
+  * [Server matching algorithm](#server-matching-algorithm)
+  * [I'm confused](#i-m-confused)
+  * [Still confused...](#still-confused)
+  * [Configuration file rules](#configuration-file-rules)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
 # g-mail-relayer
 
 This project develops a Java Spring Boot SMTP relayer and an API to send emails. The need comes due to some limitations found in my projects and I felt like building it myself. I need to talk to old NTLM servers and not all applications can. Also, sending a lot of emails synchronously in my applications is slow, so an async sending method was desirable. Multiple relay servers are also supported and selected depending on the incoming message.
@@ -212,11 +242,12 @@ As with the API, the email can be classified to match one of the defined relayin
 
 The following properties are supported in the `application.properties` file.
 
-| Property                    | Value  | Description                                              |
-| --------------------------- | ------ | -------------------------------------------------------- |
-| server.servlet.context-path | String | Context path where the web application will be available |
-| server.port                 | Number | Port for http listening. Secure http not supported.      |
-| relayer.smtp.server.port    | Number | Listening port for the local smtp server                 |
+| Property                    | Value  | Description                                                  |
+| --------------------------- | ------ | ------------------------------------------------------------ |
+| server.servlet.context-path | String | Context path where the web application will be available     |
+| server.port                 | Number | Port for http listening. Secure http not supported.          |
+| relayer.smtp.server.port    | Number | Listening port for the local smtp server                     |
+| spring.cache.jcache.config  | String | Location of the echcache definition file. Can't guess why you would want to change this. |
 
 ## json config
 
@@ -262,7 +293,7 @@ First of all, from address, application id and message type are retrieved:
 
 With this data the following server matching algorithm is performed:
 
-1. Application ID takes precedence over from so if this id is not null, the message type is retrieved from the message.
+1. Application ID takes precedence over from address so if this id is not null, the message type is retrieved from the message.
 2. If both message application id AND message type match any of the server configuration, this one is selected.
 3. If only application id matches a given configuration, this could happen because:
    - Email message type is null: then a configuration with an application id but no message type is searched. If found, it is selected
@@ -288,8 +319,8 @@ In the next table, it is stated the chosen configuration when different emails a
 
 | from                | applicationId | messageType         | Chosen config                                                |
 | ------------------- | ------------- | ------------------- | ------------------------------------------------------------ |
-| from@example.com    | null          | null                | #1 - from address is used to select the configuration        |
-| from@example.com    | 'APP1'        | null                | #2 - the from address exists but applicationId takes precedence |
+| from@example.com    | null          | null                | #1 - from address is used to select the configuration as applicationId is null |
+| from@example.com    | 'APP1'        | null                | #2 - the from address exists but applicationId takes precedence. No messageType so rule number 2 matches with null message type. |
 | from@example.com    | 'APP1'        | 'Newsletter'        | #2 - message type does not exist in configuration so a null message type for the given application id is selected |
 | from@example.com    | 'APP1'        | 'New Customer'      | #3 - application id and message type match                   |
 | another@example.com | 'APP3'        | 'Password Recovery' | default - none match, so default is selected                 |

@@ -29,7 +29,6 @@ import javax.annotation.Generated;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -55,68 +54,89 @@ import pro.cvitae.gmailrelayer.api.validator.Encoding;
 public class EmailMessage implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Size(max = 30)
     @JsonProperty("applicationId")
+    @ApiModelProperty(example = "TASKSAPP", value = "Optional free text to identify the sender of the application. Must be set if a messageType is specified.")
     private String applicationId = null;
 
+    @Size(max = 30)
     @JsonProperty("messageType")
+    @ApiModelProperty(example = "Password Reminder", value = "Optional free text to identify the specific message type. Cannot be set without an applicationId.")
     private String messageType = null;
 
-    @Valid
     @Email
     @JsonProperty("from")
+    @ApiModelProperty(example = "Aunt Doe <aunt.doe@example.com>", value = "Set \"from\" address. This may be ignored by other configurations which may override the \"from\" address.")
     private String from = null;
 
     @Email
     @JsonProperty("replyTo")
+    @ApiModelProperty(example = "Uncle Doe <uncle.doe@example.com>", value = "Optionally set \"replyTo\" address")
     private String replyTo = null;
 
-    @Valid
-    @NotEmpty
+    @NotNull
     @EmailList
     @JsonProperty("to")
+    @ApiModelProperty(required = true, value = "Recipients of the message")
     private List<String> to = new ArrayList<>();
 
-    @Valid
+    @EmailList
     @JsonProperty("cc")
+    @ApiModelProperty(value = "Carbon copy recipients")
     private List<String> cc = null;
 
-    @Valid
+    @EmailList
     @JsonProperty("bcc")
+    @ApiModelProperty(value = "Blind copy recipients")
     private List<String> bcc = null;
 
+    @Size(max = 255)
     @JsonProperty("subject")
+    @ApiModelProperty(example = "Hey John!", value = "Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me.")
     private String subject = null;
 
+    @NotNull
+    @Size(max = 50000)
     @JsonProperty("body")
+    @ApiModelProperty(example = "<h1>Attention to this</h1><p>John, a nigerian prince wants to do business with you, lucky man!</p>", required = true, value = "Body of the message. Can be text or html. Format must be specified with the textFormat field, and encoding must be specified with the textEncoding field.")
     private String body = null;
 
+    @NotNull
     @JsonProperty("textFormat")
+    @Pattern(regexp = "(HTML|TEXT)")
+    @ApiModelProperty(required = true, value = "Format of the body message: plain text (TEXT) or html (HTML)")
     private String textFormat = null;
 
+    @NotNull
     @JsonProperty("textEncoding")
+    @Encoding
+    @ApiModelProperty(example = "UTF-8", required = true, value = "Encoding of the message body.")
     private String textEncoding = null;
 
     @JsonProperty("deliveryType")
     private String deliveryType = null;
 
+    @Valid
+    @DecimalMin("1")
+    @DecimalMax("5")
     @JsonProperty("priority")
+    @ApiModelProperty(example = "1", value = "Set priority of the message. X-Priority header is set with the value")
     private BigDecimal priority = null;
 
+    @Valid
     @JsonProperty("notBefore")
+    @ApiModelProperty(example = "2015-03-17T10:30:45Z", value = "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time. This option is ignored if deliveryType is set to other than QUEUE.")
     private OffsetDateTime notBefore = null;
 
     @Valid
     @JsonProperty("attachments")
+    @ApiModelProperty(value = "List of the message attachments")
     private List<Attachment> attachments = null;
 
     @Valid
     @JsonProperty("headers")
+    @ApiModelProperty(value = "List of the headers that should be added to the email")
     private List<Header> headers = null;
-
-    public EmailMessage from(final String from) {
-        this.from = from;
-        return this;
-    }
 
     /**
      * Optional free text to identify the sender of the application. Must be set if
@@ -124,8 +144,6 @@ public class EmailMessage implements Serializable {
      *
      * @return
      */
-    @Size(max = 30)
-    @ApiModelProperty(example = "TASKSAPP", value = "Optional free text to identify the sender of the application. Must be set if a messageType is specified.")
     public String getApplicationId() {
         return this.applicationId;
     }
@@ -134,8 +152,6 @@ public class EmailMessage implements Serializable {
         this.applicationId = applicationId;
     }
 
-    @Size(max = 30)
-    @ApiModelProperty(example = "Password Reminder", value = "Optional free text to identify the specific message type. Cannot be set without an applicationId.")
     public String getMessageType() {
         return this.messageType;
     }
@@ -150,8 +166,6 @@ public class EmailMessage implements Serializable {
      *
      * @return from
      **/
-    @Email
-    @ApiModelProperty(example = "Aunt Doe <aunt.doe@example.com>", value = "Set \"from\" address. This may be ignored by other configurations which may override the \"from\" address.")
     public String getFrom() {
         return this.from;
     }
@@ -170,8 +184,6 @@ public class EmailMessage implements Serializable {
      *
      * @return replyTo
      **/
-    @Email
-    @ApiModelProperty(example = "Uncle Doe <uncle.doe@example.com>", value = "Optionally set \"replyTo\" address")
     public String getReplyTo() {
         return this.replyTo;
     }
@@ -195,9 +207,6 @@ public class EmailMessage implements Serializable {
      *
      * @return to
      **/
-    @NotNull
-    @EmailList
-    @ApiModelProperty(required = true, value = "Recipients of the message")
     public List<String> getTo() {
         return this.to;
     }
@@ -224,8 +233,6 @@ public class EmailMessage implements Serializable {
      *
      * @return cc
      **/
-    @EmailList
-    @ApiModelProperty(value = "Carbon copy recipients")
     public List<String> getCc() {
         return this.cc;
     }
@@ -252,8 +259,6 @@ public class EmailMessage implements Serializable {
      *
      * @return bcc
      **/
-    @EmailList
-    @ApiModelProperty(value = "Blind copy recipients")
     public List<String> getBcc() {
         return this.bcc;
     }
@@ -274,8 +279,6 @@ public class EmailMessage implements Serializable {
      *
      * @return subject
      **/
-    @Size(max = 255)
-    @ApiModelProperty(example = "Hey John!", value = "Subject of the message. Maximum length is 255, not only because that is the max lenght of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me.")
     public String getSubject() {
         return this.subject;
     }
@@ -295,9 +298,6 @@ public class EmailMessage implements Serializable {
      *
      * @return body
      **/
-    @NotNull
-    @Size(max = 50000)
-    @ApiModelProperty(example = "<h1>Attention to this</h1><p>John, a nigerian prince wants to do business with you, lucky man!</p>", required = true, value = "Body of the message. Can be text or html. Format must be specified with the textFormat field, and encoding must be specified with the textEncoding field.")
     public String getBody() {
         return this.body;
     }
@@ -316,9 +316,6 @@ public class EmailMessage implements Serializable {
      *
      * @return textFormat
      **/
-    @NotNull
-    @Pattern(regexp = "(HTML|TEXT)")
-    @ApiModelProperty(required = true, value = "Format of the body message: plain text (TEXT) or html (HTML)")
     public String getTextFormat() {
         return this.textFormat;
     }
@@ -337,9 +334,6 @@ public class EmailMessage implements Serializable {
      *
      * @return textEncoding
      **/
-    @NotNull
-    @Encoding
-    @ApiModelProperty(example = "UTF-8", required = true, value = "Encoding of the message body.")
     public String getTextEncoding() {
         return this.textEncoding;
     }
@@ -363,12 +357,6 @@ public class EmailMessage implements Serializable {
      *
      * @return deliveryType
      **/
-    @NotNull
-    @Pattern(regexp = "(PRIORITY_SYNC|PRIORITY_ASYNC|QUEUE)")
-    @ApiModelProperty(example = "PRIORITY_SYNC", required = true, value = "Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending of the message. "
-            + "The API does not return until the messaged is delivered (or tried to). PRIORITY_ASYNC makes an inmediate background sending. "
-            + "The API returns the ID of the message with QUEUED status but the message is sent inmediately in the background. "
-            + "QUEUE queues the message until the next scheduled batch processing of queued mails")
     public String getDeliveryType() {
         return this.deliveryType;
     }
@@ -383,10 +371,6 @@ public class EmailMessage implements Serializable {
      *
      * @return priority
      **/
-    @Valid
-    @DecimalMin("1")
-    @DecimalMax("5")
-    @ApiModelProperty(example = "1", value = "Set priority of the message. X-Priority header is set with the value")
     public BigDecimal getPriority() {
         return this.priority;
     }
@@ -410,8 +394,6 @@ public class EmailMessage implements Serializable {
      *
      * @return notBefore
      **/
-    @Valid
-    @ApiModelProperty(example = "2015-03-17T10:30:45Z", value = "Optionally delay message delivery until the time specified, as defined by date-time - RFC3339 (http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time. This option is ignored if deliveryType is set to other than QUEUE.")
     public OffsetDateTime getNotBefore() {
         return this.notBefore;
     }
@@ -438,8 +420,6 @@ public class EmailMessage implements Serializable {
      *
      * @return attachments
      **/
-    @Valid
-    @ApiModelProperty(value = "List of the message attachments")
     public List<Attachment> getAttachments() {
         return this.attachments;
     }
@@ -466,8 +446,6 @@ public class EmailMessage implements Serializable {
      *
      * @return headers
      **/
-    @Valid
-    @ApiModelProperty(value = "List of the headers that should be added to the email")
     public List<Header> getHeaders() {
         return this.headers;
     }
