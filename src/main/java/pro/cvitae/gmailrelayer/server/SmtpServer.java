@@ -20,7 +20,6 @@ package pro.cvitae.gmailrelayer.server;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-import org.apache.james.metrics.api.NoopMetricFactory;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.netty.NettyServer;
@@ -58,7 +57,7 @@ public class SmtpServer {
         smtpConfiguration.setSoftwareName("Spring Boot g-mail-relayer SMTP Server");
         smtpConfiguration.setUseAddressBracketsEnforcement(false);
 
-        final SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain(new NoopMetricFactory());
+        final SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain(null);
         chain.addAll(this.handlers);
         chain.wireExtensibleHandlers();
 
