@@ -18,7 +18,6 @@
 package pro.cvitae.gmailrelayer.api.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +120,7 @@ public class EmailMessage implements Serializable {
     @DecimalMax("5")
     @JsonProperty("priority")
     @ApiModelProperty(example = "1", value = "Set priority of the message. X-Priority header is set with the value")
-    private BigDecimal priority = null;
+    private Short priority = null;
 
     @Valid
     @JsonProperty("notBefore")
@@ -342,13 +341,13 @@ public class EmailMessage implements Serializable {
         this.textEncoding = textEncoding;
     }
 
-    public EmailMessage priority(final BigDecimal priority) {
+    public EmailMessage priority(final Short priority) {
         this.priority = priority;
         return this;
     }
 
     /**
-     * Set the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending
+     * Get the delivery type: PRIORITY_SYNC makes a synchronized inmediate sending
      * of the message. The API does not return until the messaged is delivered (or
      * tried to). PRIORITY_ASYNC makes an inmediate background sending. The API
      * returns the ID of the message with QUEUED status but the message is sent
@@ -371,11 +370,11 @@ public class EmailMessage implements Serializable {
      *
      * @return priority
      **/
-    public BigDecimal getPriority() {
+    public Short getPriority() {
         return this.priority;
     }
 
-    public void setPriority(final BigDecimal priority) {
+    public void setPriority(final Short priority) {
         this.priority = priority;
     }
 

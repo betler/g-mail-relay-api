@@ -18,5 +18,15 @@
 package pro.cvitae.gmailrelayer.api.model;
 
 public enum EmailStatus {
-    QUEUED, SENDING, SENT, ERROR;
+    QUEUED((short) 0), SENDING((short) 3), SENT((short) 5), ERROR((short) -1);
+
+    private final Short status;
+
+    private EmailStatus(final Short status) {
+        this.status = status;
+    }
+
+    public Short value() {
+        return this.status;
+    }
 }

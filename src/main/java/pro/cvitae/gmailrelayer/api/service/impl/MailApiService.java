@@ -36,9 +36,14 @@ public class MailApiService implements IMailApiService {
     @Autowired
     IMailService mailService;
 
+    private static final Short DEFAULT_PRIORITY = (short) 3;
+
     @Override
     public SendEmailResult sendEmail(final EmailMessage message, final SendingType sendingType)
             throws MessagingException {
+
+        // Completes default value for empty fields
+        this.completeEmailMessage(message);
 
         final DeliveryType deliveryType = DeliveryType.valueOf(message.getDeliveryType());
 
@@ -55,7 +60,12 @@ public class MailApiService implements IMailApiService {
             // Should not happen
             throw new UnsupportedOperationException();
         }
+    }
 
+    private void completeEmailMessage(final EmailMessage message) {
+        if (message.getPriority() == null) {
+            message.setPriority(DEFAULT_PRIORITY);
+        }
     }
 
     /**

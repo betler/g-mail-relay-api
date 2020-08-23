@@ -42,21 +42,21 @@ public class Message {
 
     @Getter
     @Setter
-    @Column(name = "from", nullable = false)
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "from", referencedColumnName = "id")
+    @JoinColumn(name = "from_addr", referencedColumnName = "id")
     private Address from;
 
-    @Getter
-    @Setter
-    @Column(name = "reply_to", nullable = true)
-    private Long replyTo;
-
-    @Getter
-    @Setter
-    @Column(name = "subject", nullable = false, length = 255)
-    private String subject;
-
+//    @Getter
+//    @Setter
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "reply_to", referencedColumnName = "id")
+//    private Address replyTo;
+//
+//    @Getter
+//    @Setter
+//    @Column(name = "subject", nullable = true, length = 255)
+//    private String subject;
+//
     @Getter
     @Setter
     @Column(name = "text_format", nullable = false)
@@ -77,22 +77,22 @@ public class Message {
     @Column(name = "priority", nullable = false)
     private Short priority;
 
-    @Getter
-    @Setter
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "not_before", nullable = true)
-    private Date notBefore;
-
+//    @Getter
+//    @Setter
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "not_before", nullable = true)
+//    private Date notBefore;
+//
     @Getter
     @Setter
     @Column(name = "status", nullable = false)
     private Short status;
 
-    @Getter
-    @Setter
-    @Column(name = "retries", nullable = false)
-    private Short retries;
-
+//    @Getter
+//    @Setter
+//    @Column(name = "retries", nullable = false)
+//    private Short retries;
+//
     @Getter
     @Setter
     @CreationTimestamp
@@ -100,9 +100,9 @@ public class Message {
     @Column(name = "creation_date", nullable = false)
     private Date creationTime;
 
-    @Getter
-    @Setter
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_retry_date", nullable = true)
-    private Date lastRetryDate;
+//    @Getter
+//    @Setter
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "last_retry_date", nullable = true)
+//    private Date lastRetryDate;
 }

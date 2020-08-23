@@ -19,6 +19,15 @@ package pro.cvitae.gmailrelayer.api.model;
 
 public enum DeliveryType {
 
-    PRIORITY_SYNC, PRIORITY_ASYNC, QUEUE;
+    PRIORITY_SYNC((short) 1), PRIORITY_ASYNC((short) 2), QUEUE((short) 3);
 
+    private final Short type;
+
+    private DeliveryType(final Short type) {
+        this.type = type;
+    }
+
+    public Short value() {
+        return this.type;
+    }
 }

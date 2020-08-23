@@ -43,6 +43,7 @@ import pro.cvitae.gmailrelayer.api.model.Header;
 import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
+import pro.cvitae.gmailrelayer.api.service.IMailPersistenceService;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 import pro.cvitae.gmailrelayer.config.DefaultConfigItem;
@@ -56,9 +57,17 @@ public class MailService implements IMailService {
     @Autowired
     ConfigFileHelper configHelper;
 
+    @Autowired
+    IMailPersistenceService persistenceService;
+
     @Override
     public SendEmailResult sendEmail(final EmailMessage message, final SendingType sendingType)
             throws MessagingException {
+
+        // Store the mail in database. If saving fails, just quit with exception
+        this.persistenceService.saveMessage(message, EmailStatus.SENT);
+
+        // Then send it
         final MimeMessage mime = this.send(message, sendingType);
         this.logger.debug("Sent email to {} via {}", message.getTo(), sendingType);
         return this.getSendEmailResult(mime, EmailStatus.SENT);

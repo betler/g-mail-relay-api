@@ -14,6 +14,13 @@ import lombok.Setter;
 @Table(name = "address")
 public class Address {
 
+    public Address() {
+    }
+
+    public Address(final String value) {
+        this.value = value;
+    }
+
     @Id
     @Getter
     @Setter
