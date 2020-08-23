@@ -1,5 +1,8 @@
 package pro.cvitae.gmailrelayer.api.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,12 @@ public class MailPersistenceService implements IMailPersistenceService {
 
         entity.setFrom(this.checkCreateAddress(message.getFrom()));
         // entity.setReplyTo(this.checkCreateAddress(message.getReplyTo()));
+
+        final List<Address> toList = new ArrayList<>();
+        for (final String addr : message.getTo()) {
+            toList.add(this.checkCreateAddress(addr));
+        }
+        entity.setTo(toList);
 
         entity.setStatus(status.value());
 

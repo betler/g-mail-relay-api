@@ -1,6 +1,7 @@
 package pro.cvitae.gmailrelayer.persistence.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -45,6 +48,12 @@ public class Message {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "from_addr", referencedColumnName = "id")
     private Address from;
+
+    @Getter
+    @Setter
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "to_addr", joinColumns = @JoinColumn(name = "message_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private List<Address> to;
 
 //    @Getter
 //    @Setter
