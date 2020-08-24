@@ -28,6 +28,6 @@ public class Attachment {
 
     @Getter
     @Setter
-    @Column(name = "attachment", nullable = false)
-    private String attachment;
+    @Column(name = "value", nullable = false)
+    private String value;
 }

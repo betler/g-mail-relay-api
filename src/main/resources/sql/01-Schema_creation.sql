@@ -124,7 +124,7 @@ CREATE TABLE `gmr`.`attachment`
 (
    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
    `message_id` BIGINT UNSIGNED NOT NULL,
-   `attachment` LONGTEXT NOT NULL,
+   `value` LONGTEXT NOT NULL,
    PRIMARY KEY (`id`),
    INDEX `attachment_message_fk_idx`
    (
