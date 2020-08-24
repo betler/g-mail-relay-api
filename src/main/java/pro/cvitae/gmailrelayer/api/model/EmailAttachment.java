@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
-public class Attachment implements Serializable {
+public class EmailAttachment implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("cid")
@@ -50,7 +50,7 @@ public class Attachment implements Serializable {
     @JsonProperty("content")
     private String content = null;
 
-    public Attachment cid(final String cid) {
+    public EmailAttachment cid(final String cid) {
         this.cid = cid;
         return this;
     }
@@ -74,7 +74,7 @@ public class Attachment implements Serializable {
         this.cid = cid;
     }
 
-    public Attachment filename(final String filename) {
+    public EmailAttachment filename(final String filename) {
         this.filename = filename;
         return this;
     }
@@ -96,7 +96,7 @@ public class Attachment implements Serializable {
         this.filename = filename;
     }
 
-    public Attachment contentType(final String contentType) {
+    public EmailAttachment contentType(final String contentType) {
         this.contentType = contentType;
         return this;
     }
@@ -115,7 +115,7 @@ public class Attachment implements Serializable {
         this.contentType = contentType;
     }
 
-    public Attachment content(final String content) {
+    public EmailAttachment content(final String content) {
         this.content = content;
         return this;
     }
@@ -143,7 +143,7 @@ public class Attachment implements Serializable {
         if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
-        final Attachment attachment = (Attachment) o;
+        final EmailAttachment attachment = (EmailAttachment) o;
         return Objects.equals(this.cid, attachment.cid) && Objects.equals(this.filename, attachment.filename)
                 && Objects.equals(this.contentType, attachment.contentType)
                 && Objects.equals(this.content, attachment.content);

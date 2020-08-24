@@ -36,7 +36,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import pro.cvitae.gmailrelayer.api.model.Attachment;
+import pro.cvitae.gmailrelayer.api.model.EmailAttachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.EmailStatus;
 import pro.cvitae.gmailrelayer.api.model.Header;
@@ -171,7 +171,7 @@ public class MailService implements IMailService {
 
         // Attachments
         if (message.getAttachments() != null) {
-            for (final Attachment a : message.getAttachments()) {
+            for (final EmailAttachment a : message.getAttachments()) {
 
                 final InputStreamSource iss = () -> new ByteArrayInputStream(
                         Base64.getDecoder().decode(a.getContent()));

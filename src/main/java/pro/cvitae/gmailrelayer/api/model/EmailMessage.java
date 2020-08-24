@@ -130,7 +130,7 @@ public class EmailMessage implements Serializable {
     @Valid
     @JsonProperty("attachments")
     @ApiModelProperty(value = "List of the message attachments")
-    private List<Attachment> attachments = null;
+    private List<EmailAttachment> attachments = null;
 
     @Valid
     @JsonProperty("headers")
@@ -401,12 +401,12 @@ public class EmailMessage implements Serializable {
         this.notBefore = notBefore;
     }
 
-    public EmailMessage attachments(final List<Attachment> attachments) {
+    public EmailMessage attachments(final List<EmailAttachment> attachments) {
         this.attachments = attachments;
         return this;
     }
 
-    public EmailMessage addAttachmentsItem(final Attachment attachmentsItem) {
+    public EmailMessage addAttachmentsItem(final EmailAttachment attachmentsItem) {
         if (this.attachments == null) {
             this.attachments = new ArrayList<>();
         }
@@ -419,11 +419,11 @@ public class EmailMessage implements Serializable {
      *
      * @return attachments
      **/
-    public List<Attachment> getAttachments() {
+    public List<EmailAttachment> getAttachments() {
         return this.attachments;
     }
 
-    public void setAttachments(final List<Attachment> attachments) {
+    public void setAttachments(final List<EmailAttachment> attachments) {
         this.attachments = attachments;
     }
 
