@@ -72,7 +72,7 @@ CREATE TABLE `gmr`.`to_addr`
    VISIBLE,
    CONSTRAINT `to_addr_address_fk` FOREIGN KEY (`address_id`) REFERENCES `gmr`.`address` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-CREATE TABLE `gmr`.`cc`
+CREATE TABLE `gmr`.`cc_addr`
 (
    `message_id` BIGINT UNSIGNED NOT NULL,
    `address_id` BIGINT UNSIGNED NOT NULL,
@@ -81,13 +81,13 @@ CREATE TABLE `gmr`.`cc`
       `message_id`,
       `address_id`
    ),
-   INDEX `cc_message_idx`
+   INDEX `cc_addr_message_idx`
    (
       `message_id` ASC
    )
    VISIBLE
 );
-CREATE TABLE `gmr`.`bcc`
+CREATE TABLE `gmr`.`bcc_addr`
 (
    `message_id` BIGINT UNSIGNED NOT NULL,
    `address_id` BIGINT UNSIGNED NOT NULL,
@@ -96,17 +96,17 @@ CREATE TABLE `gmr`.`bcc`
       `message_id`,
       `address_id`
    ),
-   INDEX `bcc_message_fk_idx`
+   INDEX `bcc_addr_message_fk_idx`
    (
       `message_id` ASC
    )
    VISIBLE,
-   INDEX `bcc_address_fk_idx`
+   INDEX `bcc_addr_address_fk_idx`
    (
       `address_id` ASC
    )
    VISIBLE,
-   CONSTRAINT `bcc_address_fk` FOREIGN KEY (`address_id`) REFERENCES `gmr`.`address` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+   CONSTRAINT `bcc_addr_address_fk` FOREIGN KEY (`address_id`) REFERENCES `gmr`.`address` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 CREATE TABLE `gmr`.`body`
 (
@@ -147,7 +147,7 @@ CREATE TABLE `gmr`.`header`
    INVISIBLE,
    CONSTRAINT `header_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-ALTER TABLE `gmr`.`cc` ADD CONSTRAINT `cc_address_fk` FOREIGN KEY (`address_id`) REFERENCES `gmr`.`address` (`id`),
-ADD CONSTRAINT `cc_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-ALTER TABLE `gmr`.`bcc` ADD CONSTRAINT `bcc_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `gmr`.`cc_addr` ADD CONSTRAINT `cc_addr_address_fk` FOREIGN KEY (`address_id`) REFERENCES `gmr`.`address` (`id`),
+ADD CONSTRAINT `cc_addr_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `gmr`.`bcc_addr` ADD CONSTRAINT `bcc_addr_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `gmr`.`to_addr` ADD CONSTRAINT `to_addr_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

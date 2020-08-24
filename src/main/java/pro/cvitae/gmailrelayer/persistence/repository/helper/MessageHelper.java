@@ -19,6 +19,7 @@ public abstract class MessageHelper {
         entity.setTextEncoding(message.getTextEncoding());
         entity.setDeliveryType(DeliveryType.valueOf(message.getDeliveryType()).value());
         entity.setPriority(message.getPriority());
+        entity.setSubject(message.getSubject());
 
         return entity;
     }
