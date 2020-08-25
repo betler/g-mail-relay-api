@@ -114,11 +114,7 @@ public class Message {
 
     @Getter
     @Setter
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "to_addr", joinColumns = @JoinColumn(name = "message_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
-
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Attachment> attachment;
 
 //    @Getter

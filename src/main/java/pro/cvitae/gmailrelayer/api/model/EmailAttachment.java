@@ -74,11 +74,6 @@ public class EmailAttachment implements Serializable {
         this.cid = cid;
     }
 
-    public EmailAttachment filename(final String filename) {
-        this.filename = filename;
-        return this;
-    }
-
     /**
      * Filename of the attachment
      *
@@ -96,16 +91,12 @@ public class EmailAttachment implements Serializable {
         this.filename = filename;
     }
 
-    public EmailAttachment contentType(final String contentType) {
-        this.contentType = contentType;
-        return this;
-    }
-
     /**
      * Optional content type
      *
      * @return contentType
      **/
+    @Size(max = 200)
     @ApiModelProperty(example = "image/png", value = "Optional content type")
     public String getContentType() {
         return this.contentType;
@@ -113,11 +104,6 @@ public class EmailAttachment implements Serializable {
 
     public void setContentType(final String contentType) {
         this.contentType = contentType;
-    }
-
-    public EmailAttachment content(final String content) {
-        this.content = content;
-        return this;
     }
 
     /**

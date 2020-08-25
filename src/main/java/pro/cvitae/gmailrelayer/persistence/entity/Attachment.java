@@ -28,6 +28,21 @@ public class Attachment {
 
     @Getter
     @Setter
+    @Column(name = "cid", nullable = true, length = 200)
+    private String cid;
+
+    @Getter
+    @Setter
+    @Column(name = "content_type", nullable = true, length = 200)
+    private String contentType;
+
+    @Getter
+    @Setter
+    @Column(name = "filename", nullable = true, length = 50)
+    private String filename;
+
+    @Getter
+    @Setter
     @Column(name = "value", nullable = false)
     private String value;
 }

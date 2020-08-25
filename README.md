@@ -150,9 +150,9 @@ This is the json object representing an attachment included in the message.
 
 | Property       | Description                              |
 |----------------|------------------------------------------|
-| cid            | Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inlined, do not set the CID field. Alphanumeric characters and `._@-$&()[]` are allowed |
-| filename | Filename of the attachment. Alphanumeric characters, space and `_-$&()[]` are allowed. |
-| contentType | Optional content type. It must include the encoding for text files. Valid values:<ul><li>`"contentType" : "text/plain; charset=UTF-8"`</li><li>`"contentType" : "image/png",`</li></ul> |
+| cid            | Optional CID identificator for inline attachements. Setting a CID will force the attachment to be inlined. If you do not want the attachment to be inlined, do not set the CID field. Alphanumeric characters and `_@-$&()[]` are allowed. Max size 200 chars. |
+| filename | Filename of the attachment. Alphanumeric characters, space and `_-$&()[]@.` are allowed. Max size 50 chars. Mandatory. |
+| contentType | Optional content type. It must include the encoding for text files. Valid values:<ul><li>`"contentType" : "text/plain; charset=UTF-8"`</li><li>`"contentType" : "image/png",`</li></ul>. Max size 200 chars. |
 | content | The file contents in Base64 representation. Current max size is 6MB. |
 
 ### Header
