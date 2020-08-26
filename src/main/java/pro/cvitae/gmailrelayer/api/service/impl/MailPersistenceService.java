@@ -7,15 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pro.cvitae.gmailrelayer.api.model.EmailAttachment;
+import pro.cvitae.gmailrelayer.api.model.EmailHeader;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.EmailStatus;
 import pro.cvitae.gmailrelayer.api.service.IMailPersistenceService;
 import pro.cvitae.gmailrelayer.persistence.entity.Address;
 import pro.cvitae.gmailrelayer.persistence.entity.Attachment;
 import pro.cvitae.gmailrelayer.persistence.entity.Body;
+import pro.cvitae.gmailrelayer.persistence.entity.Header;
 import pro.cvitae.gmailrelayer.persistence.entity.Message;
 import pro.cvitae.gmailrelayer.persistence.repository.AddressDao;
 import pro.cvitae.gmailrelayer.persistence.repository.AttachmentDao;
+import pro.cvitae.gmailrelayer.persistence.repository.HeaderDao;
 import pro.cvitae.gmailrelayer.persistence.repository.MessageDao;
 import pro.cvitae.gmailrelayer.persistence.repository.helper.MessageHelper;
 import pro.cvitae.gmailrelayer.persistence.tx.Tx;
@@ -32,6 +35,9 @@ public class MailPersistenceService implements IMailPersistenceService {
     @Autowired
     AttachmentDao attachmentDao;
 
+    @Autowired
+    HeaderDao headerDao;
+
     @Tx
     @Override
     public Long saveMessage(final EmailMessage message, final EmailStatus status) {
@@ -40,6 +46,7 @@ public class MailPersistenceService implements IMailPersistenceService {
         entity.setFrom(this.checkCreateAddress(message.getFrom()));
         entity.setReplyTo(this.checkCreateAddress(message.getReplyTo()));
         entity.setStatus(status.value());
+        entity.setNotBefore(message.getNotBefore());
 
         this.setToList(message, entity);
         this.setCcList(message, entity);
@@ -62,6 +69,15 @@ public class MailPersistenceService implements IMailPersistenceService {
             attachment.setMessageId(messageId);
             attachment.setContentType(emailAttachment.getContentType());
             this.attachmentDao.save(attachment);
+        }
+
+        // Same for headers
+        for (final EmailHeader emailHeader : message.getHeaders()) {
+            final Header header = new Header();
+            header.setMessageId(messageId);
+            header.setName(emailHeader.getName());
+            header.setValue(emailHeader.getValue());
+            this.headerDao.save(header);
         }
 
         return messageId;

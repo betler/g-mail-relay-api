@@ -39,7 +39,7 @@ import org.springframework.stereotype.Service;
 import pro.cvitae.gmailrelayer.api.model.EmailAttachment;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.EmailStatus;
-import pro.cvitae.gmailrelayer.api.model.Header;
+import pro.cvitae.gmailrelayer.api.model.EmailHeader;
 import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
@@ -164,7 +164,7 @@ public class MailService implements IMailService {
 
         // Headers
         if (message.getHeaders() != null) {
-            for (final Header h : message.getHeaders()) {
+            for (final EmailHeader h : message.getHeaders()) {
                 mime.setHeader(h.getName(), h.getValue());
             }
         }

@@ -1,5 +1,6 @@
 package pro.cvitae.gmailrelayer.persistence.entity;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -115,14 +116,18 @@ public class Message {
     @Getter
     @Setter
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Attachment> attachment;
+    private List<Attachment> attachments;
 
-//    @Getter
-//    @Setter
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "not_before", nullable = true)
-//    private Date notBefore;
-//
+    @Getter
+    @Setter
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Header> headers;
+
+    @Getter
+    @Setter
+    @Column(name = "not_before", nullable = true)
+    private OffsetDateTime notBefore;
+
     @Getter
     @Setter
     @Column(name = "status", nullable = false)

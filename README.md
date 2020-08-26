@@ -160,8 +160,8 @@ This is the json object representing a header included in the message.
 
 | Property       | Description                              |
 |----------------|------------------------------------------|
-| name | Name of the header. |
-| value | Value of the header. |
+| name | Name of the header. Max 200 chars. |
+| value | Value of the header. Max 2.000 chars. |
 
 This one wasn't tough, was it?
 

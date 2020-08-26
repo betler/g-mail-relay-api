@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
-public class Header implements Serializable {
+public class EmailHeader implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("name")
@@ -43,7 +43,7 @@ public class Header implements Serializable {
     @JsonProperty("value")
     private String value = null;
 
-    public Header name(final String name) {
+    public EmailHeader name(final String name) {
         this.name = name;
         return this;
     }
@@ -64,7 +64,7 @@ public class Header implements Serializable {
         this.name = name;
     }
 
-    public Header value(final String value) {
+    public EmailHeader value(final String value) {
         this.value = value;
         return this;
     }
@@ -93,7 +93,7 @@ public class Header implements Serializable {
         if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
-        final Header header = (Header) o;
+        final EmailHeader header = (EmailHeader) o;
         return Objects.equals(this.name, header.name) && Objects.equals(this.value, header.value);
     }
 

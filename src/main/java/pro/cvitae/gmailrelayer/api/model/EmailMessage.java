@@ -135,7 +135,7 @@ public class EmailMessage implements Serializable {
     @Valid
     @JsonProperty("headers")
     @ApiModelProperty(value = "List of the headers that should be added to the email")
-    private List<Header> headers = null;
+    private List<EmailHeader> headers = null;
 
     /**
      * Optional free text to identify the sender of the application. Must be set if
@@ -427,12 +427,12 @@ public class EmailMessage implements Serializable {
         this.attachments = attachments;
     }
 
-    public EmailMessage headers(final List<Header> headers) {
+    public EmailMessage headers(final List<EmailHeader> headers) {
         this.headers = headers;
         return this;
     }
 
-    public EmailMessage addHeadersItem(final Header headersItem) {
+    public EmailMessage addHeadersItem(final EmailHeader headersItem) {
         if (this.headers == null) {
             this.headers = new ArrayList<>();
         }
@@ -445,11 +445,11 @@ public class EmailMessage implements Serializable {
      *
      * @return headers
      **/
-    public List<Header> getHeaders() {
+    public List<EmailHeader> getHeaders() {
         return this.headers;
     }
 
-    public void setHeaders(final List<Header> headers) {
+    public void setHeaders(final List<EmailHeader> headers) {
         this.headers = headers;
     }
 
@@ -458,7 +458,7 @@ public class EmailMessage implements Serializable {
      *
      * @return
      */
-    public Optional<Header> getMessageIdHeader() {
+    public Optional<EmailHeader> getMessageIdHeader() {
         return this.getHeaders().stream().filter(h -> h.getName().equalsIgnoreCase("Message-ID")).findFirst();
     }
 
@@ -481,10 +481,10 @@ public class EmailMessage implements Serializable {
         final EmailMessage emailMessage = (EmailMessage) o;
 
         // Check header
-        final Optional<Header> messageIdHeader = this.getMessageIdHeader();
+        final Optional<EmailHeader> messageIdHeader = this.getMessageIdHeader();
         if (messageIdHeader.isPresent()) {
             // Check second header
-            final Optional<Header> messageIdHeader2 = emailMessage.getMessageIdHeader();
+            final Optional<EmailHeader> messageIdHeader2 = emailMessage.getMessageIdHeader();
 
             if (messageIdHeader2.isPresent()) {
                 return messageIdHeader.get().getValue().equals(messageIdHeader2.get().getValue());
