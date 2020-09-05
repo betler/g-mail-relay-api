@@ -27,6 +27,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.validation.annotation.Validated;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -35,7 +37,6 @@ import io.swagger.annotations.ApiModelProperty;
  * SendEmailResult
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-04-04T22:29:14.146Z[GMT]")
 public class SendEmailResult implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -50,6 +51,10 @@ public class SendEmailResult implements Serializable {
 
     @JsonProperty("date")
     private OffsetDateTime date = null;
+
+    @JsonProperty("reason")
+    @JsonInclude(Include.NON_NULL)
+    private String reason = null;
 
     /**
      * Creates an instance initialized with the current time
@@ -119,6 +124,20 @@ public class SendEmailResult implements Serializable {
 
     public void setDate(final OffsetDateTime date) {
         this.date = date;
+    }
+
+    /**
+     * Reason for the error..
+     *
+     * @return reason
+     **/
+    @ApiModelProperty("Description text in case of an error message")
+    public String getReason() {
+        return this.reason;
+    }
+
+    public void setReason(final String reason) {
+        this.reason = reason;
     }
 
     @Override

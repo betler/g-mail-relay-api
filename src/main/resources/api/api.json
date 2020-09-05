@@ -126,7 +126,7 @@
         }
       },
       "SendEmailResult" : {
-        "required" : [ "id", "result" ],
+        "required" : [ "id", "date" ],
         "type" : "object",
         "properties" : {
           "status" : {
@@ -141,7 +141,7 @@
           },
           "messageId" : {
             "type" : "string",
-            "description" : "Message-ID header of the sent message. Empty if the message was delayed.",
+            "description" : "Message-ID header of the sent message. Empty if the message was delayed or could not be sent.",
             "example" : "<032d19d1gd15$b9a14470$2si9dm40$@example.com>"
           },
           "date" : {
@@ -149,6 +149,10 @@
             "format" : "date-time",
             "description" : "Datetime of the message",
             "example" : "2015-03-17T10:30:45Z"
+          },
+          "reason" : {
+            "type" : "string",
+            "description" : "Description text in case of an error message"
           }
         }
       },

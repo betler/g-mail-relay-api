@@ -37,9 +37,9 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import pro.cvitae.gmailrelayer.api.model.EmailAttachment;
+import pro.cvitae.gmailrelayer.api.model.EmailHeader;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
 import pro.cvitae.gmailrelayer.api.model.EmailStatus;
-import pro.cvitae.gmailrelayer.api.model.EmailHeader;
 import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
 import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
@@ -65,33 +65,58 @@ public class MailService implements IMailService {
             throws MessagingException {
 
         // Store the mail in database. If saving fails, just quit with exception
-        this.persistenceService.saveMessage(message, EmailStatus.SENT);
+        final Long messageId = this.persistenceService.saveMessage(message, EmailStatus.SENT);
 
         // Then send it
-        final MimeMessage mime = this.send(message, sendingType);
-        this.logger.debug("Sent email to {} via {}", message.getTo(), sendingType);
-        return this.getSendEmailResult(mime, EmailStatus.SENT);
+        try {
+            // If sending is OK, status in db is already SENT
+            final MimeMessage mime = this.send(message, sendingType);
+            this.logger.debug("Sent email to {} via {}", message.getTo(), sendingType);
+            return this.getSendEmailResult(mime, EmailStatus.SENT, null);
+
+        } catch (final Exception e) {
+            // Message was not sent, try to update db to mark as ERROR
+            this.logger.error("Error while sending message", e);
+            if (!this.trySetError(messageId)) {
+                this.logger.error("Message was not sent and status could not be set");
+            }
+            return this.getSendEmailResult(EmailStatus.ERROR, e.getMessage());
+        }
     }
 
     @Override
     public SendEmailResult sendEmail(final MimeMessage message, final SendingType sendingType)
             throws MessagingException {
+
+        // Store the mail in database. If saving fails, just quit with exception
+        final Long messageId = this.persistenceService.saveMessage(message, EmailStatus.SENT);
+
         this.send(message, sendingType);
         this.logger.debug("Sent email to {} via {}", message.getAllRecipients()[0], sendingType);
-        return this.getSendEmailResult(message, EmailStatus.SENT);
+        return this.getSendEmailResult(message, EmailStatus.SENT, null);
     }
 
     @Async
     @Override
     public Future<SendEmailResult> sendAsyncEmail(final EmailMessage message, final SendingType sendingType) {
+
+        // Store the mail in database. If saving fails, just quit with exception
+        final Long messageId = this.persistenceService.saveMessage(message, EmailStatus.SENT);
+
         MimeMessage mime = null;
         try {
             mime = this.send(message, sendingType);
             this.logger.debug("Sent async email to {} via {}", message.getTo(), sendingType);
-            return new AsyncResult<>(this.getSendEmailResult(mime, EmailStatus.SENT));
+            return new AsyncResult<>(this.getSendEmailResult(mime, EmailStatus.SENT, null));
+
         } catch (final MessagingException me) {
             this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getTo(), me);
-            return new AsyncResult<>(this.getSafeSendEmailResult(mime, EmailStatus.ERROR));
+
+            // Tries to set error in message in db
+            if (!this.trySetError(messageId)) {
+                this.logger.error("Message {} was not sent and status could not be set", messageId);
+            }
+            return new AsyncResult<>(this.getSafeSendEmailResult(mime, EmailStatus.ERROR, me.getMessage()));
         }
     }
 
@@ -101,7 +126,7 @@ public class MailService implements IMailService {
         try {
             this.send(message, sendingType);
             this.logger.debug("Sent async email to {} via {}", message.getAllRecipients()[0], sendingType);
-            return new AsyncResult<>(this.getSendEmailResult(message, EmailStatus.SENT));
+            return new AsyncResult<>(this.getSendEmailResult(message, EmailStatus.SENT, null));
         } catch (final MessagingException me) {
             try {
                 this.logger.error("Error sending mail from {} to {}", message.getFrom(), message.getAllRecipients()[0],
@@ -110,8 +135,28 @@ public class MailService implements IMailService {
                 this.logger.error("Error sending mail from. Couldn't fetch email data for logging", me);
             }
 
-            return new AsyncResult<>(this.getSafeSendEmailResult(message, EmailStatus.ERROR));
+            return new AsyncResult<>(this.getSafeSendEmailResult(message, EmailStatus.ERROR, me.getMessage()));
         }
+    }
+
+    @Override
+    public String getValidatedHeader(final String name, final MimeMessage msg) throws MessagingException {
+        final String[] header = msg.getHeader(name);
+
+        if (header == null || header.length == 0) {
+            return null;
+        }
+
+        if (header.length > 1) {
+            throw new IllegalArgumentException("Header " + name + " is set more than once");
+        }
+
+        final String aux = header[0];
+        if ("".equals(aux) || aux == null) {
+            return null;
+        }
+
+        return aux;
     }
 
     private MimeMessage send(final EmailMessage message, final SendingType sendingType) throws MessagingException {
@@ -214,16 +259,27 @@ public class MailService implements IMailService {
      *
      * @throws MessagingException
      */
-    private SendEmailResult getSendEmailResult(final MimeMessage message, final EmailStatus status)
+    private SendEmailResult getSendEmailResult(final MimeMessage message, final EmailStatus status, final String reason)
             throws MessagingException {
 
         final SendEmailResult result = SendEmailResult.getInstance();
         // result.setId(id); this will be set by the service that stores in DB
         result.setMessageId(message == null ? null : message.getMessageID());
         result.setStatus(status);
+        result.setReason(reason);
 
         return result;
 
+    }
+
+    /**
+     * Creates a {@link SendEmailResult} with no message info.
+     *
+     * @throws MessagingException
+     */
+    private SendEmailResult getSendEmailResult(final EmailStatus status, final String reason)
+            throws MessagingException {
+        return this.getSendEmailResult(null, status, reason);
     }
 
     /**
@@ -231,12 +287,14 @@ public class MailService implements IMailService {
      * throwing any exception.
      *
      * @param mime
-     * @param error
+     * @param status
+     * @param reason
      * @return
      */
-    private SendEmailResult getSafeSendEmailResult(final MimeMessage mime, final EmailStatus status) {
+    private SendEmailResult getSafeSendEmailResult(final MimeMessage mime, final EmailStatus status,
+            final String reason) {
         try {
-            return this.getSendEmailResult(mime, status);
+            return this.getSendEmailResult(mime, status, reason);
         } catch (final MessagingException me) {
             this.logger.error(
                     "Error while generating a SendEmailResult. Trying to generate a result without message id", me);
@@ -252,24 +310,24 @@ public class MailService implements IMailService {
         return message.getAttachments() != null && !message.getAttachments().isEmpty();
     }
 
-    @Override
-    public String getValidatedHeader(final String name, final MimeMessage msg) throws MessagingException {
-        final String[] header = msg.getHeader(name);
+    /**
+     * Tries to set error status on the given message. No exception is thrown, true
+     * or false is returned if the operation was successful or not.
+     *
+     * @param messageId
+     * @return
+     */
+    private boolean trySetError(final long messageId) {
 
-        if (header == null || header.length == 0) {
-            return null;
+        try {
+            this.persistenceService.updateStatus(messageId, EmailStatus.ERROR);
+            return true;
+
+        } catch (final Exception e) {
+            this.logger.error("Could not set error status on message {}", e);
+            return false;
         }
 
-        if (header.length > 1) {
-            throw new IllegalArgumentException("Header " + name + " is set more than once");
-        }
-
-        final String aux = header[0];
-        if ("".equals(aux) || aux == null) {
-            return null;
-        }
-
-        return aux;
     }
 
 }

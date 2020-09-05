@@ -3,6 +3,9 @@ package pro.cvitae.gmailrelayer.api.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,26 +64,49 @@ public class MailPersistenceService implements IMailPersistenceService {
         entity.setBody(body);
 
         // Same for attachments
-        for (final EmailAttachment emailAttachment : message.getAttachments()) {
-            final Attachment attachment = new Attachment();
-            attachment.setCid(emailAttachment.getCid());
-            attachment.setFilename(emailAttachment.getFilename());
-            attachment.setValue(emailAttachment.getContent());
-            attachment.setMessageId(messageId);
-            attachment.setContentType(emailAttachment.getContentType());
-            this.attachmentDao.save(attachment);
+        if (message.getAttachments() != null) {
+            for (final EmailAttachment emailAttachment : message.getAttachments()) {
+                final Attachment attachment = new Attachment();
+                attachment.setCid(emailAttachment.getCid());
+                attachment.setFilename(emailAttachment.getFilename());
+                attachment.setValue(emailAttachment.getContent());
+                attachment.setMessageId(messageId);
+                attachment.setContentType(emailAttachment.getContentType());
+                this.attachmentDao.save(attachment);
+            }
         }
 
         // Same for headers
-        for (final EmailHeader emailHeader : message.getHeaders()) {
-            final Header header = new Header();
-            header.setMessageId(messageId);
-            header.setName(emailHeader.getName());
-            header.setValue(emailHeader.getValue());
-            this.headerDao.save(header);
+        if (message.getHeaders() != null) {
+            for (final EmailHeader emailHeader : message.getHeaders()) {
+                final Header header = new Header();
+                header.setMessageId(messageId);
+                header.setName(emailHeader.getName());
+                header.setValue(emailHeader.getValue());
+                this.headerDao.save(header);
+            }
         }
 
         return messageId;
+    }
+
+    @Override
+    public Long saveMessage(final MimeMessage message, final EmailStatus sent) {
+        try {
+            final Message entity = MessageHelper.from(message);
+        } catch (final MessagingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Tx
+    @Override
+    public void updateStatus(final Long messageId, final EmailStatus status) {
+        final Message message = this.messageDao.getOne(messageId);
+        message.setStatus(status.value());
+        this.messageDao.save(message);
     }
 
     private void setToList(final EmailMessage message, final Message entity) {
@@ -122,4 +148,5 @@ public class MailPersistenceService implements IMailPersistenceService {
 
         return address;
     }
+
 }

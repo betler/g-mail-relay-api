@@ -30,8 +30,6 @@ import org.apache.james.protocols.smtp.hook.MessageHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import pro.cvitae.gmailrelayer.api.model.MessageHeaders;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
@@ -39,6 +37,8 @@ import pro.cvitae.gmailrelayer.api.service.IMailService;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 
 /**
+ * The class must be thread safe
+ *
  * @author betler
  *
  */
@@ -50,11 +50,6 @@ public class MessageReceivedHook implements MessageHook {
     IMailService mailService;
 
     final ConfigFileHelper configFileHelper;
-
-    /**
-     * Default and empty sender in order to parse mime message
-     */
-    final JavaMailSender defaultSender = new JavaMailSenderImpl();
 
     public MessageReceivedHook(final ConfigFileHelper configFileHelper) {
         this.configFileHelper = configFileHelper;

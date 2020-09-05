@@ -12,7 +12,7 @@ CREATE TABLE `gmr`.`message`
    `delivery_type` TINYINT NOT NULL,
    `priority` TINYINT NOT NULL,
    `not_before` DATETIME NULL,
-   `status` TINYINT UNSIGNED NOT NULL,
+   `status` TINYINT NOT NULL,
    `retries` TINYINT NOT NULL DEFAULT 0,
    `creation_date` DATETIME NOT NULL,
    `last_retry_date` DATETIME NULL,

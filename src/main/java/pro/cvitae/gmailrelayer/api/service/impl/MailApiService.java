@@ -50,12 +50,15 @@ public class MailApiService implements IMailApiService {
         if (deliveryType.equals(DeliveryType.PRIORITY_SYNC)) {
             // Synchronized sending
             return this.mailService.sendEmail(message, sendingType);
+
         } else if (deliveryType.equals(DeliveryType.PRIORITY_ASYNC)) {
             // Async sending
             return this.handleAsyncEmail(message, sendingType);
+
         } else if (deliveryType.equals(DeliveryType.QUEUE)) {
             // Queued sending
             throw new UnsupportedOperationException("Not yet");
+
         } else {
             // Should not happen
             throw new UnsupportedOperationException();
