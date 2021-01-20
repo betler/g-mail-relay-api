@@ -137,7 +137,7 @@ This is the json object representing an email message that is going to be sent:
 | bcc | Optional array of bcc addresses. Can be set with or without brackets as in `Aunt Doe <aunt.doe@example.com>` or just `aunt.doe@example.com`. |
 | subject | Subject of the message. Maximum length is 255, not only because that is the max length of a subject in MS Outlook, but because... hey, who wants to read an email with such a long subject, anyway? Not me. |
 | body | Body of the message. It can be text or html. Format must be specified with the `textFormat` field, and encoding must be specified with the `textEncoding` field. Max length is 50.000, but still thinking if it should be greater or set by configuration. |
-| textFormat | Specifies if the body is text or HTML. Possible values are `TEXT` and `HTML`. |
+| textFormat | Specifies if the body is text or HTML. Possible values are `TEXT` and `HTML`. There are plans to support mixed content ([#43](https://github.com/betler/g-mail-relayer/issues/43)) but with no planned date. |
 | textEncoding | Encoding of the message subject, body and addresses. Almost any field in this object may be affected by this setting. I know this is not very clear. |
 | priority | Sets the priority of the message. Values 1 to 5, from the highest[1] to lowest[5]. This value is set in an `X-Priority` header. No other headers like `X-MSMail-Priority` or `Importance` are set. Anyway, if you need any of these, they can be set in the `headers` field. Defaults to 3. |
 | notBefore | Optionally delay message delivery until the time specified, as defined by [date-time - RFC3339](http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14 "date-time - RFC3339"). It is not guaranteed that the email will be sent exactly at this time, but at the first scheduled delivery time after this time. This option is ignored if `deliveryType` is set to other than `QUEUE`. Example: '2015-03-17T10:30:45Z' |
@@ -234,6 +234,16 @@ As with the API, the email can be classified to match one of the defined relayin
 
 + Original 'from' address
 + `X-GMR-APPLICATION-ID` and `X-GMR-MESSAGE-TYPE` headers
+
+## Asynchronous sending
+
+The email can be asynchronously sent by adding a header to the message named `X-GMR-ASYNC`with value of `true`. 
+
+## Current limitations
+
+Currently only `text/html`and `text/plain` content type is supported. There are plans to support multipart: [#43](https://github.com/betler/g-mail-relayer/issues/43) and should be one of the next things to implement. This means, attachments cannot be sent.
+
+There are no current plans to support deferred sending. Anyway, you can check [#44](https://github.com/betler/g-mail-relayer/issues/44).
 
 # Configuration
 

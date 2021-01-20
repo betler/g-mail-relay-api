@@ -124,9 +124,9 @@ CREATE TABLE `gmr`.`attachment`
 (
    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
    `message_id` BIGINT UNSIGNED NOT NULL,
-   `cid` VARCHAR(200) NULL,
-   `content_type` VARCHAR(200) NULL,
-   `filename` VARCHAR(50) NOT NULL,
+   `cid` VARCHAR (200) NULL,
+   `content_type` VARCHAR (200) NULL,
+   `filename` VARCHAR (50) NOT NULL,
    `value` LONGTEXT NOT NULL,
    PRIMARY KEY (`id`),
    INDEX `attachment_message_fk_idx`
@@ -154,3 +154,35 @@ ALTER TABLE `gmr`.`cc_addr` ADD CONSTRAINT `cc_addr_address_fk` FOREIGN KEY (`ad
 ADD CONSTRAINT `cc_addr_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `gmr`.`bcc_addr` ADD CONSTRAINT `bcc_addr_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `gmr`.`to_addr` ADD CONSTRAINT `to_addr_message_fk` FOREIGN KEY (`message_id`) REFERENCES `gmr`.`message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+CREATE TABLE `gmr`.`message_status`
+(
+   `id` TINYINT NOT NULL,
+   `name` VARCHAR (10) NOT NULL,
+   PRIMARY KEY (`id`)
+);
+INSERT INTO message_status
+(
+   id,
+   name
+)
+values
+(
+   1,
+   'ERROR'
+),
+
+(
+   0,
+   'SENDING'
+),
+
+(
+   3,
+   'SENT'
+),
+
+(
+   5,
+   'ERROR'
+);
+ALTER TABLE `gmr`.`message` ADD CONSTRAINT `message_message_status_fk` FOREIGN KEY (`status`) REFERENCES `gmr`.`message_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

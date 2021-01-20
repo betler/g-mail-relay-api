@@ -18,6 +18,7 @@
 package pro.cvitae.gmailrelayer.api.service.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Base64;
@@ -36,6 +37,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import pro.cvitae.gmailrelayer.api.exception.GmrException;
 import pro.cvitae.gmailrelayer.api.model.EmailAttachment;
 import pro.cvitae.gmailrelayer.api.model.EmailHeader;
 import pro.cvitae.gmailrelayer.api.model.EmailMessage;
@@ -45,6 +47,7 @@ import pro.cvitae.gmailrelayer.api.model.SendEmailResult;
 import pro.cvitae.gmailrelayer.api.model.SendingType;
 import pro.cvitae.gmailrelayer.api.service.IMailPersistenceService;
 import pro.cvitae.gmailrelayer.api.service.IMailService;
+import pro.cvitae.gmailrelayer.api.service.util.MimeMessageUtils;
 import pro.cvitae.gmailrelayer.config.ConfigFileHelper;
 import pro.cvitae.gmailrelayer.config.DefaultConfigItem;
 import pro.cvitae.gmailrelayer.config.SendingConfiguration;
@@ -86,7 +89,7 @@ public class MailService implements IMailService {
 
     @Override
     public SendEmailResult sendEmail(final MimeMessage message, final SendingType sendingType)
-            throws MessagingException {
+            throws MessagingException, IOException, GmrException {
 
         // Store the mail in database. If saving fails, just quit with exception
         final Long messageId = this.persistenceService.saveMessage(message, EmailStatus.SENT);
@@ -137,26 +140,6 @@ public class MailService implements IMailService {
 
             return new AsyncResult<>(this.getSafeSendEmailResult(message, EmailStatus.ERROR, me.getMessage()));
         }
-    }
-
-    @Override
-    public String getValidatedHeader(final String name, final MimeMessage msg) throws MessagingException {
-        final String[] header = msg.getHeader(name);
-
-        if (header == null || header.length == 0) {
-            return null;
-        }
-
-        if (header.length > 1) {
-            throw new IllegalArgumentException("Header " + name + " is set more than once");
-        }
-
-        final String aux = header[0];
-        if ("".equals(aux) || aux == null) {
-            return null;
-        }
-
-        return aux;
     }
 
     private MimeMessage send(final EmailMessage message, final SendingType sendingType) throws MessagingException {
@@ -238,8 +221,8 @@ public class MailService implements IMailService {
 
     private void send(final MimeMessage message, final SendingType sendingType) throws MessagingException {
         // Get mailer and configuration. Needed for overriding from
-        final String forApplicationId = this.getValidatedHeader(MessageHeaders.APPLICATION_ID, message);
-        final String forMessageType = this.getValidatedHeader(MessageHeaders.MESSAGE_TYPE, message);
+        final String forApplicationId = MimeMessageUtils.getValidatedHeader(MessageHeaders.APPLICATION_ID, message);
+        final String forMessageType = MimeMessageUtils.getValidatedHeader(MessageHeaders.MESSAGE_TYPE, message);
 
         final SendingConfiguration sendingConfiguration = this.configHelper.senderFor(sendingType,
                 message.getFrom()[0].toString(), forApplicationId, forMessageType);

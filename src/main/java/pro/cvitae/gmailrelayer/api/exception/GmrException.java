@@ -15,18 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package pro.cvitae.gmailrelayer.api.model;
+package pro.cvitae.gmailrelayer.api.exception;
 
-public abstract class MessageHeaders {
+public class GmrException extends Exception {
 
-    public static final String APPLICATION_ID = "X-GMR-APPLICATION-ID";
-    public static final String MESSAGE_TYPE = "X-GMR-MESSAGE-TYPE";
-    public static final String ASYNC = "X-GMR-ASYNC";
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String PRIORITY = "X-Priority";
+    private static final long serialVersionUID = -46898138093062942L;
 
-    private MessageHeaders() {
-        throw new UnsupportedOperationException();
+    public GmrException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public GmrException(final String message) {
+        super(message);
+    }
+
+    public GmrException(final Throwable cause) {
+        super(cause);
     }
 
 }
